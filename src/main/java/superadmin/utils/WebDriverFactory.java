@@ -47,17 +47,25 @@ public class WebDriverFactory {
         } else if (browserName.equalsIgnoreCase("edge")) {
             WebDriverManager.edgedriver().setup();
             EdgeOptions options = new EdgeOptions();
+            options.addArguments("--remote-allow-origins=*");
             if (isHeadless) {
                 options.addArguments("--headless=new");
                 options.addArguments("--window-size=1920,1080");
+                options.addArguments("--no-sandbox");
+                options.addArguments("--disable-dev-shm-usage");
+                options.addArguments("--disable-gpu");
             }
             driver.set(new EdgeDriver(options));
         } else {
             WebDriverManager.chromedriver().setup();
             ChromeOptions options = new ChromeOptions();
+            options.addArguments("--remote-allow-origins=*");
             if (isHeadless) {
                 options.addArguments("--headless=new");
                 options.addArguments("--window-size=1920,1080");
+                options.addArguments("--no-sandbox");
+                options.addArguments("--disable-dev-shm-usage");
+                options.addArguments("--disable-gpu");
             }
             driver.set(new ChromeDriver(options));
         }
@@ -68,7 +76,11 @@ public class WebDriverFactory {
         WebDriver decoratedDriver = decorator.decorate(driver.get());
         driver.set(decoratedDriver);
        
-        getDriver().manage().window().maximize();
+        if (!isHeadless) {
+            try {
+                getDriver().manage().window().maximize();
+            } catch (Exception ignored) {}
+        }
 
         getDriver().manage().timeouts()
                 .implicitlyWait(Duration.ofSeconds(2));

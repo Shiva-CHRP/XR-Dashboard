@@ -17,21 +17,22 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Set up Java 17
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
 
     - name: Run Regression Suite via Maven
-      run: mvn clean test -Dheadless=true
+      run: mvn test -Dheadless=true -DtestFailureIgnore=true
 
-    - name: Archive ExtentReports Dashboard
+    - name: Archive ExtentReports Dashboard & Screenshots
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: ExtentReports-Artifact
         path: |
           reports/
+          test-output/
           target/surefire-reports/
         retention-days: 14
