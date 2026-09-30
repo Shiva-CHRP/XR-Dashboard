@@ -11,26 +11,38 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 
 public class ScreenshotUtils {
-	public static String getScreenshot(WebDriver driver,String testName) {
-
+	public static String getScreenshot(WebDriver driver, String testName) {
 		String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-
-		String path = System.getProperty("user.dir") + "/reports/screenshots/" + testName + "_" + timestamp + ".png";
+		String cleanName = (testName != null) ? testName.replaceAll("[^a-zA-Z0-9_-]", "_") : "step";
+		String relativePath = "../reports/screenshots/" + cleanName + "_" + timestamp + ".png";
+		String fullPath = System.getProperty("user.dir") + "/reports/screenshots/" + cleanName + "_" + timestamp + ".png";
 
 		try {
-
-			File src = ((TakesScreenshot) WebDriverFactory.getDriver()).getScreenshotAs(OutputType.FILE);
-
-			File dest = new File(path);
-
-			FileUtils.copyFile(src, dest);
-
-		} catch (IOException e) {
-
+			WebDriver d = (driver != null) ? driver : WebDriverFactory.getDriver();
+			if (d instanceof TakesScreenshot) {
+				File src = ((TakesScreenshot) d).getScreenshotAs(OutputType.FILE);
+				File dest = new File(fullPath);
+				if (dest.getParentFile() != null && !dest.getParentFile().exists()) {
+					dest.getParentFile().mkdirs();
+				}
+				FileUtils.copyFile(src, dest);
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		return path;
+		return relativePath;
 	}
 
+	public static String getBase64Screenshot(WebDriver driver) {
+		try {
+			WebDriver d = (driver != null) ? driver : WebDriverFactory.getDriver();
+			if (d instanceof TakesScreenshot) {
+				return ((TakesScreenshot) d).getScreenshotAs(OutputType.BASE64);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
 }

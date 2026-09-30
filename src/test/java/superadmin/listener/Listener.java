@@ -82,9 +82,13 @@ public class Listener implements ITestListener, IAnnotationTransformer {
 		}
 		String testName = result.getMethod().getMethodName();
 
-		String path = ScreenshotUtils.getScreenshot(driver, testName);
-
-		ExtentTestManager.getTest().addScreenCaptureFromPath(path);
+		if (driver != null) {
+			ScreenshotUtils.getScreenshot(driver, testName);
+			String base64 = ScreenshotUtils.getBase64Screenshot(driver);
+			if (base64 != null && !base64.isEmpty()) {
+				ExtentTestManager.getTest().addScreenCaptureFromBase64String(base64, testName);
+			}
+		}
 		String[] groups = getSuite(result);
 
 		DashboardBuilder.markPassed(groups);
@@ -101,8 +105,11 @@ public class Listener implements ITestListener, IAnnotationTransformer {
 			return;
 		}
 		String testName = result.getMethod().getMethodName();
-		String path = ScreenshotUtils.getScreenshot(driver,testName);
-		ExtentTestManager.getTest().addScreenCaptureFromPath(path);
+		ScreenshotUtils.getScreenshot(driver, testName);
+		String base64 = ScreenshotUtils.getBase64Screenshot(driver);
+		if (base64 != null && !base64.isEmpty()) {
+			ExtentTestManager.getTest().addScreenCaptureFromBase64String(base64, testName);
+		}
 		LogEntries logs = driver.manage().logs().get(LogType.BROWSER);
 		ExtentTestManager.getTest().info("Current URL : " + driver.getCurrentUrl());
 		Capabilities cap = DriverUtils.getCapabilities(driver);

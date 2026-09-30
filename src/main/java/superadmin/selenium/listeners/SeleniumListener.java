@@ -10,6 +10,7 @@ import superadmin.reports.ExtentTestManager;
 import superadmin.utils.ScreenshotUtils;
 import superadmin.utils.StepNameUtil;
 import superadmin.utils.WaitUtils;
+import superadmin.utils.WebDriverFactory;
 
 public class SeleniumListener implements WebDriverListener{
 	WebDriver driver;
@@ -20,12 +21,21 @@ public class SeleniumListener implements WebDriverListener{
 
 	private void log(String stepName) {
 		try {
-			WaitUtils.waitForPageLoad(driver);
-			// String stepName = StepNameUtil.getStepName();
-			ExtentTestManager.getTest().pass(stepName, MediaEntityBuilder
-					.createScreenCaptureFromPath(ScreenshotUtils.getScreenshot(driver, stepName)).build());
+			WebDriver d = (this.driver != null) ? this.driver : WebDriverFactory.getDriver();
+			if (d != null) {
+				WaitUtils.waitForPageLoad(d);
+				ScreenshotUtils.getScreenshot(d, stepName);
+				String base64 = ScreenshotUtils.getBase64Screenshot(d);
+				if (base64 != null && !base64.isEmpty() && ExtentTestManager.getTest() != null) {
+					ExtentTestManager.getTest().pass(stepName,
+							MediaEntityBuilder.createScreenCaptureFromBase64String(base64).build());
+				} else if (ExtentTestManager.getTest() != null) {
+					ExtentTestManager.getTest().pass(stepName);
+				}
+			} else if (ExtentTestManager.getTest() != null) {
+				ExtentTestManager.getTest().pass(stepName);
+			}
 		} catch (Exception e) {
-			
 			e.printStackTrace();
 		}
 	}
