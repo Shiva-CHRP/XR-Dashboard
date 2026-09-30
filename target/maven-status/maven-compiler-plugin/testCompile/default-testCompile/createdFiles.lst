@@ -1,0 +1,16 @@
+superadmin\assertions\ToastAssertions.class
+clientportalmanager\tests\ManagerSmokeTest.class
+superadmin\listener\RetryAnalyzer.class
+superadmin\tests\DeveloperPortalTest.class
+clientportaladmin\testcomponents\ClientBaseTest.class
+superadmin\tests\CatalogueAndGovernanceTest.class
+superadmin\tests\SmokeTest.class
+superadmin\tests\RoleSwitchTest.class
+clientportaladmin\tests\ClientCurriculumAndContentTest.class
+superadmin\tests\OrganizationTest.class
+clientportaladmin\tests\ClientSmokeTest.class
+clientportaladmin\tests\ClientUserManagementTest.class
+superadmin\listener\Listener.class
+clientportaladmin\tests\ClientReportsAndSyncTest.class
+clientportaltrainer\tests\TrainerSmokeTest.class
+superadmin\testcomponents\BaseTest.class

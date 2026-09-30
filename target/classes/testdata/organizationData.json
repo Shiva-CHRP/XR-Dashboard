@@ -1,0 +1,22 @@
+[
+  {
+    "orgName": "Schneider Electric QA",
+    "domain": "schneider-qa.xrdashboard.com",
+    "industry": "Manufacturing",
+    "country": "India",
+    "adminName": "John Doe",
+    "adminEmail": "johndoe@schneider-qa.com",
+    "adminPhone": "9876543210",
+    "trialPeriod": "30 Days"
+  },
+  {
+    "orgName": "Simulatech Innovations",
+    "domain": "simulatech-qa.xrdashboard.com",
+    "industry": "Healthcare",
+    "country": "United States",
+    "adminName": "Jane Smith",
+    "adminEmail": "janesmith@simulatech.com",
+    "adminPhone": "9876543211",
+    "trialPeriod": "14 Days"
+  }
+]
