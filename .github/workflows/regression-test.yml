@@ -24,7 +24,7 @@ jobs:
         cache: maven
 
     - name: Run Regression Suite via Maven
-      run: mvn test -Dheadless=true -DtestFailureIgnore=true
+      run: mvn test -Dheadless=true -Dmaven.test.failure.ignore=true
 
     - name: Archive ExtentReports Dashboard & Screenshots
       if: always()

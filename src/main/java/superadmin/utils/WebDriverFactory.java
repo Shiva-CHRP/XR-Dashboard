@@ -38,14 +38,22 @@ public class WebDriverFactory {
         boolean isHeadless = (headless != null && headless.equalsIgnoreCase("true"));
 
         if (browserName.equalsIgnoreCase("firefox")) {
-            WebDriverManager.firefoxdriver().setup();
+            try {
+                WebDriverManager.firefoxdriver().setup();
+            } catch (Exception e) {
+                System.out.println("WebDriverManager Firefox fallback to Selenium Manager: " + e.getMessage());
+            }
             FirefoxOptions options = new FirefoxOptions();
             if (isHeadless) {
                 options.addArguments("-headless");
             }
             driver.set(new FirefoxDriver(options));
         } else if (browserName.equalsIgnoreCase("edge")) {
-            WebDriverManager.edgedriver().setup();
+            try {
+                WebDriverManager.edgedriver().setup();
+            } catch (Exception e) {
+                System.out.println("WebDriverManager Edge fallback to Selenium Manager: " + e.getMessage());
+            }
             EdgeOptions options = new EdgeOptions();
             options.addArguments("--remote-allow-origins=*");
             if (isHeadless) {
@@ -57,7 +65,11 @@ public class WebDriverFactory {
             }
             driver.set(new EdgeDriver(options));
         } else {
-            WebDriverManager.chromedriver().setup();
+            try {
+                WebDriverManager.chromedriver().setup();
+            } catch (Exception e) {
+                System.out.println("WebDriverManager Chrome fallback to Selenium Manager: " + e.getMessage());
+            }
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--remote-allow-origins=*");
             if (isHeadless) {
