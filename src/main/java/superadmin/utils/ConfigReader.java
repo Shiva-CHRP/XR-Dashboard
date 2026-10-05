@@ -49,6 +49,10 @@ public class ConfigReader {
 		if (env != null && !env.trim().isEmpty()) {
 			return env.trim().toLowerCase();
 		}
+		String propEnv = prop.getProperty("env");
+		if (propEnv != null && !propEnv.trim().isEmpty()) {
+			return propEnv.trim().toLowerCase();
+		}
 		return "stage";
 	}
 
@@ -79,9 +83,13 @@ public class ConfigReader {
 		}
 		String env = getEnv();
 		if ("prod".equalsIgnoreCase(env) || "production".equalsIgnoreCase(env)) {
+			String envUser = System.getenv("PROD_USERNAME");
+			if (envUser != null && !envUser.trim().isEmpty()) return envUser.trim();
 			String prodUser = prop.getProperty("prod.username");
 			if (prodUser != null && !prodUser.trim().isEmpty()) return prodUser.trim();
 		} else if ("stage".equalsIgnoreCase(env) || "staging".equalsIgnoreCase(env)) {
+			String envUser = System.getenv("STAGE_USERNAME");
+			if (envUser != null && !envUser.trim().isEmpty()) return envUser.trim();
 			String stageUser = prop.getProperty("stage.username");
 			if (stageUser != null && !stageUser.trim().isEmpty()) return stageUser.trim();
 		}
@@ -95,9 +103,13 @@ public class ConfigReader {
 		}
 		String env = getEnv();
 		if ("prod".equalsIgnoreCase(env) || "production".equalsIgnoreCase(env)) {
+			String envPass = System.getenv("PROD_PASSWORD");
+			if (envPass != null && !envPass.trim().isEmpty()) return envPass.trim();
 			String prodPass = prop.getProperty("prod.password");
 			if (prodPass != null && !prodPass.trim().isEmpty()) return prodPass.trim();
 		} else if ("stage".equalsIgnoreCase(env) || "staging".equalsIgnoreCase(env)) {
+			String envPass = System.getenv("STAGE_PASSWORD");
+			if (envPass != null && !envPass.trim().isEmpty()) return envPass.trim();
 			String stagePass = prop.getProperty("stage.password");
 			if (stagePass != null && !stagePass.trim().isEmpty()) return stagePass.trim();
 		}

@@ -80,23 +80,14 @@ jobs:
         PROD_PASSWORD: ${{ secrets.PROD_PASSWORD }}
       run: |
         TARGET_ENV="${{ steps.env_config.outputs.target_env }}"
-        CMD="mvn test -DsuiteXmlFile=src/test/resources/deployment-sanity.xml -Denv=$TARGET_ENV -Dheadless=true -Dmaven.test.failure.ignore=true"
-
-        # Dynamically inject credentials based on selected environment if defined in GitHub Secrets
-        if [ "$TARGET_ENV" = "prod" ]; then
-          if [ -n "$PROD_USERNAME" ]; then CMD="$CMD -Dusername=\"$PROD_USERNAME\""; fi
-          if [ -n "$PROD_PASSWORD" ]; then CMD="$CMD -Dpassword=\"$PROD_PASSWORD\""; fi
-        else
-          if [ -n "$STAGE_USERNAME" ]; then CMD="$CMD -Dusername=\"$STAGE_USERNAME\""; fi
-          if [ -n "$STAGE_PASSWORD" ]; then CMD="$CMD -Dpassword=\"$STAGE_PASSWORD\""; fi
-        fi
-
-        if [ -n "${{ steps.env_config.outputs.custom_url }}" ]; then
-          CMD="$CMD -Durl=${{ steps.env_config.outputs.custom_url }}"
-        fi
+        CUSTOM_URL="${{ steps.env_config.outputs.custom_url }}"
 
         echo "Executing Deployment Sanity Suite against environment: $TARGET_ENV"
-        eval $CMD
+        if [ -n "$CUSTOM_URL" ]; then
+          mvn test -DsuiteXmlFile=src/test/resources/deployment-sanity.xml -Denv=$TARGET_ENV -Durl="$CUSTOM_URL" -Dheadless=true -Dmaven.test.failure.ignore=true
+        else
+          mvn test -DsuiteXmlFile=src/test/resources/deployment-sanity.xml -Denv=$TARGET_ENV -Dheadless=true -Dmaven.test.failure.ignore=true
+        fi
 
     - name: Archive ExtentReports Dashboard & Screenshots
       if: always()
