@@ -1,13 +1,7 @@
 name: CHRP Simulation Platform - Deployment Sanity Test Automation
 
+# Manual trigger via GitHub Actions UI dropdown (DevOps / QA post-deployment verification)
 on:
-  # 1. Trigger automatically when code is pushed to environment branches
-  push:
-    branches: [ main, master, staging, stage ]
-  pull_request:
-    branches: [ main, master, staging, stage ]
-
-  # 2. Trigger manually with an environment selector dropdown in GitHub Actions
   workflow_dispatch:
     inputs:
       environment:
@@ -24,7 +18,7 @@ on:
         default: ''
         type: string
 
-  # 3. Trigger via external CD deployment pipeline webhooks (e.g., Jenkins, AWS, ArgoCD)
+  # External deployment webhook trigger (e.g., DevOps manual deployment script / curl)
   repository_dispatch:
     types: [ deploy_stage, deploy_prod, post_deployment_sanity ]
 
@@ -51,7 +45,7 @@ jobs:
         if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
           TARGET_ENV="${{ github.event.inputs.environment }}"
           CUSTOM_URL="${{ github.event.inputs.target_url }}"
-        # 2. Check if triggered by external deployment webhook
+        # 2. Check if triggered by external DevOps deployment webhook
         elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
           if [ "${{ github.event.action }}" = "deploy_prod" ]; then
             TARGET_ENV="prod"
@@ -59,10 +53,6 @@ jobs:
             TARGET_ENV="stage"
           fi
           CUSTOM_URL="${{ github.event.client_payload.url }}"
-        # 3. Automatic branch triggers: main/master -> prod, otherwise -> stage
-        elif [ "${{ github.ref }}" = "refs/heads/main" ] || [ "${{ github.ref }}" = "refs/heads/master" ]; then
-          TARGET_ENV="prod"
-          CUSTOM_URL=""
         else
           TARGET_ENV="stage"
           CUSTOM_URL=""
