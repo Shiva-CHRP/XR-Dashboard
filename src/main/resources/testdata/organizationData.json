@@ -1,22 +1,125 @@
 [
   {
     "orgName": "Schneider Electric QA",
+    "orgCode": "SE",
     "domain": "schneider-qa.xrdashboard.com",
     "industry": "Manufacturing",
     "country": "India",
+    "timezone": "(UTC+05:30) Asia/Kolkata",
+    "languages": [
+      "English",
+      "Hindi"
+    ],
     "adminName": "John Doe",
-    "adminEmail": "johndoe@schneider-qa.com",
     "adminPhone": "9876543210",
-    "trialPeriod": "30 Days"
+    "adminEmail": "johndoe@schneider-qa.com",
+    "adminPassword": "Password@123",
+    "onboardingMode": "manual",
+    "cinNumber": "U72200TG2020PTC123456",
+    "cinDocumentPath": "src/test/resources/sample_cin.pdf",
+    "gstNumber": "36AABCS1429B1Z1",
+    "gstDocumentPath": "src/test/resources/sample_gst.pdf",
+    "panNumber": "AABCS1429B",
+    "panDocumentPath": "src/test/resources/sample_pan.pdf",
+    "level1Contact": {
+      "fullName": "Robert Green",
+      "designation": "Finance Manager",
+      "empId": "EMP001",
+      "email": "robert.green@schneider-qa.com",
+      "phone": "9876543221"
+    },
+    "level2Contact": {
+      "fullName": "Sarah Connor",
+      "designation": "Accounts Lead",
+      "empId": "EMP002",
+      "email": "sarah.connor@schneider-qa.com",
+      "phone": "9876543222"
+    },
+    "level3Contact": {
+      "fullName": "Michael Scott",
+      "designation": "Legal Counsel",
+      "empId": "EMP003",
+      "email": "michael.scott@schneider-qa.com",
+      "phone": "9876543223"
+    },
+    "license": {
+      "licenseType": "trial",
+      "licensePeriod": "Annually",
+      "trialPeriod": "15 Days",
+      "maxActiveUsers": "50",
+      "maxActiveDevices": "20",
+      "licenseNotes": "Trial setup for manufacturing simulation pilots"
+    },
+    "trialPeriod": "15 Days",
+    "branding": {
+      "portalName": "Client Portal",
+      "logoPath": "src/test/resources/logo.png",
+      "faviconPath": "src/test/resources/favicon.png",
+      "primaryColor": "#2563EB",
+      "navTheme": "snow",
+      "appearance": "light",
+      "templateVariant": "Standard"
+    }
   },
   {
     "orgName": "Simulatech Innovations",
+    "orgCode": "SIM",
     "domain": "simulatech-qa.xrdashboard.com",
     "industry": "Healthcare",
     "country": "United States",
+    "timezone": "(UTC-05:00) America/New_York",
+    "languages": [
+      "English"
+    ],
     "adminName": "Jane Smith",
-    "adminEmail": "janesmith@simulatech.com",
     "adminPhone": "9876543211",
-    "trialPeriod": "14 Days"
+    "adminEmail": "janesmith@simulatech.com",
+    "adminPassword": "Password@123",
+    "onboardingMode": "link",
+    "cinNumber": "",
+    "cinDocumentPath": "",
+    "gstNumber": "",
+    "gstDocumentPath": "",
+    "panNumber": "",
+    "panDocumentPath": "",
+    "level1Contact": {
+      "fullName": "Emily Clark",
+      "designation": "Operations Director",
+      "empId": "SIM101",
+      "email": "emily.clark@simulatech.com",
+      "phone": "9876543231"
+    },
+    "level2Contact": {
+      "fullName": "David Miller",
+      "designation": "Billing Head",
+      "empId": "SIM102",
+      "email": "david.miller@simulatech.com",
+      "phone": "9876543232"
+    },
+    "level3Contact": {
+      "fullName": "Jessica Pearson",
+      "designation": "Compliance Head",
+      "empId": "SIM103",
+      "email": "jessica.pearson@simulatech.com",
+      "phone": "9876543233"
+    },
+    "license": {
+      "licenseType": "license",
+      "licensePeriod": "Annually",
+      "trialPeriod": "",
+      "maxActiveUsers": "100",
+      "maxActiveDevices": "40",
+      "licenseNotes": "Commercial production VR healthcare training license"
+    },
+    "trialPeriod": "30 Days",
+    "branding": {
+      "portalName": "Client Portal",
+      "logoPath": "src/test/resources/logo.png",
+      "faviconPath": "src/test/resources/favicon.png",
+      "primaryColor": "#059669",
+      "navTheme": "slate",
+      "appearance": "light",
+      "templateVariant": "Standard"
+    }
   }
 ]

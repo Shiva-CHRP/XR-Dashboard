@@ -11,6 +11,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import superadmin.utils.ToastResponse;
 import superadmin.utils.ToastUtils;
 import superadmin.utils.WaitUtils;
 
@@ -57,6 +58,16 @@ public class AbstractComponent {
 	public void waitForVisibility(WebElement element) {
 
 		waitUtils.waitForVisibility(element);
+	}
+
+	public <T> T waitUntil(java.util.function.Function<? super WebDriver, T> condition) {
+
+		return waitUtils.waitUntil(condition);
+	}
+
+	public void clickUsingJS(WebElement element) {
+
+		waitUtils.clickUsingJS(element);
 	}
 
 	// Drop Downs
@@ -120,30 +131,43 @@ public class AbstractComponent {
 	// protected By addBtn = By.xpath("//div[@title='Add']");
 
 	public void clickAddButton() {
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-		WebElement addBtn = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@title='Add']")));
-		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", addBtn);
-
-		wait.until(ExpectedConditions.elementToBeClickable(addBtn));
-
-		addBtn.click();
+		By addBtn = By.xpath("//div[@title='Add']");
+		WebElement addElement = waitUtils.waitForVisibility(addBtn);
+		waitUtils.scrollIntoView(addElement);
+		waitUtils.waitForClickable(addElement);
+		addElement.click();
 	}
 
 	public void search(String value) {
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-
 	    By searchBox = By.xpath("//input[contains(translate(@placeholder,'SEARCH','search'),'search')]");
 	    By rows = By.xpath("//table//tbody//tr");
 	    By noData = By.xpath("//table//tbody//td[contains(text(),'No data found')]");
 
-	    WebElement field = wait.until(ExpectedConditions.elementToBeClickable(searchBox));
-
+	    WebElement field = waitUtils.waitForVisibility(searchBox);
+	    waitUtils.waitForClickable(field);
 	    field.clear();
 	    field.sendKeys(value);
 
 	    // Wait until either rows are displayed or "No data found" appears
-	    wait.until(driver ->
+	    waitUtils.waitUntil(driver ->
 	            !driver.findElements(rows).isEmpty() ||
 	            !driver.findElements(noData).isEmpty());
+	}
+
+	// ================= TOAST NOTIFICATION HELPERS =================
+	public ToastResponse captureToast() {
+		return toastUtils.captureToast();
+	}
+
+	public String getToastMessage() {
+		return toastUtils.captureToast().getMessage();
+	}
+
+	public String getToastType() {
+		return toastUtils.captureToast().getType();
+	}
+
+	public void waitForToastToDisappear() {
+		toastUtils.waitForToastToDisappear();
 	}
 }

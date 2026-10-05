@@ -33,29 +33,74 @@ public class ConfigReader {
 	}
 
 	public static String get(String key) {
-
+		String sys = System.getProperty(key);
+		if (sys != null && !sys.trim().isEmpty()) {
+			return sys.trim();
+		}
 		return prop.getProperty(key);
 	}
 
 	public static String getBrowser() {
+		return get("browser");
+	}
 
-		return prop.getProperty("browser");
+	public static String getEnv() {
+		String env = System.getProperty("env");
+		if (env != null && !env.trim().isEmpty()) {
+			return env.trim().toLowerCase();
+		}
+		return "stage";
 	}
 
 	public static String getUrl() {
-
+		String sysUrl = System.getProperty("url");
+		if (sysUrl != null && !sysUrl.trim().isEmpty()) {
+			return sysUrl.trim();
+		}
+		String env = getEnv();
+		if ("prod".equalsIgnoreCase(env) || "production".equalsIgnoreCase(env)) {
+			String prodUrl = prop.getProperty("prod.url");
+			if (prodUrl != null && !prodUrl.isEmpty()) return prodUrl;
+		} else if ("stage".equalsIgnoreCase(env) || "staging".equalsIgnoreCase(env)) {
+			String stageUrl = prop.getProperty("stage.url");
+			if (stageUrl != null && !stageUrl.isEmpty()) return stageUrl;
+		}
 		return prop.getProperty("url");
 	}
 
 	public static String getClientUrl() {
-		return prop.getProperty("clientUrl");
+		return get("clientUrl");
 	}
 
 	public static String getUsername() {
+		String sysUser = System.getProperty("username");
+		if (sysUser != null && !sysUser.trim().isEmpty()) {
+			return sysUser.trim();
+		}
+		String env = getEnv();
+		if ("prod".equalsIgnoreCase(env) || "production".equalsIgnoreCase(env)) {
+			String prodUser = prop.getProperty("prod.username");
+			if (prodUser != null && !prodUser.trim().isEmpty()) return prodUser.trim();
+		} else if ("stage".equalsIgnoreCase(env) || "staging".equalsIgnoreCase(env)) {
+			String stageUser = prop.getProperty("stage.username");
+			if (stageUser != null && !stageUser.trim().isEmpty()) return stageUser.trim();
+		}
 		return prop.getProperty("username");
 	}
 
 	public static String getPassword() {
+		String sysPass = System.getProperty("password");
+		if (sysPass != null && !sysPass.trim().isEmpty()) {
+			return sysPass.trim();
+		}
+		String env = getEnv();
+		if ("prod".equalsIgnoreCase(env) || "production".equalsIgnoreCase(env)) {
+			String prodPass = prop.getProperty("prod.password");
+			if (prodPass != null && !prodPass.trim().isEmpty()) return prodPass.trim();
+		} else if ("stage".equalsIgnoreCase(env) || "staging".equalsIgnoreCase(env)) {
+			String stagePass = prop.getProperty("stage.password");
+			if (stagePass != null && !stagePass.trim().isEmpty()) return stagePass.trim();
+		}
 		return prop.getProperty("password");
 	}
 

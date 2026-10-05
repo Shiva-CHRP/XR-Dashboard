@@ -1,0 +1,32 @@
+[
+  {
+    "licenseKey": "LIC-SE-COMMERCIAL-2026",
+    "organizationName": "Schneider Electric QA",
+    "licenseType": "Commercial",
+    "status": "Healthy",
+    "maxUsers": "150",
+    "maxDevices": "50",
+    "expiryDate": "2027-12-31",
+    "allocatedTokens": "5000"
+  },
+  {
+    "licenseKey": "LIC-SIM-TRIAL-2026",
+    "organizationName": "Simulatech Innovations",
+    "licenseType": "Trial",
+    "status": "Expiring Soon",
+    "maxUsers": "25",
+    "maxDevices": "10",
+    "expiryDate": "2026-10-15",
+    "allocatedTokens": "1000"
+  },
+  {
+    "licenseKey": "LIC-GLOBAL-EXPIRED-2025",
+    "organizationName": "Global VR Academy",
+    "licenseType": "Standard",
+    "status": "Expired",
+    "maxUsers": "50",
+    "maxDevices": "20",
+    "expiryDate": "2025-01-01",
+    "allocatedTokens": "0"
+  }
+]

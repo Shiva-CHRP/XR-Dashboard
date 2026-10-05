@@ -94,6 +94,19 @@ public class WaitUtils {
 		js.executeScript("arguments[0].click();", element);
 	}
 
+	// GENERIC WAIT UNTIL
+	public <T> T waitUntil(java.util.function.Function<? super WebDriver, T> condition) {
+		return wait.until(condition);
+	}
+
+	public WebDriverWait getWait() {
+		return wait;
+	}
+
+	public boolean waitForAttributeToBe(WebElement element, String attribute, String value) {
+		return wait.until(ExpectedConditions.attributeToBe(element, attribute, value));
+	}
+
 	public static void waitForPageLoad(WebDriver driver) {
 		
 		if (driver == null) {

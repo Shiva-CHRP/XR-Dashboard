@@ -3,6 +3,8 @@ package superadmin.utils;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.openqa.selenium.WebDriver;
@@ -44,6 +46,10 @@ public class WebDriverFactory {
                 System.out.println("WebDriverManager Firefox fallback to Selenium Manager: " + e.getMessage());
             }
             FirefoxOptions options = new FirefoxOptions();
+            // Automatically allow geolocation in Firefox
+            options.addPreference("geo.enabled", true);
+            options.addPreference("geo.prompt.testing", true);
+            options.addPreference("geo.prompt.testing.allow", true);
             if (isHeadless) {
                 options.addArguments("-headless");
             }
@@ -56,6 +62,12 @@ public class WebDriverFactory {
             }
             EdgeOptions options = new EdgeOptions();
             options.addArguments("--remote-allow-origins=*");
+            // Auto-grant browser permissions (geolocation & notifications) to eliminate native dialogs
+            Map<String, Object> prefs = new HashMap<>();
+            prefs.put("profile.default_content_setting_values.geolocation", 1);
+            prefs.put("profile.default_content_setting_values.notifications", 1);
+            options.setExperimentalOption("prefs", prefs);
+
             if (isHeadless) {
                 options.addArguments("--headless=new");
                 options.addArguments("--window-size=1920,1080");
@@ -72,6 +84,12 @@ public class WebDriverFactory {
             }
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--remote-allow-origins=*");
+            // Auto-grant browser permissions (geolocation & notifications) to eliminate native dialogs
+            Map<String, Object> prefs = new HashMap<>();
+            prefs.put("profile.default_content_setting_values.geolocation", 1);
+            prefs.put("profile.default_content_setting_values.notifications", 1);
+            options.setExperimentalOption("prefs", prefs);
+
             if (isHeadless) {
                 options.addArguments("--headless=new");
                 options.addArguments("--window-size=1920,1080");

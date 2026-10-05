@@ -1,0 +1,26 @@
+[
+  {
+    "fullName": "Alex Rivera",
+    "email": "alex.rivera@vrdeveloper.com",
+    "phone": "9876543210",
+    "organization": "Schneider Electric QA",
+    "password": "Password@123",
+    "status": "Active"
+  },
+  {
+    "fullName": "Marcus Chen",
+    "email": "marcus.chen@vrdeveloper.com",
+    "phone": "9876543211",
+    "organization": "Simulatech Innovations",
+    "password": "Password@123",
+    "status": "Active"
+  },
+  {
+    "fullName": "Elena Rostova",
+    "email": "elena.rostova@vrdeveloper.com",
+    "phone": "9876543212",
+    "organization": "Schneider Electric QA",
+    "password": "Password@123",
+    "status": "Inactive"
+  }
+]

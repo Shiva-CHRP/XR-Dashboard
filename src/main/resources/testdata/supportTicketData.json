@@ -1,0 +1,20 @@
+[
+  {
+    "subject": "Headset telemetry sync error on Pico 4 Ultra",
+    "organizationName": "Schneider Electric QA",
+    "category": "Device",
+    "subCategory": "MDM Sync",
+    "priority": "High",
+    "description": "Pico 4 Ultra device id DEV-PICO-09 fails to push session telemetry to Cloudsync service.",
+    "status": "Open"
+  },
+  {
+    "subject": "License token consumption discrepancy in reporting",
+    "organizationName": "Simulatech Innovations",
+    "category": "Licence",
+    "subCategory": "Token Top-up",
+    "priority": "Medium",
+    "description": "50 tokens deducted after offline portal session writeback instead of 25 agreed tokens.",
+    "status": "In Progress"
+  }
+]

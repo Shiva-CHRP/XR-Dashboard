@@ -1,0 +1,30 @@
+[
+  {
+    "questionText": "What is the mandatory minimum approach distance for a 15kV electrical arc boundary?",
+    "topic": "Electrical Safety",
+    "questionType": "Multiple Choice",
+    "options": [
+      "1.0 meter",
+      "2.2 meters",
+      "3.5 meters",
+      "5.0 meters"
+    ],
+    "correctOption": "2.2 meters",
+    "points": "10",
+    "explanation": "NFPA 70E establishes 2.2 meters as the restricted approach boundary for nominal 15kV systems."
+  },
+  {
+    "questionText": "Can a Lockout/Tagout padlock key be kept by a secondary supervisor during VR simulation tests?",
+    "topic": "Lockout Tagout",
+    "questionType": "Multiple Choice",
+    "options": [
+      "Yes, always",
+      "No, only the assigned technician retains the single key",
+      "Only if authorized by management",
+      "Yes, if in training mode"
+    ],
+    "correctOption": "No, only the assigned technician retains the single key",
+    "points": "5",
+    "explanation": "One person, one key is the foundational OSHA LOTO principle replicated in simulation."
+  }
+]

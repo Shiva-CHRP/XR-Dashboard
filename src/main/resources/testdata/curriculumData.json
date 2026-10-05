@@ -1,0 +1,36 @@
+[
+  {
+    "name": "High Voltage Safety Protocol 2026",
+    "code": "CUR-HV-01",
+    "industry": "Manufacturing",
+    "description": "Comprehensive VR simulation training for high voltage safety procedures and incident mitigation.",
+    "status": "Active",
+    "lessonNames": [
+      "Introduction to High Voltage Equipment",
+      "Lockout / Tagout VR Procedure",
+      "Emergency Arc Flash Protocol"
+    ]
+  },
+  {
+    "name": "Surgical Room Sanitization & Setup",
+    "code": "CUR-SURG-02",
+    "industry": "Healthcare",
+    "description": "Virtual reality modules guiding medical practitioners through sterile field preparation.",
+    "status": "Active",
+    "lessonNames": [
+      "Hand Scrubbing & PPE Verification",
+      "Operating Table Sterile Drape Setup"
+    ]
+  },
+  {
+    "name": "Automated Warehouse Robotics Handling",
+    "code": "CUR-ROBO-03",
+    "industry": "Logistics",
+    "description": "Step-by-step VR training on autonomous warehouse robot maintenance and sensor diagnostics.",
+    "status": "Draft",
+    "lessonNames": [
+      "AGV Sensor Diagnostics",
+      "Conveyor Belt Emergency Shutdown"
+    ]
+  }
+]

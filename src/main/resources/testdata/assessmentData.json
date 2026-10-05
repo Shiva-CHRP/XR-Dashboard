@@ -1,0 +1,22 @@
+[
+  {
+    "title": "High Voltage Electrical Safety Certification",
+    "code": "ASSESS-HV-2026",
+    "passingPercentage": "80",
+    "timeLimitMinutes": "45",
+    "maxAttempts": "3",
+    "description": "Evaluation of trainee competency during emergency electrical arc mitigation in VR.",
+    "curriculumName": "High Voltage Safety Protocol 2026",
+    "status": "Active"
+  },
+  {
+    "title": "Sterile Surgical Suite Setup Evaluation",
+    "code": "ASSESS-SURG-01",
+    "passingPercentage": "85",
+    "timeLimitMinutes": "30",
+    "maxAttempts": "2",
+    "description": "Virtual exam measuring adherence to antiseptic and draping standards.",
+    "curriculumName": "Surgical Room Sanitization & Setup",
+    "status": "Active"
+  }
+]
