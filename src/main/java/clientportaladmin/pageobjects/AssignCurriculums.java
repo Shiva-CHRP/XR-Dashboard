@@ -18,9 +18,38 @@ public class AssignCurriculums extends AbstractComponent {
 	@FindBy(xpath = "//button[.//span[normalize-space()='Assign Curriculums']]")
 	private WebElement assignCurriculumsButton;
 
-	@StepName("Click Assign Curriculums")
+	@FindBy(xpath = "//h1[contains(.,'Assign Curriculums') or contains(.,'Curriculum Assignment')] | //header//h1")
+	private WebElement pageHeaderTitle;
+
+	@FindBy(xpath = "//input[contains(@placeholder,'Search') or contains(@placeholder,'search')]")
+	private WebElement searchInput;
+
+	@StepName("Click Assign Curriculums from Sidebar")
 	public void clickAssignCurriculums() {
+		waitUtils.waitForClickable(assignCurriculumsButton);
 		assignCurriculumsButton.click();
 	}
 
+	@StepName("Verify Assign Curriculums Page is Loaded")
+	public boolean isAssignCurriculumsLoaded() {
+		waitUtils.waitForVisibility(pageHeaderTitle);
+		return pageHeaderTitle.isDisplayed();
+	}
+
+	@StepName("Verify Assign Curriculums Page is Loaded")
+	public boolean isAssignCurriculumsPageLoaded() {
+		return isAssignCurriculumsLoaded();
+	}
+
+	@StepName("Search Trainers / Managers")
+	public void searchTrainers(String query) {
+		waitUtils.waitForVisibility(searchInput);
+		searchInput.clear();
+		searchInput.sendKeys(query);
+	}
+
+	@StepName("Search Managers")
+	public void searchManagers(String query) {
+		searchTrainers(query);
+	}
 }

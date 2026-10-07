@@ -49,26 +49,34 @@ public class ClientLogin extends AbstractComponent {
 
 	@StepName("Enter Organisation Code")
 	public void enterOrganisationCode(String organisationCodeValue) {
+		waitUtils.waitForVisibility(organisationCode);
+		organisationCode.clear();
 		organisationCode.sendKeys(organisationCodeValue);
 	}
 
 	@StepName("Click Continue")
 	public void clickContinue() {
+		waitUtils.waitForClickable(continueButton);
 		continueButton.click();
 	}
 
 	@StepName("Enter Email Address")
 	public void enterEmailAddress(String email) {
+		waitUtils.waitForVisibility(emailAddress);
+		emailAddress.clear();
 		emailAddress.sendKeys(email);
 	}
 
 	@StepName("Enter Password")
 	public void enterPassword(String passwordValue) {
+		waitUtils.waitForVisibility(password);
+		password.clear();
 		password.sendKeys(passwordValue);
 	}
 
 	@StepName("Click Sign In")
 	public void clickSignIn() {
+		waitUtils.waitForClickable(signInButton);
 		signInButton.click();
 	}
 

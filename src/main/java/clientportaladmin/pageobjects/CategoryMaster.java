@@ -1,0 +1,58 @@
+package clientportaladmin.pageobjects;
+
+import java.util.List;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+
+import superadmin.abstractcomponent.AbstractComponent;
+import superadmin.annotations.StepName;
+
+public class CategoryMaster extends AbstractComponent {
+
+	public CategoryMaster(WebDriver driver) {
+		super(driver);
+		PageFactory.initElements(driver, this);
+	}
+
+	@FindBy(xpath = "//button[.//span[normalize-space()='Category']]")
+	private WebElement categoryMasterNavButton;
+
+	@FindBy(xpath = "//h1[contains(.,'Category')] | //header//h1")
+	private WebElement pageHeaderTitle;
+
+	@FindBy(xpath = "//input[contains(@placeholder,'Search') or contains(@placeholder,'search')]")
+	private WebElement searchInput;
+
+	@FindBy(xpath = "//button[contains(normalize-space(),'Create Category') or contains(normalize-space(),'Add Category')]")
+	private WebElement createCategoryButton;
+
+	@FindBy(xpath = "//table//tbody//tr")
+	private List<WebElement> categoryRows;
+
+	@StepName("Click Category Master from Sidebar")
+	public void clickCategoryMaster() {
+		waitUtils.waitForClickable(categoryMasterNavButton);
+		categoryMasterNavButton.click();
+	}
+
+	@StepName("Verify Category Master Page is Loaded")
+	public boolean isCategoryMasterPageLoaded() {
+		waitUtils.waitForVisibility(pageHeaderTitle);
+		return pageHeaderTitle.isDisplayed();
+	}
+
+	@StepName("Search Category")
+	public void searchCategory(String query) {
+		waitUtils.waitForVisibility(searchInput);
+		searchInput.clear();
+		searchInput.sendKeys(query);
+	}
+
+	@StepName("Get Category Rows Count")
+	public int getCategoryRowsCount() {
+		return categoryRows.size();
+	}
+}

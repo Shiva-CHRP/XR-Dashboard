@@ -8,6 +8,7 @@ import org.testng.asserts.SoftAssert;
 
 import superadmin.annotations.TestInfo;
 import superadmin.listener.Listener;
+import superadmin.pageobjects.OrgApplications;
 import superadmin.testcomponents.BaseTest;
 import superadmin.utils.ConfigReader;
 
@@ -150,10 +151,47 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 5. DEVELOPERS FLEET
+	// 5. ORGANISATION APPLICATIONS (PROSPECTIVE CLIENT REGISTRATIONS)
 	// =========================================================================
 
 	@Test(priority = 5, dependsOnMethods = {"Verify_Manage_Organization_All_Tabs"})
+	@TestInfo(module = "Sanity - Applications", description = "Verify Organisation Applications Screen, Public Link, Tabs, Search & Review Modal", priority = "High")
+	public void Verify_Org_Applications_Screen_And_Fields() {
+		orgApplications.clickApplications();
+		softAssert.assertTrue(orgApplications.isPageLoaded(), "Organisation Applications screen heading and route should be loaded");
+
+		// 1. Verify Client Application Public Registration Link Card
+		String linkVal = orgApplications.getApplicationLinkValue();
+		softAssert.assertTrue(linkVal != null && linkVal.contains("/register-organisation"), "Client application link should contain register-organisation route");
+		orgApplications.clickCopyLink();
+
+		// 2. Verify StatCard Tabs Filtering
+		orgApplications.filterByTab("Pending review");
+		orgApplications.filterByTab("Approved");
+		orgApplications.filterByTab("Rejected");
+		orgApplications.filterByTab("All applications");
+
+		// 3. Search and Clear non-destructively
+		orgApplications.searchApplications("test");
+		orgApplications.clearSearch();
+
+		// 4. Inspect Review Detail Modal non-destructively if any application is present
+		boolean openedModal = orgApplications.viewFirstApplicationIfAvailable();
+		if (openedModal) {
+			orgApplications.closeDetailModalIfOpen();
+		}
+
+		// 5. Refresh Action
+		orgApplications.clickRefresh();
+		softAssert.assertTrue(orgApplications.isPageLoaded(), "Organisation Applications listing should remain loaded after refresh");
+		softAssert.assertAll();
+	}
+
+	// =========================================================================
+	// 6. DEVELOPERS FLEET
+	// =========================================================================
+
+	@Test(priority = 6, dependsOnMethods = {"Verify_Org_Applications_Screen_And_Fields"})
 	@TestInfo(module = "Sanity - Developers", description = "Verify Developers Fleet Screen, Search, Create, View & Edit Modals", priority = "High")
 	public void Verify_Developers_Screen_And_Fields() {
 		developers.clickDevelopers();
@@ -192,10 +230,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 6. MODULE REVIEW QUEUE
+	// 7. MODULE REVIEW QUEUE
 	// =========================================================================
 
-	@Test(priority = 6, dependsOnMethods = {"Verify_Developers_Screen_And_Fields"})
+	@Test(priority = 7, dependsOnMethods = {"Verify_Developers_Screen_And_Fields"})
 	@TestInfo(module = "Sanity - Review Queue", description = "Verify Module Review Queue Screen & View Detail", priority = "Medium")
 	public void Verify_Module_Review_Queue_Screen_And_Filters() {
 		reviewQueue.clickReviewQueue();
@@ -211,10 +249,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 7. MODULE CATALOGUE
+	// 8. MODULE CATALOGUE
 	// =========================================================================
 
-	@Test(priority = 7, dependsOnMethods = {"Verify_Module_Review_Queue_Screen_And_Filters"})
+	@Test(priority = 8, dependsOnMethods = {"Verify_Module_Review_Queue_Screen_And_Filters"})
 	@TestInfo(module = "Sanity - Module Catalogue", description = "Verify Module Catalogue Screen, Views, Manage Access Modal & View Detail", priority = "Medium")
 	public void Verify_Module_Catalogue_Screen_And_Fields() {
 		moduleCatalogue.clickModuleCatalogue();
@@ -246,10 +284,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 8. CURRICULUM CATALOGUE
+	// 9. CURRICULUM CATALOGUE
 	// =========================================================================
 
-	@Test(priority = 8, dependsOnMethods = {"Verify_Module_Catalogue_Screen_And_Fields"})
+	@Test(priority = 9, dependsOnMethods = {"Verify_Module_Catalogue_Screen_And_Fields"})
 	@TestInfo(module = "Sanity - Curriculum Catalogue", description = "Verify Curriculum Catalogue Screen, Create, View Detail & Edit Form", priority = "High")
 	public void Verify_Curriculum_Catalogue_Screen_And_Fields() {
 		curriculumCatalogue.clickCurriculumCatalogue();
@@ -279,10 +317,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 9. QUESTION BANK
+	// 10. QUESTION BANK
 	// =========================================================================
 
-	@Test(priority = 9, dependsOnMethods = {"Verify_Curriculum_Catalogue_Screen_And_Fields"})
+	@Test(priority = 10, dependsOnMethods = {"Verify_Curriculum_Catalogue_Screen_And_Fields"})
 	@TestInfo(module = "Sanity - Question Bank", description = "Verify Question Bank Screen, Create, View Expand & Edit Form", priority = "Medium")
 	public void Verify_Question_Bank_Screen_And_Fields() {
 		questionBank.clickQuestionBank();
@@ -308,10 +346,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 10. ASSESSMENTS
+	// 11. ASSESSMENTS
 	// =========================================================================
 
-	@Test(priority = 10, dependsOnMethods = {"Verify_Question_Bank_Screen_And_Fields"})
+	@Test(priority = 11, dependsOnMethods = {"Verify_Question_Bank_Screen_And_Fields"})
 	@TestInfo(module = "Sanity - Assessments", description = "Verify Assessments Screen, Create, View Detail & Edit Form", priority = "Medium")
 	public void Verify_Assessments_Screen_And_Fields() {
 		assessments.clickAssessments();
@@ -341,10 +379,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 11. LICENSE MANAGEMENT
+	// 12. LICENSE MANAGEMENT
 	// =========================================================================
 
-	@Test(priority = 11, dependsOnMethods = {"Verify_Assessments_Screen_And_Fields"})
+	@Test(priority = 12, dependsOnMethods = {"Verify_Assessments_Screen_And_Fields"})
 	@TestInfo(module = "Sanity - License Management", description = "Verify License Management Screen, Search & Password Verification Modal", priority = "High")
 	public void Verify_License_Management_Screen_And_Fields() {
 		license.clickLicense();
@@ -364,10 +402,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 12. MDM DEVICES
+	// 13. MDM DEVICES
 	// =========================================================================
 
-	@Test(priority = 12, dependsOnMethods = {"Verify_License_Management_Screen_And_Fields"})
+	@Test(priority = 13, dependsOnMethods = {"Verify_License_Management_Screen_And_Fields"})
 	@TestInfo(module = "Sanity - MDM Devices", description = "Verify MDM Devices Screen, Sub-Tabs & Edit Device Limit Modal", priority = "Medium")
 	public void Verify_MDM_Devices_Screen_And_Fields() {
 		mdmDevices.clickMDMDevices();
@@ -390,10 +428,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 13. ORGANIZATION SYNC CENTER
+	// 14. ORGANIZATION SYNC CENTER
 	// =========================================================================
 
-	@Test(priority = 13, dependsOnMethods = {"Verify_MDM_Devices_Screen_And_Fields"})
+	@Test(priority = 14, dependsOnMethods = {"Verify_MDM_Devices_Screen_And_Fields"})
 	@TestInfo(module = "Sanity - Organization Sync", description = "Verify Organization Sync Center Screen & Detail View", priority = "Medium")
 	public void Verify_Organization_Sync_Center_Screen_And_Fields() {
 		organizationSync.clickOrganizationSync();
@@ -417,10 +455,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 14. OFFLINE PORTAL RELEASES
+	// 15. OFFLINE PORTAL RELEASES
 	// =========================================================================
 
-	@Test(priority = 14, dependsOnMethods = {"Verify_Organization_Sync_Center_Screen_And_Fields"})
+	@Test(priority = 15, dependsOnMethods = {"Verify_Organization_Sync_Center_Screen_And_Fields"})
 	@TestInfo(module = "Sanity - Offline Releases", description = "Verify Offline Portal Releases Screen, Upload Modal & Release Notes", priority = "Medium")
 	public void Verify_Offline_Portal_Releases_Screen_And_Fields() {
 		offlinePortalRelease.clickOfflinePortalRelease();
@@ -443,10 +481,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 15. SYSTEM HEALTH
+	// 16. SYSTEM HEALTH
 	// =========================================================================
 
-	@Test(priority = 15, dependsOnMethods = {"Verify_Offline_Portal_Releases_Screen_And_Fields"})
+	@Test(priority = 16, dependsOnMethods = {"Verify_Offline_Portal_Releases_Screen_And_Fields"})
 	@TestInfo(module = "Sanity - System Health", description = "Verify System Health Screen & Services", priority = "High")
 	public void Verify_System_Health_Screen_And_Meters() {
 		systemHealth.clickSystemHealth();
@@ -457,10 +495,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 16. AUDIT LOGS
+	// 17. AUDIT LOGS
 	// =========================================================================
 
-	@Test(priority = 16, dependsOnMethods = {"Verify_System_Health_Screen_And_Meters"})
+	@Test(priority = 17, dependsOnMethods = {"Verify_System_Health_Screen_And_Meters"})
 	@TestInfo(module = "Sanity - Audit Logs", description = "Verify Audit Logs Screen, Notices Modal & Row Inspection", priority = "Medium")
 	public void Verify_Audit_Logs_Screen_And_Filters() {
 		auditLog.clickAuditLog();
@@ -481,10 +519,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 17. SUPPORT CENTER
+	// 18. SUPPORT CENTER
 	// =========================================================================
 
-	@Test(priority = 17, dependsOnMethods = {"Verify_Audit_Logs_Screen_And_Filters"})
+	@Test(priority = 18, dependsOnMethods = {"Verify_Audit_Logs_Screen_And_Filters"})
 	@TestInfo(module = "Sanity - Support Center", description = "Verify Support Center Screen, Tabs & Ticket Detail View", priority = "Medium")
 	public void Verify_Support_Center_Screen_And_Fields() {
 		support.clickSupport();
@@ -511,10 +549,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 18. ROLE SWITCH TO VR DEVELOPER
+	// 19. ROLE SWITCH TO VR DEVELOPER
 	// =========================================================================
 
-	@Test(priority = 18, dependsOnMethods = {"Verify_Support_Center_Screen_And_Fields"})
+	@Test(priority = 19, dependsOnMethods = {"Verify_Support_Center_Screen_And_Fields"})
 	@TestInfo(module = "Sanity - Role Switch", description = "Switch Role to VR Developer", priority = "Critical")
 	public void Verify_Role_Switch_To_VR_Developer() {
 		loginPage.switchToVRDeveloper();
@@ -523,10 +561,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 19. VR DEVELOPER DASHBOARD
+	// 20. VR DEVELOPER DASHBOARD
 	// =========================================================================
 
-	@Test(priority = 19, dependsOnMethods = {"Verify_Role_Switch_To_VR_Developer"})
+	@Test(priority = 20, dependsOnMethods = {"Verify_Role_Switch_To_VR_Developer"})
 	@TestInfo(module = "Sanity - Developer Dashboard", description = "Verify VR Developer Dashboard Screen & Stats", priority = "High")
 	public void Verify_VR_Developer_Dashboard_Screen() {
 		developerDashboard.clickDeveloperDashboard();
@@ -535,10 +573,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 20. VR DEVELOPER SUBMISSION TRACKER
+	// 21. VR DEVELOPER SUBMISSION TRACKER
 	// =========================================================================
 
-	@Test(priority = 20, dependsOnMethods = {"Verify_VR_Developer_Dashboard_Screen"})
+	@Test(priority = 21, dependsOnMethods = {"Verify_VR_Developer_Dashboard_Screen"})
 	@TestInfo(module = "Sanity - Submission Tracker", description = "Verify VR Developer Submission Tracker Screen & View Detail", priority = "Medium")
 	public void Verify_VR_Developer_Submission_Tracker_Screen() {
 		submissionTracker.clickSubmissionTracker();
@@ -555,10 +593,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 21. VR DEVELOPER MY ORGANISATIONS
+	// 22. VR DEVELOPER MY ORGANISATIONS
 	// =========================================================================
 
-	@Test(priority = 21, dependsOnMethods = {"Verify_VR_Developer_Submission_Tracker_Screen"})
+	@Test(priority = 22, dependsOnMethods = {"Verify_VR_Developer_Submission_Tracker_Screen"})
 	@TestInfo(module = "Sanity - Developer Organisations", description = "Verify VR Developer My Organisations Screen, View Modes, Manage Modules & Upload Wizard", priority = "Medium")
 	public void Verify_VR_Developer_Organisations_Screen() {
 		developerOrganisations.clickDeveloperOrganisations();
@@ -587,10 +625,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 22. VR DEVELOPER PROFILE
+	// 23. VR DEVELOPER PROFILE
 	// =========================================================================
 
-	@Test(priority = 22, dependsOnMethods = {"Verify_VR_Developer_Organisations_Screen"})
+	@Test(priority = 23, dependsOnMethods = {"Verify_VR_Developer_Organisations_Screen"})
 	@TestInfo(module = "Sanity - Developer Profile", description = "Verify VR Developer Profile Screen", priority = "Medium")
 	public void Verify_VR_Developer_Profile_Screen() {
 		developerProfile.clickDeveloperProfile();
@@ -599,10 +637,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 23. SWITCH BACK TO SUPER ADMIN & LOGOUT
+	// 24. SWITCH BACK TO SUPER ADMIN & LOGOUT
 	// =========================================================================
 
-	@Test(priority = 23, dependsOnMethods = {"Verify_VR_Developer_Profile_Screen"})
+	@Test(priority = 24, dependsOnMethods = {"Verify_VR_Developer_Profile_Screen"})
 	@TestInfo(module = "Sanity - Logout", description = "Switch Back to Super Admin and Sign Out", priority = "Critical")
 	public void Switch_Back_To_Super_Admin_And_Logout() throws InterruptedException {
 		loginPage.switchToSuperAdmin();

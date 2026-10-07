@@ -16,11 +16,38 @@ public class RoleAssignment extends AbstractComponent {
 	}
 
 	@FindBy(xpath = "//button[.//span[normalize-space()='Role Assignment']]")
-	private WebElement roleAssignmentButton;
+	private WebElement roleAssignmentNavButton;
 
-	@StepName("Click Role Assignment")
+	@FindBy(xpath = "//h1[contains(.,'Role Assignment') or contains(.,'Roles')] | //header//h1")
+	private WebElement pageHeaderTitle;
+
+	@FindBy(xpath = "//input[contains(@placeholder,'Search') or contains(@placeholder,'search')]")
+	private WebElement searchInput;
+
+	@FindBy(xpath = "//table//tbody//tr")
+	private java.util.List<WebElement> userRoleRows;
+
+	@StepName("Click Role Assignment from Sidebar")
 	public void clickRoleAssignment() {
-		roleAssignmentButton.click();
+		waitUtils.waitForClickable(roleAssignmentNavButton);
+		roleAssignmentNavButton.click();
 	}
 
+	@StepName("Verify Role Assignment Page is Loaded")
+	public boolean isRoleAssignmentLoaded() {
+		waitUtils.waitForVisibility(pageHeaderTitle);
+		return pageHeaderTitle.isDisplayed();
+	}
+
+	@StepName("Search Role Assignment")
+	public void searchRoleAssignment(String query) {
+		waitUtils.waitForVisibility(searchInput);
+		searchInput.clear();
+		searchInput.sendKeys(query);
+	}
+
+	@StepName("Get User Role Rows Count")
+	public int getUserRoleRowsCount() {
+		return userRoleRows.size();
+	}
 }

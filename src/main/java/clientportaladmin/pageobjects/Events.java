@@ -15,12 +15,74 @@ public class Events extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Sessions']]")
-	private WebElement sessionsButton;
+	@FindBy(xpath = "//button[.//span[normalize-space()='Events'] or .//span[normalize-space()='Sessions']]")
+	private WebElement eventsNavButton;
 
-	@StepName("Click Sessions")
-	public void clickSessions() {
-		sessionsButton.click();
+	@FindBy(xpath = "//h1[normalize-space()='Events'] | //header//h1[contains(.,'Event')]")
+	private WebElement pageHeaderTitle;
+
+	@FindBy(xpath = "//button[normalize-space()='Events']")
+	private WebElement eventsOuterTab;
+
+	@FindBy(xpath = "//button[normalize-space()='Results']")
+	private WebElement resultsOuterTab;
+
+	@FindBy(xpath = "//button[contains(normalize-space(),'Create Event')] | //button[contains(normalize-space(),'Create Session')]")
+	private WebElement createEventButton;
+
+	@FindBy(xpath = "//input[contains(@placeholder,'Search') or contains(@placeholder,'search')]")
+	private WebElement searchInput;
+
+	@FindBy(xpath = "//button[contains(normalize-space(),'Export')]")
+	private WebElement exportButton;
+
+	@FindBy(xpath = "//table//tbody//tr")
+	private java.util.List<WebElement> eventRows;
+
+	@StepName("Click Events from Sidebar")
+	public void clickEvents() {
+		waitUtils.waitForClickable(eventsNavButton);
+		eventsNavButton.click();
 	}
 
+	@StepName("Click Sessions (Backward Compatibility)")
+	public void clickSessions() {
+		clickEvents();
+	}
+
+	@StepName("Verify Events Page is Loaded")
+	public boolean isEventsPageLoaded() {
+		waitUtils.waitForVisibility(pageHeaderTitle);
+		return pageHeaderTitle.isDisplayed();
+	}
+
+	@StepName("Switch to Events Tab")
+	public void switchToEventsTab() {
+		waitUtils.waitForClickable(eventsOuterTab);
+		eventsOuterTab.click();
+	}
+
+	@StepName("Switch to Results Tab")
+	public void switchToResultsTab() {
+		waitUtils.waitForClickable(resultsOuterTab);
+		resultsOuterTab.click();
+	}
+
+	@StepName("Click Create Event")
+	public void clickCreateEvent() {
+		waitUtils.waitForClickable(createEventButton);
+		createEventButton.click();
+	}
+
+	@StepName("Search Events")
+	public void searchEvents(String query) {
+		waitUtils.waitForVisibility(searchInput);
+		searchInput.clear();
+		searchInput.sendKeys(query);
+	}
+
+	@StepName("Get Event Rows Count")
+	public int getEventRowsCount() {
+		return eventRows.size();
+	}
 }

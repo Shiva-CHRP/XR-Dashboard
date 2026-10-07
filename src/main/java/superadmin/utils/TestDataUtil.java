@@ -26,4 +26,20 @@ public class TestDataUtil {
 	public static String getRandomDomain() {
 		return "portal" + System.currentTimeMillis() + ".xrdashboard.com";
 	}
+
+	public static String getRandomEmployeeId() {
+		return "EMP" + (10000 + random.nextInt(90000));
+	}
+
+	public static String getRandomTicketSubject() {
+		return "Sanity Ticket " + System.currentTimeMillis();
+	}
+
+	public static String getRandomEventName() {
+		return "Sanity Event " + System.currentTimeMillis();
+	}
+
+	public static String getRandomMasterName(String prefix) {
+		return prefix + "_" + System.currentTimeMillis();
+	}
 }

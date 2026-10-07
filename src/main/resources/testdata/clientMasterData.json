@@ -1,0 +1,26 @@
+[
+  {
+    "masterType": "Department",
+    "name": "Heavy Machinery Operations",
+    "description": "Earthmoving and drilling machinery maintenance operations.",
+    "code": "DEP-HMO"
+  },
+  {
+    "masterType": "Designation",
+    "name": "Senior Safety Auditor",
+    "description": "Responsible for field inspections and VR safety audit compliance.",
+    "code": "DES-SSA"
+  },
+  {
+    "masterType": "Contractor",
+    "name": "Zenith Technical Solutions",
+    "description": "Third-party technical manpower provider for power plants.",
+    "code": "CON-ZTS"
+  },
+  {
+    "masterType": "Plant",
+    "name": "North Mining Sector Area 4",
+    "description": "Underground mining sector shaft and processing area.",
+    "code": "PLT-NMS4"
+  }
+]

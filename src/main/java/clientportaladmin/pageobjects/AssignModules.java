@@ -18,9 +18,38 @@ public class AssignModules extends AbstractComponent {
 	@FindBy(xpath = "//button[.//span[normalize-space()='Assign Modules']]")
 	private WebElement assignModulesButton;
 
-	@StepName("Click Assign Modules")
+	@FindBy(xpath = "//h1[contains(.,'Assign Modules') or contains(.,'Module Assignment')] | //header//h1")
+	private WebElement pageHeaderTitle;
+
+	@FindBy(xpath = "//input[contains(@placeholder,'Search') or contains(@placeholder,'search')]")
+	private WebElement searchInput;
+
+	@StepName("Click Assign Modules from Sidebar")
 	public void clickAssignModules() {
+		waitUtils.waitForClickable(assignModulesButton);
 		assignModulesButton.click();
 	}
 
+	@StepName("Verify Assign Modules Page is Loaded")
+	public boolean isAssignModulesLoaded() {
+		waitUtils.waitForVisibility(pageHeaderTitle);
+		return pageHeaderTitle.isDisplayed();
+	}
+
+	@StepName("Verify Assign Modules Page is Loaded")
+	public boolean isAssignModulesPageLoaded() {
+		return isAssignModulesLoaded();
+	}
+
+	@StepName("Search Trainers / Managers")
+	public void searchTrainers(String query) {
+		waitUtils.waitForVisibility(searchInput);
+		searchInput.clear();
+		searchInput.sendKeys(query);
+	}
+
+	@StepName("Search Managers")
+	public void searchManagers(String query) {
+		searchTrainers(query);
+	}
 }

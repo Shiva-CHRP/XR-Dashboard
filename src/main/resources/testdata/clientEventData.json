@@ -1,0 +1,22 @@
+[
+  {
+    "eventName": "VR Electrical Hazard Safety Training",
+    "moduleName": "High Voltage Substation Safety",
+    "scheduledDate": "2026-10-15",
+    "scheduledTime": "10:00 AM",
+    "trainerName": "Priya Sen",
+    "location": "Simulation Lab 2",
+    "description": "Mandatory quarterly simulation training for high-voltage maintenance staff.",
+    "status": "Scheduled"
+  },
+  {
+    "eventName": "Confined Space Rescue Drill",
+    "moduleName": "Confined Space Entry & Emergency Egress",
+    "scheduledDate": "2026-10-18",
+    "scheduledTime": "02:30 PM",
+    "trainerName": "Rohan Verma",
+    "location": "VR Training Zone 1",
+    "description": "Hands-on virtual simulation drill for underground tank egress and rescue protocols.",
+    "status": "Draft"
+  }
+]

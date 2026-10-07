@@ -1,0 +1,16 @@
+[
+  {
+    "subject": "VR Headset calibration issue during mining drill",
+    "category": "Hardware & Devices",
+    "priority": "High",
+    "description": "Meta Quest 3 headset shows tracking drift in Underground Coal Mining simulation.",
+    "status": "Active"
+  },
+  {
+    "subject": "Certificate PDF download formatting discrepancy",
+    "category": "Certificates",
+    "priority": "Medium",
+    "description": "QR code alignment on generated safety certificate template overlaps user designation field.",
+    "status": "In Progress"
+  }
+]

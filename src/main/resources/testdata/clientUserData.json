@@ -1,0 +1,24 @@
+[
+  {
+    "fullName": "Aarav Sharma",
+    "employeeId": "EMP-IND-1001",
+    "email": "aarav.sharma@automationtest.com",
+    "role": "Employee",
+    "department": "Safety & Operations",
+    "designation": "Safety Officer",
+    "contractorName": "",
+    "employeeType": "internal",
+    "status": "Active"
+  },
+  {
+    "fullName": "Vikram Patel",
+    "employeeId": "CON-IND-2001",
+    "email": "vikram.patel@contractorqa.com",
+    "role": "Contractor Worker",
+    "department": "Plant Maintenance",
+    "designation": "Mechanical Technician",
+    "contractorName": "Apex Infrastructure Ltd",
+    "employeeType": "contractor",
+    "status": "Active"
+  }
+]

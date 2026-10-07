@@ -18,6 +18,10 @@ import superadmin.pojo.LicenseData;
 import superadmin.pojo.OrganizationData;
 import superadmin.pojo.QuestionBankData;
 import superadmin.pojo.SupportTicketData;
+import clientportaladmin.pojo.ClientUserData;
+import clientportaladmin.pojo.ClientEventData;
+import clientportaladmin.pojo.ClientSupportTicketData;
+import clientportaladmin.pojo.ClientMasterData;
 
 public class JsonReader {
 
@@ -61,6 +65,26 @@ public class JsonReader {
 	public static List<SupportTicketData> getSupportTicketData(String jsonFilePath) throws IOException {
 		String jsonContent = FileUtils.readFileToString(new File(jsonFilePath), StandardCharsets.UTF_8);
 		return mapper.readValue(jsonContent, new TypeReference<List<SupportTicketData>>() {});
+	}
+
+	public static List<ClientUserData> getClientUserData(String jsonFilePath) throws IOException {
+		String jsonContent = FileUtils.readFileToString(new File(jsonFilePath), StandardCharsets.UTF_8);
+		return mapper.readValue(jsonContent, new TypeReference<List<ClientUserData>>() {});
+	}
+
+	public static List<ClientEventData> getClientEventData(String jsonFilePath) throws IOException {
+		String jsonContent = FileUtils.readFileToString(new File(jsonFilePath), StandardCharsets.UTF_8);
+		return mapper.readValue(jsonContent, new TypeReference<List<ClientEventData>>() {});
+	}
+
+	public static List<ClientSupportTicketData> getClientSupportTicketData(String jsonFilePath) throws IOException {
+		String jsonContent = FileUtils.readFileToString(new File(jsonFilePath), StandardCharsets.UTF_8);
+		return mapper.readValue(jsonContent, new TypeReference<List<ClientSupportTicketData>>() {});
+	}
+
+	public static List<ClientMasterData> getClientMasterData(String jsonFilePath) throws IOException {
+		String jsonContent = FileUtils.readFileToString(new File(jsonFilePath), StandardCharsets.UTF_8);
+		return mapper.readValue(jsonContent, new TypeReference<List<ClientMasterData>>() {});
 	}
 
 	public static <T> List<T> getJsonData(String jsonFilePath, TypeReference<List<T>> typeReference) throws IOException {

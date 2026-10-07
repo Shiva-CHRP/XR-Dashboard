@@ -15,12 +15,39 @@ public class Overview extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Overview']]")
-	private WebElement overviewButton;
+	@FindBy(xpath = "//button[.//span[normalize-space()='Overview'] or .//span[normalize-space()='Dashboard']]")
+	private WebElement overviewNavButton;
 
-	@StepName("Click Overview")
+	@FindBy(xpath = "//h1[contains(.,'Overview') or contains(.,'Dashboard')] | //header//h1")
+	private WebElement pageHeaderTitle;
+
+	@FindBy(xpath = "//div[contains(@class,'grid')]//div[contains(@class,'card') or contains(@class,'portal-card')]")
+	private java.util.List<WebElement> kpiCards;
+
+	@StepName("Click Overview from Sidebar")
 	public void clickOverview() {
-		overviewButton.click();
+		waitUtils.waitForClickable(overviewNavButton);
+		overviewNavButton.click();
 	}
 
+	@StepName("Verify Overview Page is Loaded")
+	public boolean isOverviewLoaded() {
+		waitUtils.waitForVisibility(pageHeaderTitle);
+		return pageHeaderTitle.isDisplayed();
+	}
+
+	@StepName("Verify Overview Page is Loaded")
+	public boolean isOverviewPageLoaded() {
+		return isOverviewLoaded();
+	}
+
+	@StepName("Get KPI Cards Count")
+	public int getKpiCardsCount() {
+		return kpiCards.size();
+	}
+
+	@StepName("Get KPI Cards Count")
+	public int getKPICardsCount() {
+		return getKpiCardsCount();
+	}
 }

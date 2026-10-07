@@ -16,10 +16,29 @@ public class Synchronization extends AbstractComponent {
 	}
 
 	@FindBy(xpath = "//button[.//span[normalize-space()='Synchronization']]")
-	private WebElement synchronizationButton;
+	private WebElement synchronizationNavButton;
 
-	@StepName("Click Synchronization")
+	@FindBy(xpath = "//h1[contains(.,'Synchronization') or contains(.,'Sync')] | //header//h1")
+	private WebElement pageHeaderTitle;
+
+	@FindBy(xpath = "//button[contains(normalize-space(),'Sync Now') or contains(normalize-space(),'Trigger Sync') or contains(.,'Sync')]")
+	private WebElement triggerSyncButton;
+
+	@StepName("Click Synchronization from Sidebar")
 	public void clickSynchronization() {
-		synchronizationButton.click();
+		waitUtils.waitForClickable(synchronizationNavButton);
+		synchronizationNavButton.click();
+	}
+
+	@StepName("Verify Synchronization Page is Loaded")
+	public boolean isSynchronizationPageLoaded() {
+		waitUtils.waitForVisibility(pageHeaderTitle);
+		return pageHeaderTitle.isDisplayed();
+	}
+
+	@StepName("Click Trigger Sync Now")
+	public void clickTriggerSync() {
+		waitUtils.waitForClickable(triggerSyncButton);
+		triggerSyncButton.click();
 	}
 }

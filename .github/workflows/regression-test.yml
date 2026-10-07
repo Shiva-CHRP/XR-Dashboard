@@ -12,15 +12,36 @@ on:
         options:
           - stage
           - prod
+      portal:
+        description: 'Select Target Portal / Suite'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - client
+          - superadmin
       target_url:
-        description: 'Custom Application URL (optional override)'
+        description: 'Custom SuperAdmin URL (optional override)'
+        required: false
+        default: ''
+        type: string
+      client_url:
+        description: 'Custom Client Portal URL (optional override)'
         required: false
         default: ''
         type: string
 
-  # External deployment webhook trigger (e.g., DevOps manual deployment script / curl)
+  # External deployment webhook trigger (e.g., DevOps deployment scripts / CD webhook)
   repository_dispatch:
-    types: [ deploy_stage, deploy_prod, post_deployment_sanity ]
+    types: 
+      - deploy_stage
+      - deploy_prod
+      - post_deployment_sanity
+      - deploy_client_stage
+      - deploy_client_prod
+      - deploy_superadmin_stage
+      - deploy_superadmin_prod
 
 jobs:
   deployment-sanity:
@@ -38,29 +59,62 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Determine Target Environment & URL
+    - name: Determine Target Environment, Portal & Suite
       id: env_config
       run: |
         # 1. Check if manually dispatched via workflow_dispatch
         if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
           TARGET_ENV="${{ github.event.inputs.environment }}"
+          TARGET_PORTAL="${{ github.event.inputs.portal }}"
           CUSTOM_URL="${{ github.event.inputs.target_url }}"
+          CUSTOM_CLIENT_URL="${{ github.event.inputs.client_url }}"
         # 2. Check if triggered by external DevOps deployment webhook
         elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
-          if [ "${{ github.event.action }}" = "deploy_prod" ]; then
+          ACTION="${{ github.event.action }}"
+          
+          # Environment resolution
+          if [[ "$ACTION" =~ "prod" ]]; then
             TARGET_ENV="prod"
           else
             TARGET_ENV="stage"
           fi
-          CUSTOM_URL="${{ github.event.client_payload.url }}"
+
+          # Portal resolution
+          if [[ "$ACTION" =~ "client" ]]; then
+            TARGET_PORTAL="client"
+          elif [[ "$ACTION" =~ "superadmin" ]]; then
+            TARGET_PORTAL="superadmin"
+          else
+            TARGET_PORTAL="${{ github.event.client_payload.portal || 'all' }}"
+          fi
+
+          CUSTOM_URL="${{ github.event.client_payload.url || '' }}"
+          CUSTOM_CLIENT_URL="${{ github.event.client_payload.client_url || '' }}"
         else
           TARGET_ENV="stage"
+          TARGET_PORTAL="all"
           CUSTOM_URL=""
+          CUSTOM_CLIENT_URL=""
         fi
 
-        echo "Selected Environment: $TARGET_ENV"
+        # Determine Suite XML File
+        if [ "$TARGET_PORTAL" = "client" ]; then
+          SUITE_FILE="src/test/resources/client-deployment-sanity.xml"
+        elif [ "$TARGET_PORTAL" = "superadmin" ]; then
+          SUITE_FILE="src/test/resources/deployment-sanity.xml"
+        else
+          SUITE_FILE="src/test/resources/all-deployment-sanity.xml"
+        fi
+
+        echo "Selected Environment : $TARGET_ENV"
+        echo "Selected Portal      : $TARGET_PORTAL"
+        echo "Selected Suite File  : $SUITE_FILE"
+
         echo "target_env=$TARGET_ENV" >> $GITHUB_OUTPUT
+        echo "target_portal=$TARGET_PORTAL" >> $GITHUB_OUTPUT
+        echo "suite_file=$SUITE_FILE" >> $GITHUB_OUTPUT
         echo "custom_url=$CUSTOM_URL" >> $GITHUB_OUTPUT
+        echo "custom_client_url=$CUSTOM_CLIENT_URL" >> $GITHUB_OUTPUT
 
     - name: Run Deployment Sanity Suite via Maven
       env:
@@ -68,22 +122,42 @@ jobs:
         STAGE_PASSWORD: ${{ secrets.STAGE_PASSWORD }}
         PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
         PROD_PASSWORD: ${{ secrets.PROD_PASSWORD }}
+        STAGE_CLIENT_ORG_CODE: ${{ secrets.STAGE_CLIENT_ORG_CODE }}
+        STAGE_CLIENT_USERNAME: ${{ secrets.STAGE_CLIENT_USERNAME }}
+        STAGE_CLIENT_PASSWORD: ${{ secrets.STAGE_CLIENT_PASSWORD }}
+        PROD_CLIENT_ORG_CODE: ${{ secrets.PROD_CLIENT_ORG_CODE }}
+        PROD_CLIENT_USERNAME: ${{ secrets.PROD_CLIENT_USERNAME }}
+        PROD_CLIENT_PASSWORD: ${{ secrets.PROD_CLIENT_PASSWORD }}
+        CLIENT_ORG_CODE: ${{ secrets.CLIENT_ORG_CODE }}
+        CLIENT_USERNAME: ${{ secrets.CLIENT_USERNAME }}
+        CLIENT_PASSWORD: ${{ secrets.CLIENT_PASSWORD }}
       run: |
         TARGET_ENV="${{ steps.env_config.outputs.target_env }}"
+        TARGET_PORTAL="${{ steps.env_config.outputs.target_portal }}"
+        SUITE_FILE="${{ steps.env_config.outputs.suite_file }}"
         CUSTOM_URL="${{ steps.env_config.outputs.custom_url }}"
+        CUSTOM_CLIENT_URL="${{ steps.env_config.outputs.custom_client_url }}"
 
-        echo "Executing Deployment Sanity Suite against environment: $TARGET_ENV"
+        echo "Executing Deployment Sanity Suite [$TARGET_PORTAL] against environment: $TARGET_ENV using suite: $SUITE_FILE"
+
+        MVN_ARGS="-DsuiteXmlFile=$SUITE_FILE -Denv=$TARGET_ENV -Dheadless=true -Dmaven.test.failure.ignore=true"
+
         if [ -n "$CUSTOM_URL" ]; then
-          mvn test -DsuiteXmlFile=src/test/resources/deployment-sanity.xml -Denv=$TARGET_ENV -Durl="$CUSTOM_URL" -Dheadless=true -Dmaven.test.failure.ignore=true
-        else
-          mvn test -DsuiteXmlFile=src/test/resources/deployment-sanity.xml -Denv=$TARGET_ENV -Dheadless=true -Dmaven.test.failure.ignore=true
+          MVN_ARGS="$MVN_ARGS -Durl=$CUSTOM_URL"
         fi
+
+        if [ -n "$CUSTOM_CLIENT_URL" ]; then
+          MVN_ARGS="$MVN_ARGS -DclientUrl=$CUSTOM_CLIENT_URL"
+        fi
+
+        echo "Running: mvn test $MVN_ARGS"
+        mvn test $MVN_ARGS
 
     - name: Archive ExtentReports Dashboard & Screenshots
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: ExtentReports-${{ steps.env_config.outputs.target_env }}-Artifact
+        name: ExtentReports-${{ steps.env_config.outputs.target_portal }}-${{ steps.env_config.outputs.target_env }}-Artifact
         path: |
           reports/
           test-output/

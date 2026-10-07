@@ -15,12 +15,66 @@ public class ReportsAnalytics extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Reports']]")
-	private WebElement reportsButton;
+	@FindBy(xpath = "//button[.//span[contains(normalize-space(),'Reports')] or .//span[contains(normalize-space(),'Analytics')]]")
+	private WebElement reportsNavButton;
 
-	@StepName("Click Reports")
+	@FindBy(xpath = "//h1[normalize-space()='Reports & Analytics'] | //header//h1[contains(.,'Reports')]")
+	private WebElement pageHeaderTitle;
+
+	@FindBy(xpath = "//button[contains(.,'Training Performance')]")
+	private WebElement trainingPerformanceTab;
+
+	@FindBy(xpath = "//button[contains(.,'Certifications')]")
+	private WebElement certificationsTab;
+
+	@FindBy(xpath = "//button[contains(.,'Leaderboard')]")
+	private WebElement leaderboardsTab;
+
+	@FindBy(xpath = "//button[contains(.,'Analytics')]")
+	private WebElement analyticsTab;
+
+	@FindBy(xpath = "//button[contains(normalize-space(),'Export')]")
+	private WebElement exportButton;
+
+	@StepName("Click Reports & Analytics from Sidebar")
 	public void clickReports() {
-		reportsButton.click();
+		waitUtils.waitForClickable(reportsNavButton);
+		reportsNavButton.click();
 	}
 
+	@StepName("Verify Reports & Analytics Page is Loaded")
+	public boolean isReportsPageLoaded() {
+		waitUtils.waitForVisibility(pageHeaderTitle);
+		return pageHeaderTitle.isDisplayed();
+	}
+
+	@StepName("Switch to Training Performance Tab")
+	public void switchToTrainingPerformanceTab() {
+		waitUtils.waitForClickable(trainingPerformanceTab);
+		trainingPerformanceTab.click();
+	}
+
+	@StepName("Switch to Certifications Tab")
+	public void switchToCertificationsTab() {
+		waitUtils.waitForClickable(certificationsTab);
+		certificationsTab.click();
+	}
+
+	@StepName("Switch to Leaderboards Tab")
+	public void switchToLeaderboardsTab() {
+		waitUtils.waitForClickable(leaderboardsTab);
+		leaderboardsTab.click();
+	}
+
+	@StepName("Switch to Analytics Tab")
+	public void switchToAnalyticsTab() {
+		waitUtils.waitForClickable(analyticsTab);
+		analyticsTab.click();
+	}
+
+	@StepName("Click Export Button")
+	public void clickExport() {
+		waitUtils.waitForClickable(exportButton);
+		exportButton.click();
+	}
 }

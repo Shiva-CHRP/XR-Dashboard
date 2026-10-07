@@ -15,12 +15,38 @@ public class CertificateTemplates extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Cert. Templates']]")
-	private WebElement certificateTemplatesButton;
+	@FindBy(xpath = "//button[.//span[normalize-space()='Cert. Templates'] or .//span[normalize-space()='Certificate Templates']]")
+	private WebElement certificateTemplatesNavButton;
 
-	@StepName("Click Certificate Templates")
+	@FindBy(xpath = "//h1[contains(.,'Certificate Templates')] | //header//h1")
+	private WebElement pageHeaderTitle;
+
+	@FindBy(xpath = "//button[contains(normalize-space(),'Create Template') or contains(.,'Create')]")
+	private WebElement createTemplateButton;
+
+	@FindBy(xpath = "//div[contains(@class,'grid')]//div[contains(@class,'card') or contains(@class,'border')]")
+	private java.util.List<WebElement> templateCards;
+
+	@StepName("Click Certificate Templates from Sidebar")
 	public void clickCertificateTemplates() {
-		certificateTemplatesButton.click();
+		waitUtils.waitForClickable(certificateTemplatesNavButton);
+		certificateTemplatesNavButton.click();
 	}
 
+	@StepName("Verify Certificate Templates Page is Loaded")
+	public boolean isCertificateTemplatesLoaded() {
+		waitUtils.waitForVisibility(pageHeaderTitle);
+		return pageHeaderTitle.isDisplayed();
+	}
+
+	@StepName("Click Create Template Button")
+	public void clickCreateTemplate() {
+		waitUtils.waitForClickable(createTemplateButton);
+		createTemplateButton.click();
+	}
+
+	@StepName("Get Template Cards Count")
+	public int getTemplateCardsCount() {
+		return templateCards.size();
+	}
 }
