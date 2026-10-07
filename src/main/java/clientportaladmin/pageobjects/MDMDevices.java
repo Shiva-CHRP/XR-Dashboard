@@ -29,11 +29,14 @@ public class MDMDevices extends AbstractComponent {
 	@FindBy(xpath = "//input[contains(@placeholder,'Search') or contains(@placeholder,'search')]")
 	private WebElement searchInput;
 
-	@FindBy(xpath = "//button[contains(.,'Compliant')]")
-	private WebElement compliantTab;
+	@FindBy(xpath = "//button[normalize-space()='Devices' or (contains(.,'Devices') and not(contains(.,'Register')))]")
+	private WebElement devicesTab;
 
-	@FindBy(xpath = "//button[contains(.,'Non-Compliant')]")
-	private WebElement nonCompliantTab;
+	@FindBy(xpath = "//button[contains(.,'Pending Requests') or contains(.,'Pending')]")
+	private WebElement pendingRequestsTab;
+
+	@FindBy(xpath = "//button[contains(.,'Rejected')]")
+	private WebElement rejectedTab;
 
 	@FindBy(xpath = "//*[@role='dialog']//input[@placeholder='Device name' or contains(@placeholder,'Name')]")
 	private WebElement deviceNameInput;
@@ -69,16 +72,42 @@ public class MDMDevices extends AbstractComponent {
 		searchInput.sendKeys(query);
 	}
 
-	@StepName("Switch to Compliant Tab")
-	public void switchToCompliantTab() {
-		waitUtils.waitForClickable(compliantTab);
-		compliantTab.click();
+	@StepName("Switch to Devices Tab")
+	public void switchToDevicesTab() {
+		waitUtils.waitForClickable(devicesTab);
+		devicesTab.click();
 	}
 
-	@StepName("Switch to Non-Compliant Tab")
+	@StepName("Switch to Pending Requests Tab")
+	public void switchToPendingRequestsTab() {
+		waitUtils.waitForClickable(pendingRequestsTab);
+		pendingRequestsTab.click();
+	}
+
+	@StepName("Switch to Rejected Tab")
+	public void switchToRejectedTab() {
+		waitUtils.waitForClickable(rejectedTab);
+		rejectedTab.click();
+	}
+
+	@StepName("Switch to Compliant Tab (Fallback to Devices Tab)")
+	public void switchToCompliantTab() {
+		List<WebElement> comp = driver.findElements(org.openqa.selenium.By.xpath("//button[contains(.,'Compliant')]"));
+		if (!comp.isEmpty()) {
+			comp.get(0).click();
+		} else {
+			switchToDevicesTab();
+		}
+	}
+
+	@StepName("Switch to Non-Compliant Tab (Fallback to Pending Tab)")
 	public void switchToNonCompliantTab() {
-		waitUtils.waitForClickable(nonCompliantTab);
-		nonCompliantTab.click();
+		List<WebElement> nonComp = driver.findElements(org.openqa.selenium.By.xpath("//button[contains(.,'Non-Compliant')]"));
+		if (!nonComp.isEmpty()) {
+			nonComp.get(0).click();
+		} else {
+			switchToPendingRequestsTab();
+		}
 	}
 
 	@StepName("Click Register Device")

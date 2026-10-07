@@ -21,7 +21,7 @@ public class Users extends AbstractComponent {
 	@FindBy(xpath = "//h1[normalize-space()='Users'] | //header//h1[contains(.,'Users')]")
 	private WebElement pageHeaderTitle;
 
-	@FindBy(xpath = "//button[contains(.,'Internal') or contains(.,'MCL')]")
+	@FindBy(xpath = "//button[(contains(.,'Users') and not(contains(.,'Contractor')) and not(contains(.,'Partner'))) or contains(.,'Internal') or contains(.,'MCL') or contains(.,'JIL')]")
 	private WebElement internalUsersTab;
 
 	@FindBy(xpath = "//button[contains(.,'Contractor') or contains(.,'Partner')]")

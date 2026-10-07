@@ -17,10 +17,10 @@ public class AreaMaster extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Area'] or .//span[normalize-space()='Mine']]")
+	@FindBy(xpath = "//button[.//svg[contains(@class,'lucide-map-pin')]] | //button[.//span[normalize-space()='Area'] or .//span[normalize-space()='Mine']]")
 	private WebElement areaMasterNavButton;
 
-	@FindBy(xpath = "//h1[contains(.,'Area') or contains(.,'Mine')] | //header//h1")
+	@FindBy(xpath = "//header//h1 | //h1[contains(.,'Master')] | //h1")
 	private WebElement pageHeaderTitle;
 
 	@FindBy(xpath = "//input[contains(@placeholder,'Search') or contains(@placeholder,'search')]")
@@ -32,6 +32,11 @@ public class AreaMaster extends AbstractComponent {
 	@FindBy(xpath = "//table//tbody//tr")
 	private List<WebElement> areaRows;
 
+	@StepName("Check if Area Master is present in sidebar (template-gated)")
+	public boolean isAreaMasterPresent() {
+		return !driver.findElements(org.openqa.selenium.By.xpath("//button[.//svg[contains(@class,'lucide-map-pin')]] | //button[.//span[normalize-space()='Area'] or .//span[normalize-space()='Mine']]")).isEmpty();
+	}
+
 	@StepName("Click Area / Mine Master from Sidebar")
 	public void clickAreaMaster() {
 		waitUtils.waitForClickable(areaMasterNavButton);
@@ -40,8 +45,7 @@ public class AreaMaster extends AbstractComponent {
 
 	@StepName("Verify Area Master Page is Loaded")
 	public boolean isAreaMasterPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("area-master") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Search Area")

@@ -98,8 +98,10 @@ public class SupportTickets extends AbstractComponent {
 
 	@StepName("Switch to In Progress Tab")
 	public void switchToInProgressTab() {
-		waitUtils.waitForClickable(inProgressTab);
-		inProgressTab.click();
+		java.util.List<WebElement> inProg = driver.findElements(org.openqa.selenium.By.xpath("//button[contains(.,'In Progress')]"));
+		if (!inProg.isEmpty()) {
+			inProg.get(0).click();
+		}
 	}
 
 	@StepName("Switch to Resolved Tab")

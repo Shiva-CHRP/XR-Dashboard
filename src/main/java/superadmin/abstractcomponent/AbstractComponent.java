@@ -170,4 +170,20 @@ public class AbstractComponent {
 	public void waitForToastToDisappear() {
 		toastUtils.waitForToastToDisappear();
 	}
+
+	// ================= MASTER LABEL RESOLUTION HELPERS =================
+	public String getDynamicMasterLabel(String key) {
+		try {
+			JavascriptExecutor js = (JavascriptExecutor) driver;
+			String label = (String) js.executeScript(
+					"try {" +
+					"  const raw = localStorage.getItem('master-labels-v1');" +
+					"  if (!raw) return '';" +
+					"  return JSON.parse(raw)['" + key + "'] || '';" +
+					"} catch (e) { return ''; }");
+			return (label != null && !label.isEmpty()) ? label : key;
+		} catch (Exception e) {
+			return key;
+		}
+	}
 }

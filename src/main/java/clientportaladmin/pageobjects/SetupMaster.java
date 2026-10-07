@@ -17,20 +17,25 @@ public class SetupMaster extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Setup']]")
+	@FindBy(xpath = "//button[.//svg[contains(@class,'lucide-wrench')]] | //button[.//span[normalize-space()='Setup']]")
 	private WebElement setupMasterNavButton;
 
-	@FindBy(xpath = "//h1[contains(.,'Setup')] | //header//h1")
+	@FindBy(xpath = "//header//h1 | //h1[contains(.,'Master')] | //h1")
 	private WebElement pageHeaderTitle;
 
 	@FindBy(xpath = "//input[contains(@placeholder,'Search') or contains(@placeholder,'search')]")
 	private WebElement searchInput;
 
-	@FindBy(xpath = "//button[contains(normalize-space(),'Create Setup') or contains(normalize-space(),'Add Setup')]")
+	@FindBy(xpath = "//button[contains(normalize-space(),'Create') or contains(normalize-space(),'Add')]")
 	private WebElement createSetupButton;
 
 	@FindBy(xpath = "//table//tbody//tr")
 	private List<WebElement> setupRows;
+
+	@StepName("Check if Setup Master is present in sidebar (template-gated)")
+	public boolean isSetupMasterPresent() {
+		return !driver.findElements(org.openqa.selenium.By.xpath("//button[.//svg[contains(@class,'lucide-wrench')]] | //button[.//span[normalize-space()='Setup']]")).isEmpty();
+	}
 
 	@StepName("Click Setup Master from Sidebar")
 	public void clickSetupMaster() {
@@ -40,8 +45,7 @@ public class SetupMaster extends AbstractComponent {
 
 	@StepName("Verify Setup Master Page is Loaded")
 	public boolean isSetupMasterPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("setup-master") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Search Setup")

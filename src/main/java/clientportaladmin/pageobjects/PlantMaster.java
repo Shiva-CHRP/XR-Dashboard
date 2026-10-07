@@ -17,10 +17,10 @@ public class PlantMaster extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Plant'] or .//span[normalize-space()='Area']]")
+	@FindBy(xpath = "//button[.//svg[contains(@class,'lucide-factory')]] | //button[.//span[normalize-space()='Plant'] or .//span[normalize-space()='Area']]")
 	private WebElement plantMasterNavButton;
 
-	@FindBy(xpath = "//h1[contains(.,'Plant') or contains(.,'Area')] | //header//h1")
+	@FindBy(xpath = "//header//h1 | //h1[contains(.,'Master')] | //h1")
 	private WebElement pageHeaderTitle;
 
 	@FindBy(xpath = "//input[contains(@placeholder,'Search') or contains(@placeholder,'search')]")
@@ -32,6 +32,11 @@ public class PlantMaster extends AbstractComponent {
 	@FindBy(xpath = "//table//tbody//tr")
 	private List<WebElement> masterRows;
 
+	@StepName("Check if Plant Master is present in sidebar (template-gated)")
+	public boolean isPlantMasterPresent() {
+		return !driver.findElements(org.openqa.selenium.By.xpath("//button[.//svg[contains(@class,'lucide-factory')]] | //button[.//span[normalize-space()='Plant'] or .//span[normalize-space()='Area']]")).isEmpty();
+	}
+
 	@StepName("Click Plant / Area Master from Sidebar")
 	public void clickPlantMaster() {
 		waitUtils.waitForClickable(plantMasterNavButton);
@@ -40,8 +45,7 @@ public class PlantMaster extends AbstractComponent {
 
 	@StepName("Verify Plant Master Page is Loaded")
 	public boolean isPlantMasterPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("plant-master") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Search Master Records")

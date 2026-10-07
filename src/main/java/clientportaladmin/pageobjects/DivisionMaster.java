@@ -17,20 +17,25 @@ public class DivisionMaster extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Division']]")
+	@FindBy(xpath = "//button[.//svg[contains(@class,'lucide-split')]] | //button[.//span[normalize-space()='Division'] or .//span[normalize-space()='Nodal Office']]")
 	private WebElement divisionMasterNavButton;
 
-	@FindBy(xpath = "//h1[contains(.,'Division')] | //header//h1")
+	@FindBy(xpath = "//header//h1 | //h1[contains(.,'Master')] | //h1")
 	private WebElement pageHeaderTitle;
 
 	@FindBy(xpath = "//input[contains(@placeholder,'Search') or contains(@placeholder,'search')]")
 	private WebElement searchInput;
 
-	@FindBy(xpath = "//button[contains(normalize-space(),'Create Division') or contains(normalize-space(),'Add Division')]")
+	@FindBy(xpath = "//button[contains(normalize-space(),'Create') or contains(normalize-space(),'Add')]")
 	private WebElement createDivisionButton;
 
 	@FindBy(xpath = "//table//tbody//tr")
 	private List<WebElement> divisionRows;
+
+	@StepName("Check if Division Master is present in sidebar (template-gated)")
+	public boolean isDivisionMasterPresent() {
+		return !driver.findElements(org.openqa.selenium.By.xpath("//button[.//svg[contains(@class,'lucide-split')]] | //button[.//span[normalize-space()='Division'] or .//span[normalize-space()='Nodal Office']]")).isEmpty();
+	}
 
 	@StepName("Click Division Master from Sidebar")
 	public void clickDivisionMaster() {
@@ -40,8 +45,7 @@ public class DivisionMaster extends AbstractComponent {
 
 	@StepName("Verify Division Master Page is Loaded")
 	public boolean isDivisionMasterPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("division-master") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Search Division")

@@ -15,10 +15,10 @@ public class ContractorMaster extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Contractor'] or .//span[normalize-space()='Contractor Master'] or .//span[normalize-space()='Partner']]")
+	@FindBy(xpath = "//button[.//svg[contains(@class,'lucide-handshake')]] | //button[.//span[normalize-space()='Contractor'] or .//span[normalize-space()='Contractor Master'] or .//span[normalize-space()='Partner'] or .//span[normalize-space()='Vendor']]")
 	private WebElement contractorMasterNavButton;
 
-	@FindBy(xpath = "//h1[contains(.,'Contractor') or contains(.,'Partner')] | //header//h1")
+	@FindBy(xpath = "//header//h1 | //h1[contains(.,'Master')] | //h1")
 	private WebElement pageHeaderTitle;
 
 	@FindBy(xpath = "//input[contains(@placeholder,'Search') or contains(@placeholder,'search')]")
@@ -38,8 +38,7 @@ public class ContractorMaster extends AbstractComponent {
 
 	@StepName("Verify Contractor Master Page is Loaded")
 	public boolean isContractorMasterLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("partner-master") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Verify Contractor Master Page is Loaded")

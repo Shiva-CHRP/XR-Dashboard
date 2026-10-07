@@ -18,7 +18,7 @@ public class Events extends AbstractComponent {
 	@FindBy(xpath = "//button[.//span[normalize-space()='Events'] or .//span[normalize-space()='Sessions']]")
 	private WebElement eventsNavButton;
 
-	@FindBy(xpath = "//h1[normalize-space()='Events'] | //header//h1[contains(.,'Event')]")
+	@FindBy(xpath = "//h1[contains(.,'Event')]")
 	private WebElement pageHeaderTitle;
 
 	@FindBy(xpath = "//button[normalize-space()='Events']")

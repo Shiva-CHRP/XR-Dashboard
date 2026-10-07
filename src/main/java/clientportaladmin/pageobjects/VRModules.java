@@ -29,6 +29,11 @@ public class VRModules extends AbstractComponent {
 	@FindBy(xpath = "//div[contains(@class,'portal-card') or contains(@class,'card')]")
 	private List<WebElement> moduleCards;
 
+	@StepName("Check if VR Modules is present in sidebar")
+	public boolean isVRModulesPresent() {
+		return !driver.findElements(org.openqa.selenium.By.xpath("//button[.//span[normalize-space()='VR Modules']]")).isEmpty();
+	}
+
 	@StepName("Click VR Modules from Sidebar")
 	public void clickVRModules() {
 		waitUtils.waitForClickable(vrModulesNavButton);

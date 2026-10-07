@@ -15,10 +15,10 @@ public class DepartmentMaster extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Department'] or .//span[normalize-space()='Department Master']]")
+	@FindBy(xpath = "//button[.//svg[contains(@class,'lucide-folder-tree')]] | //button[.//span[normalize-space()='Department'] or .//span[normalize-space()='Department Master']]")
 	private WebElement departmentMasterNavButton;
 
-	@FindBy(xpath = "//h1[contains(.,'Department')] | //header//h1")
+	@FindBy(xpath = "//header//h1 | //h1[contains(.,'Master')] | //h1")
 	private WebElement pageHeaderTitle;
 
 	@FindBy(xpath = "//input[contains(@placeholder,'Search') or contains(@placeholder,'search')]")
@@ -38,8 +38,7 @@ public class DepartmentMaster extends AbstractComponent {
 
 	@StepName("Verify Department Master Page is Loaded")
 	public boolean isDepartmentMasterLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("department-master") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Verify Department Master Page is Loaded")

@@ -73,9 +73,9 @@ public class WaitUtils {
 	}
 
 	// URL
-	public void waitForUrlContains(String url) {
+	public boolean waitForUrlContains(String url) {
 
-		wait.until(ExpectedConditions.urlContains(url));
+		return Boolean.TRUE.equals(wait.until(ExpectedConditions.urlContains(url)));
 	}
 
 	// SCROLL

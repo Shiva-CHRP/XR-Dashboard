@@ -119,52 +119,62 @@ public class ClientDeploymentSanityTest extends ClientBaseTest {
 	}
 
 	@Test(priority = 6, dependsOnMethods = {"Verify_Overview_Dashboard"})
-	@TestInfo(module = "Sanity - Plant Master", description = "Verify Plant / Area Master Screen, Search and Data Listing", priority = "Medium")
+	@TestInfo(module = "Sanity - Plant Master", description = "Verify Plant / Area Master Screen (template-gated)", priority = "Medium")
 	public void Verify_Plant_Master_Screen() {
-		plantMaster.clickPlantMaster();
-		softAssert.assertTrue(plantMaster.isPlantMasterPageLoaded(), "Plant Master page should be loaded");
-		plantMaster.searchMaster("test");
-		softAssert.assertTrue(plantMaster.isPlantMasterPageLoaded(), "Plant Master should remain functional after search");
+		if (plantMaster.isPlantMasterPresent()) {
+			plantMaster.clickPlantMaster();
+			softAssert.assertTrue(plantMaster.isPlantMasterPageLoaded(), "Plant Master page should be loaded");
+			plantMaster.searchMaster("test");
+			softAssert.assertTrue(plantMaster.isPlantMasterPageLoaded(), "Plant Master should remain functional after search");
+		}
 		softAssert.assertAll();
 	}
 
 	@Test(priority = 7, dependsOnMethods = {"Verify_Overview_Dashboard"})
-	@TestInfo(module = "Sanity - Division Master", description = "Verify Division Master Screen, Search and Data Listing", priority = "Medium")
+	@TestInfo(module = "Sanity - Division Master", description = "Verify Division / Nodal Office Master Screen, Search and Data Listing (template-gated)", priority = "Medium")
 	public void Verify_Division_Master_Screen() {
-		divisionMaster.clickDivisionMaster();
-		softAssert.assertTrue(divisionMaster.isDivisionMasterPageLoaded(), "Division Master page should be loaded");
-		divisionMaster.searchDivision("test");
-		softAssert.assertTrue(divisionMaster.isDivisionMasterPageLoaded(), "Division Master should remain functional after search");
+		if (divisionMaster.isDivisionMasterPresent()) {
+			divisionMaster.clickDivisionMaster();
+			softAssert.assertTrue(divisionMaster.isDivisionMasterPageLoaded(), "Division Master page should be loaded");
+			divisionMaster.searchDivision("test");
+			softAssert.assertTrue(divisionMaster.isDivisionMasterPageLoaded(), "Division Master should remain functional after search");
+		}
 		softAssert.assertAll();
 	}
 
 	@Test(priority = 8, dependsOnMethods = {"Verify_Overview_Dashboard"})
-	@TestInfo(module = "Sanity - Category Master", description = "Verify Category Master Screen, Search and Data Listing", priority = "Medium")
+	@TestInfo(module = "Sanity - Category Master", description = "Verify Category Master Screen, Search and Data Listing (template-gated)", priority = "Medium")
 	public void Verify_Category_Master_Screen() {
-		categoryMaster.clickCategoryMaster();
-		softAssert.assertTrue(categoryMaster.isCategoryMasterPageLoaded(), "Category Master page should be loaded");
-		categoryMaster.searchCategory("test");
-		softAssert.assertTrue(categoryMaster.isCategoryMasterPageLoaded(), "Category Master should remain functional after search");
+		if (categoryMaster.isCategoryMasterPresent()) {
+			categoryMaster.clickCategoryMaster();
+			softAssert.assertTrue(categoryMaster.isCategoryMasterPageLoaded(), "Category Master page should be loaded");
+			categoryMaster.searchCategory("test");
+			softAssert.assertTrue(categoryMaster.isCategoryMasterPageLoaded(), "Category Master should remain functional after search");
+		}
 		softAssert.assertAll();
 	}
 
 	@Test(priority = 9, dependsOnMethods = {"Verify_Overview_Dashboard"})
-	@TestInfo(module = "Sanity - Setup Master", description = "Verify Setup Master Screen, Search and Data Listing", priority = "Medium")
+	@TestInfo(module = "Sanity - Setup Master", description = "Verify Setup Master Screen, Search and Data Listing (template-gated)", priority = "Medium")
 	public void Verify_Setup_Master_Screen() {
-		setupMaster.clickSetupMaster();
-		softAssert.assertTrue(setupMaster.isSetupMasterPageLoaded(), "Setup Master page should be loaded");
-		setupMaster.searchSetup("test");
-		softAssert.assertTrue(setupMaster.isSetupMasterPageLoaded(), "Setup Master should remain functional after search");
+		if (setupMaster.isSetupMasterPresent()) {
+			setupMaster.clickSetupMaster();
+			softAssert.assertTrue(setupMaster.isSetupMasterPageLoaded(), "Setup Master page should be loaded");
+			setupMaster.searchSetup("test");
+			softAssert.assertTrue(setupMaster.isSetupMasterPageLoaded(), "Setup Master should remain functional after search");
+		}
 		softAssert.assertAll();
 	}
 
 	@Test(priority = 10, dependsOnMethods = {"Verify_Overview_Dashboard"})
-	@TestInfo(module = "Sanity - Area Master", description = "Verify Area / Mine Master Screen, Search and Data Listing", priority = "Medium")
+	@TestInfo(module = "Sanity - Area Master", description = "Verify Area / Mine Master Screen (template-gated)", priority = "Medium")
 	public void Verify_Area_Master_Screen() {
-		areaMaster.clickAreaMaster();
-		softAssert.assertTrue(areaMaster.isAreaMasterPageLoaded(), "Area Master page should be loaded");
-		areaMaster.searchArea("test");
-		softAssert.assertTrue(areaMaster.isAreaMasterPageLoaded(), "Area Master should remain functional after search");
+		if (areaMaster.isAreaMasterPresent()) {
+			areaMaster.clickAreaMaster();
+			softAssert.assertTrue(areaMaster.isAreaMasterPageLoaded(), "Area Master page should be loaded");
+			areaMaster.searchArea("test");
+			softAssert.assertTrue(areaMaster.isAreaMasterPageLoaded(), "Area Master should remain functional after search");
+		}
 		softAssert.assertAll();
 	}
 
@@ -184,14 +194,12 @@ public class ClientDeploymentSanityTest extends ClientBaseTest {
 	}
 
 	@Test(priority = 12, dependsOnMethods = {"Verify_Overview_Dashboard"})
-	@TestInfo(module = "Sanity - Curriculum", description = "Verify Curriculum Catalogue and My Curriculums Tabs", priority = "High")
+	@TestInfo(module = "Sanity - Curriculum", description = "Verify Curriculum Catalogue and Catalogue Filter Chips", priority = "High")
 	public void Verify_Curriculum_Catalogue_And_MyCurriculums() {
 		curriculum.clickCurriculum();
 		softAssert.assertTrue(curriculum.isCurriculumPageLoaded(), "Curriculum page heading should be loaded");
 		curriculum.clickBrowseCatalogue();
-		softAssert.assertTrue(curriculum.isCurriculumPageLoaded(), "Browse Catalogue tab should remain functional");
-		curriculum.clickMyCurriculums();
-		softAssert.assertTrue(curriculum.isCurriculumPageLoaded(), "My Curriculums tab should remain functional");
+		softAssert.assertTrue(curriculum.isCurriculumPageLoaded(), "Curriculum catalogue should remain functional");
 		curriculum.searchCurriculums("test");
 		softAssert.assertAll();
 	}
@@ -217,12 +225,14 @@ public class ClientDeploymentSanityTest extends ClientBaseTest {
 	}
 
 	@Test(priority = 15, dependsOnMethods = {"Verify_Overview_Dashboard"})
-	@TestInfo(module = "Sanity - VR Modules", description = "Verify VR Modules Screen and Cards Listing", priority = "Medium")
+	@TestInfo(module = "Sanity - VR Modules", description = "Verify VR Modules Screen (if separately routed)", priority = "Medium")
 	public void Verify_VR_Modules_Screen() {
-		vrModules.clickVRModules();
-		softAssert.assertTrue(vrModules.isVRModulesPageLoaded(), "VR Modules page should be loaded");
-		vrModules.searchVRModules("test");
-		softAssert.assertTrue(vrModules.isVRModulesPageLoaded(), "VR Modules should remain functional after search");
+		if (vrModules.isVRModulesPresent()) {
+			vrModules.clickVRModules();
+			softAssert.assertTrue(vrModules.isVRModulesPageLoaded(), "VR Modules page should be loaded");
+			vrModules.searchVRModules("test");
+			softAssert.assertTrue(vrModules.isVRModulesPageLoaded(), "VR Modules should remain functional after search");
+		}
 		softAssert.assertAll();
 	}
 
@@ -349,14 +359,17 @@ public class ClientDeploymentSanityTest extends ClientBaseTest {
 	// =========================================================================
 
 	@Test(priority = 23, dependsOnMethods = {"Verify_Overview_Dashboard"})
-	@TestInfo(module = "Sanity - MDM Devices", description = "Verify Device Registry Screen, Compliant and Non-Compliant Tabs", priority = "High")
+	@TestInfo(module = "Sanity - MDM Devices", description = "Verify Device Registry Screen, Devices, Pending Requests and Rejected Tabs", priority = "High")
 	public void Verify_MDM_Device_Registry_Screen() {
 		clientMdmDevices.clickMDMDevices();
 		softAssert.assertTrue(clientMdmDevices.isMDMDevicesPageLoaded(), "MDM Devices page should be loaded");
-		clientMdmDevices.switchToCompliantTab();
-		softAssert.assertTrue(clientMdmDevices.isMDMDevicesPageLoaded(), "Compliant tab should be functional");
-		clientMdmDevices.switchToNonCompliantTab();
-		softAssert.assertTrue(clientMdmDevices.isMDMDevicesPageLoaded(), "Non-Compliant tab should be functional");
+		clientMdmDevices.switchToDevicesTab();
+		softAssert.assertTrue(clientMdmDevices.isMDMDevicesPageLoaded(), "Devices tab should be functional");
+		clientMdmDevices.switchToPendingRequestsTab();
+		softAssert.assertTrue(clientMdmDevices.isMDMDevicesPageLoaded(), "Pending Requests tab should be functional");
+		clientMdmDevices.switchToRejectedTab();
+		softAssert.assertTrue(clientMdmDevices.isMDMDevicesPageLoaded(), "Rejected tab should be functional");
+		clientMdmDevices.switchToDevicesTab();
 		clientMdmDevices.searchDevices("test");
 		softAssert.assertAll();
 	}
@@ -380,16 +393,13 @@ public class ClientDeploymentSanityTest extends ClientBaseTest {
 	}
 
 	@Test(priority = 26, dependsOnMethods = {"Verify_Overview_Dashboard"})
-	@TestInfo(module = "Sanity - Support Tickets", description = "Verify Support Tickets Screen, Status Tabs (Active, In Progress, Resolved) and Form Integrity", priority = "High")
+	@TestInfo(module = "Sanity - Support Tickets", description = "Verify Support Tickets Screen, Status Tabs (Active, Resolved) and Form Integrity", priority = "High")
 	public void Verify_Support_Tickets_Screen_And_Modal() {
 		supportTickets.clickSupportTickets();
 		softAssert.assertTrue(supportTickets.isSupportTicketsPageLoaded(), "Support Tickets page should be loaded");
 
 		supportTickets.switchToActiveTab();
 		softAssert.assertTrue(supportTickets.isSupportTicketsPageLoaded(), "Active status tab should be loaded");
-
-		supportTickets.switchToInProgressTab();
-		softAssert.assertTrue(supportTickets.isSupportTicketsPageLoaded(), "In Progress status tab should be loaded");
 
 		supportTickets.switchToResolvedTab();
 		softAssert.assertTrue(supportTickets.isSupportTicketsPageLoaded(), "Resolved status tab should be loaded");

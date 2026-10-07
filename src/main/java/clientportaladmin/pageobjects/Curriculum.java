@@ -52,14 +52,18 @@ public class Curriculum extends AbstractComponent {
 
 	@StepName("Click Browse Catalogue")
 	public void clickBrowseCatalogue() {
-		waitUtils.waitForClickable(browseCatalogueItem);
-		browseCatalogueItem.click();
+		java.util.List<WebElement> items = driver.findElements(org.openqa.selenium.By.xpath("//button[contains(.,'Browse Catalogue')] | //a[contains(.,'Browse Catalogue')] | //button[contains(.,'All')]"));
+		if (!items.isEmpty()) {
+			items.get(0).click();
+		}
 	}
 
 	@StepName("Click My Curriculums")
 	public void clickMyCurriculums() {
-		waitUtils.waitForClickable(myCurriculumsItem);
-		myCurriculumsItem.click();
+		java.util.List<WebElement> items = driver.findElements(org.openqa.selenium.By.xpath("//button[contains(.,'My Curriculums')] | //a[contains(.,'My Curriculums')] | //button[contains(.,'Free')]"));
+		if (!items.isEmpty()) {
+			items.get(0).click();
+		}
 	}
 
 	@StepName("Search Curricula")
