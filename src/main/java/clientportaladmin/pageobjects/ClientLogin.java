@@ -92,8 +92,14 @@ public class ClientLogin extends AbstractComponent {
 
 	@StepName("Login to Client Application with Credentials")
 	public void loginToClient(String orgCode, String email, String passwordValue) {
-		enterOrganisationCode(orgCode);
-		clickContinue();
+		try {
+			if (!driver.findElements(By.xpath("//label[normalize-space()='Organisation Code']/following-sibling::input")).isEmpty()) {
+				enterOrganisationCode(orgCode);
+				clickContinue();
+			}
+		} catch (Exception e) {
+			// If already past organization code step, continue to credentials
+		}
 		enterEmailAddress(email);
 		enterPassword(passwordValue);
 		clickSignIn();

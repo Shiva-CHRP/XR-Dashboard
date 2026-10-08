@@ -568,10 +568,25 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 20. ROLE SWITCH TO VR DEVELOPER
+	// 20. SUPER ADMIN NOTIFICATIONS SCREEN
 	// =========================================================================
 
 	@Test(priority = 20, dependsOnMethods = {"Verify_Super_Admin_Settings_Screen"})
+	@TestInfo(module = "Sanity - Notifications", description = "Verify Super Admin Notifications Feed, Filters and Header Controls", priority = "Medium")
+	public void Verify_Super_Admin_Notifications_Screen() {
+		adminNotifications.navigateToNotifications();
+		softAssert.assertTrue(adminNotifications.isNotificationsPageLoaded(), "Notifications page should be loaded");
+		adminNotifications.filterByCategory("All");
+		adminNotifications.filterByCategory("Unread");
+		adminNotifications.filterByCategory("All");
+		softAssert.assertAll();
+	}
+
+	// =========================================================================
+	// 21. ROLE SWITCH TO VR DEVELOPER
+	// =========================================================================
+
+	@Test(priority = 21, dependsOnMethods = {"Verify_Super_Admin_Notifications_Screen"})
 	@TestInfo(module = "Sanity - Role Switch", description = "Switch Role to VR Developer", priority = "Critical")
 	public void Verify_Role_Switch_To_VR_Developer() {
 		loginPage.switchToVRDeveloper();
@@ -580,10 +595,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 21. VR DEVELOPER DASHBOARD
+	// 22. VR DEVELOPER DASHBOARD
 	// =========================================================================
 
-	@Test(priority = 21, dependsOnMethods = {"Verify_Role_Switch_To_VR_Developer"})
+	@Test(priority = 22, dependsOnMethods = {"Verify_Role_Switch_To_VR_Developer"})
 	@TestInfo(module = "Sanity - Developer Dashboard", description = "Verify VR Developer Dashboard Screen & Stats", priority = "High")
 	public void Verify_VR_Developer_Dashboard_Screen() {
 		developerDashboard.clickDeveloperDashboard();
@@ -592,10 +607,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 22. VR DEVELOPER SUBMISSION TRACKER
+	// 23. VR DEVELOPER SUBMISSION TRACKER
 	// =========================================================================
 
-	@Test(priority = 22, dependsOnMethods = {"Verify_VR_Developer_Dashboard_Screen"})
+	@Test(priority = 23, dependsOnMethods = {"Verify_VR_Developer_Dashboard_Screen"})
 	@TestInfo(module = "Sanity - Submission Tracker", description = "Verify VR Developer Submission Tracker Screen & View Detail", priority = "Medium")
 	public void Verify_VR_Developer_Submission_Tracker_Screen() {
 		submissionTracker.clickSubmissionTracker();
@@ -612,10 +627,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 23. VR DEVELOPER MY ORGANISATIONS
+	// 24. VR DEVELOPER MY ORGANISATIONS
 	// =========================================================================
 
-	@Test(priority = 23, dependsOnMethods = {"Verify_VR_Developer_Submission_Tracker_Screen"})
+	@Test(priority = 24, dependsOnMethods = {"Verify_VR_Developer_Submission_Tracker_Screen"})
 	@TestInfo(module = "Sanity - Developer Organisations", description = "Verify VR Developer My Organisations Screen, View Modes, Manage Modules & Upload Wizard", priority = "Medium")
 	public void Verify_VR_Developer_Organisations_Screen() {
 		developerOrganisations.clickDeveloperOrganisations();
@@ -644,10 +659,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 24. VR DEVELOPER PROFILE
+	// 25. VR DEVELOPER PROFILE
 	// =========================================================================
 
-	@Test(priority = 24, dependsOnMethods = {"Verify_VR_Developer_Organisations_Screen"})
+	@Test(priority = 25, dependsOnMethods = {"Verify_VR_Developer_Organisations_Screen"})
 	@TestInfo(module = "Sanity - Developer Profile", description = "Verify VR Developer Profile Screen", priority = "Medium")
 	public void Verify_VR_Developer_Profile_Screen() {
 		developerProfile.clickDeveloperProfile();
@@ -656,10 +671,10 @@ public class DeploymentSanityTest extends BaseTest {
 	}
 
 	// =========================================================================
-	// 25. SWITCH BACK TO SUPER ADMIN & LOGOUT
+	// 26. SWITCH BACK TO SUPER ADMIN & LOGOUT
 	// =========================================================================
 
-	@Test(priority = 25, dependsOnMethods = {"Verify_VR_Developer_Profile_Screen"})
+	@Test(priority = 26, dependsOnMethods = {"Verify_VR_Developer_Profile_Screen"})
 	@TestInfo(module = "Sanity - Logout", description = "Switch Back to Super Admin and Sign Out", priority = "Critical")
 	public void Switch_Back_To_Super_Admin_And_Logout() throws InterruptedException {
 		loginPage.switchToSuperAdmin();

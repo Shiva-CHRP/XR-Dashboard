@@ -113,6 +113,7 @@ public class BaseTest {
 	public Support support;
 	public SystemHealth systemHealth;
 	public superadmin.pageobjects.Settings superAdminSettings;
+	public superadmin.pageobjects.AdminNotifications adminNotifications;
 
 	public AreaMaster areaMaster;
 	public AssignCurriculums assignCurriculums;
@@ -213,6 +214,7 @@ public class BaseTest {
 		support = new Support(driver);
 		systemHealth = new SystemHealth(driver);
 		superAdminSettings = new superadmin.pageobjects.Settings(driver);
+		adminNotifications = new superadmin.pageobjects.AdminNotifications(driver);
 	}
 
 	public void initializeClientAdminPageObjects() {
