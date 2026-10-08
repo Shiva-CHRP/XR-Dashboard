@@ -54,7 +54,7 @@ public class Settings extends AbstractComponent {
 	// 2. Section Card Headings
 	// =========================================================================
 
-	@FindBy(xpath = "//h2[contains(.,'Brand Assets')]")
+	@FindBy(xpath = "//h2[contains(.,'Logo & Favicon') or contains(.,'Brand Assets') or contains(.,'Logo')]")
 	private WebElement brandAssetsCardHeading;
 
 	@FindBy(xpath = "//h2[normalize-space()='Appearance']")
@@ -125,7 +125,7 @@ public class Settings extends AbstractComponent {
 
 	@StepName("Verify Brand Assets Card is Present")
 	public boolean isBrandAssetsCardPresent() {
-		return !driver.findElements(By.xpath("//h2[contains(.,'Brand Assets')]")).isEmpty();
+		return !driver.findElements(By.xpath("//h2[contains(.,'Logo & Favicon') or contains(.,'Brand Assets') or contains(.,'Logo')]")).isEmpty();
 	}
 
 	@StepName("Verify Appearance Card is Present")

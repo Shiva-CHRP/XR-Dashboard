@@ -35,16 +35,16 @@ public class SupportTickets extends AbstractComponent {
 	@FindBy(xpath = "//button[contains(.,'Resolved')]")
 	private WebElement resolvedTab;
 
-	@FindBy(xpath = "//*[@role='dialog']//input[@placeholder='Brief summary of the issue' or contains(@placeholder,'Subject')]")
+	@FindBy(xpath = "//div[contains(@class,'modal-content')]//input[@placeholder='One line, e.g. Headset not syncing results' or contains(@placeholder,'Subject')] | //*[@role='dialog']//input")
 	private WebElement ticketSubjectInput;
 
-	@FindBy(xpath = "//*[@role='dialog']//textarea[contains(@placeholder,'Provide details') or contains(@placeholder,'Description')]")
+	@FindBy(xpath = "//div[contains(@class,'modal-content')]//textarea | //*[@role='dialog']//textarea")
 	private WebElement ticketDescriptionTextarea;
 
-	@FindBy(xpath = "//*[@role='dialog']//button[normalize-space()='Submit Ticket' or normalize-space()='Submit']")
+	@FindBy(xpath = "//div[contains(@class,'modal-content')]//button[contains(normalize-space(),'Submit ticket') or normalize-space()='Submit'] | //*[@role='dialog']//button[contains(.,'Submit')]")
 	private WebElement submitTicketButton;
 
-	@FindBy(xpath = "//*[@role='dialog']//button[.//svg or @aria-label='Close' or normalize-space()='Cancel']")
+	@FindBy(xpath = "//div[contains(@class,'modal-content')]//button[@aria-label='Close' or normalize-space()='Cancel'] | //*[@role='dialog']//button[@aria-label='Close' or normalize-space()='Cancel'] | //button[@aria-label='Close']")
 	private WebElement closeTicketModalButton;
 
 	@FindBy(xpath = "//table//tbody//tr")
@@ -62,8 +62,22 @@ public class SupportTickets extends AbstractComponent {
 
 	@StepName("Click Raise Ticket")
 	public void clickRaiseTicket() {
-		waitUtils.waitForClickable(raiseTicketButton);
-		raiseTicketButton.click();
+		org.openqa.selenium.By raiseBtnBy = org.openqa.selenium.By.xpath("//button[contains(normalize-space(),'Raise Ticket')]");
+		waitUtils.waitForClickable(raiseBtnBy);
+		List<WebElement> btns = driver.findElements(raiseBtnBy);
+		if (!btns.isEmpty()) {
+			waitUtils.scrollIntoView(btns.get(0));
+			waitUtils.clickUsingJS(btns.get(0));
+		}
+		// Ensure modal dialog appears
+		waitUtils.waitUntil(d -> {
+			try {
+				List<WebElement> dialogs = d.findElements(org.openqa.selenium.By.xpath("//div[contains(@class,'modal-content')] | //*[@role='dialog']"));
+				return !dialogs.isEmpty() && dialogs.stream().anyMatch(WebElement::isDisplayed);
+			} catch (org.openqa.selenium.StaleElementReferenceException e) {
+				return false;
+			}
+		});
 	}
 
 	@StepName("Fill Raise Ticket Form")
@@ -84,8 +98,19 @@ public class SupportTickets extends AbstractComponent {
 
 	@StepName("Close Raise Ticket Modal")
 	public void closeRaiseTicketModal() {
-		waitUtils.waitForClickable(closeTicketModalButton);
-		closeTicketModalButton.click();
+		org.openqa.selenium.By closeBtnBy = org.openqa.selenium.By.xpath("//div[contains(@class,'modal-content')]//button[@aria-label='Close' or normalize-space()='Cancel'] | //*[@role='dialog']//button[@aria-label='Close' or normalize-space()='Cancel'] | //button[@aria-label='Close']");
+		List<WebElement> closeBtns = driver.findElements(closeBtnBy);
+		if (!closeBtns.isEmpty()) {
+			waitUtils.clickUsingJS(closeBtns.get(0));
+		}
+		waitUtils.waitUntil(d -> {
+			try {
+				List<WebElement> dialogs = d.findElements(org.openqa.selenium.By.xpath("//div[contains(@class,'modal-content')] | //*[@role='dialog']"));
+				return dialogs.isEmpty() || dialogs.stream().noneMatch(WebElement::isDisplayed);
+			} catch (org.openqa.selenium.StaleElementReferenceException e) {
+				return true;
+			}
+		});
 	}
 
 	@StepName("Switch to Active Tab")
