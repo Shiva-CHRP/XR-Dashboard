@@ -109,7 +109,7 @@ public class LoginPage extends AbstractComponent {
 	// 4. ACTION METHODS: Sign In Form
 	// =========================================================================
 
-	@StepName("Enter User Email Address: {0}")
+	@StepName("Enter User Email Address")
 	public void enterUsername(String username) {
 		waitUtils.waitForVisibility(emailAddress);
 		waitUtils.waitForClickable(emailAddress);
@@ -148,7 +148,7 @@ public class LoginPage extends AbstractComponent {
 		}
 	}
 
-	@StepName("Set Remember Me: {0}")
+	@StepName("Set Remember Me")
 	public void setRememberMe(boolean check) {
 		waitUtils.waitForVisibility(rememberMeCheckbox);
 		if (rememberMeCheckbox.isSelected() != check) {

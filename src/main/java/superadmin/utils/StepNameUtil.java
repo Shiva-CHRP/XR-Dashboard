@@ -39,7 +39,7 @@ public class StepNameUtil {
                         if (method.getName().equals(element.getMethodName())
                                 && method.isAnnotationPresent(StepName.class)) {
 
-                            return method.getAnnotation(StepName.class).value();
+                            return cleanStepName(method.getAnnotation(StepName.class).value());
                         }
                     }
                 }
@@ -50,5 +50,14 @@ public class StepNameUtil {
         }
 
         return "Executing Step";
+    }
+
+    private static String cleanStepName(String raw) {
+        if (raw == null) {
+            return "";
+        }
+        return raw.replaceAll(":\\s*\\{[0-9]+\\}", "")
+                  .replaceAll("\\{[0-9]+\\}", "")
+                  .trim();
     }
 }

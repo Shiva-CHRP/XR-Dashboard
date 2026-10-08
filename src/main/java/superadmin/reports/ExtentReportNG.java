@@ -28,10 +28,10 @@ public class ExtentReportNG {
                 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
                 :root {
-                  --bg-primary: #0b0f19;
-                  --bg-surface: #111827;
-                  --bg-card: #151e32;
-                  --bg-card-hover: #1c2744;
+                  --bg-primary: #0f172a;
+                  --bg-surface: #0f172a;
+                  --bg-card: #182234;
+                  --bg-card-hover: #1f2d45;
                   --border-color: rgba(255, 255, 255, 0.08);
                   --border-glow: rgba(99, 102, 241, 0.4);
                   --text-main: #f8fafc;
@@ -45,24 +45,32 @@ public class ExtentReportNG {
                   --status-info: #3b82f6;
                 }
 
-                body, .spa, .spa.-report, .spa.-report.dark {
+                body, body.dark, .spa, .spa.-report, .spa.-report.dark,
+                .app, .layout, .vcontainer, .main-content,
+                .test-wrapper, .dark .test-wrapper,
+                .test-list, .dark .test-list,
+                .test-content, .dark .test-content,
+                .test-content-detail, .dark .test-content-detail,
+                .detail-body, .dark .detail-body,
+                .dashboard-view, .dark .dashboard-view,
+                .dashboard-view .container-fluid, .dark .dashboard-view .container-fluid {
                   background-color: var(--bg-primary) !important;
+                  background: var(--bg-primary) !important;
                   color: var(--text-main) !important;
                   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
                   -webkit-font-smoothing: antialiased;
                 }
 
-                .app, .layout, .vcontainer, .main-content {
-                  background-color: var(--bg-primary) !important;
-                }
-
-                /* Header Navbar */
+                /* Header Navbar — Sticky */
                 .header.navbar {
-                  background: rgba(15, 23, 42, 0.88) !important;
-                  backdrop-filter: blur(16px);
-                  -webkit-backdrop-filter: blur(16px);
+                  position: sticky !important;
+                  top: 0 !important;
+                  z-index: 1000 !important;
+                  background: rgba(15, 23, 42, 0.96) !important;
+                  backdrop-filter: blur(20px) !important;
+                  -webkit-backdrop-filter: blur(20px) !important;
                   border-bottom: 1px solid var(--border-color) !important;
-                  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45) !important;
+                  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5) !important;
                   height: 64px !important;
                 }
 
@@ -148,19 +156,29 @@ public class ExtentReportNG {
                   margin: 0 !important;
                 }
 
-                .test-list {
+                .test-wrapper .test-list, .test-list {
                   background: #0f172a !important;
                   border-right: 1px solid var(--border-color) !important;
+                  width: 420px !important;
+                  min-width: 420px !important;
+                  max-width: 450px !important;
+                  flex: 0 0 420px !important;
                 }
 
+                /* Sticky filter toolbar inside test list */
                 .test-list-tools {
-                  background: rgba(15, 23, 42, 0.95) !important;
+                  background: rgba(15, 23, 42, 0.98) !important;
                   border-bottom: 1px solid var(--border-color) !important;
                   padding: 12px 18px !important;
+                  position: sticky !important;
+                  top: 0 !important;
+                  z-index: 10 !important;
+                  backdrop-filter: blur(12px) !important;
+                  -webkit-backdrop-filter: blur(12px) !important;
                 }
 
                 .test-list-item {
-                  padding: 10px 8px !important;
+                  padding: 8px 6px !important;
                 }
 
                 .test-item {
@@ -176,7 +194,7 @@ public class ExtentReportNG {
                 .test-item:hover {
                   background: var(--bg-card-hover) !important;
                   border-color: var(--border-glow) !important;
-                  transform: translateX(4px);
+                  transform: translateX(3px);
                   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35) !important;
                 }
 
@@ -186,12 +204,19 @@ public class ExtentReportNG {
                   box-shadow: 0 0 20px rgba(99, 102, 241, 0.25) !important;
                 }
 
-                .test-detail .name {
-                  font-size: 0.92rem !important;
+                .test-detail .name,
+                .test-item .name,
+                .test-item .test-detail {
+                  font-size: 0.90rem !important;
                   font-weight: 600 !important;
                   color: var(--text-main) !important;
-                  line-height: 1.4 !important;
-                  margin-bottom: 6px !important;
+                  line-height: 1.45 !important;
+                  margin-bottom: 8px !important;
+                  word-break: normal !important;
+                  word-wrap: break-word !important;
+                  overflow-wrap: break-word !important;
+                  hyphens: none !important;
+                  white-space: normal !important;
                 }
 
                 .test-detail .text-sm {
@@ -245,8 +270,9 @@ public class ExtentReportNG {
 
                 /* Detail Head & Step Log Tables */
                 .test-content-detail {
-                  background: var(--bg-surface) !important;
+                  background: var(--bg-primary) !important;
                   padding: 24px !important;
+                  min-height: 100% !important;
                 }
 
                 .detail-head {
@@ -267,6 +293,7 @@ public class ExtentReportNG {
 
                 table.table {
                   background: var(--bg-card) !important;
+                  background-color: var(--bg-card) !important;
                   border-radius: 12px !important;
                   overflow: hidden;
                   border: 1px solid var(--border-color) !important;
@@ -274,7 +301,7 @@ public class ExtentReportNG {
                 }
 
                 table.table thead th {
-                  background: rgba(30, 41, 59, 0.9) !important;
+                  background: rgba(30, 41, 59, 0.95) !important;
                   color: var(--text-muted) !important;
                   font-size: 0.75rem !important;
                   font-weight: 700 !important;
@@ -285,7 +312,11 @@ public class ExtentReportNG {
                   padding: 12px 16px !important;
                 }
 
+                table.table tbody,
+                table.table tbody tr,
                 table.table tbody td {
+                  background: var(--bg-card) !important;
+                  background-color: var(--bg-card) !important;
                   border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
                   color: #e2e8f0 !important;
                   font-size: 0.88rem !important;
@@ -293,8 +324,10 @@ public class ExtentReportNG {
                   vertical-align: middle !important;
                 }
 
-                tr.event-row:hover {
-                  background: rgba(99, 102, 241, 0.08) !important;
+                tr.event-row:hover,
+                tr.event-row:hover td {
+                  background: var(--bg-card-hover) !important;
+                  background-color: var(--bg-card-hover) !important;
                 }
 
                 /* Cards, Dashboard & Charts */
@@ -360,6 +393,24 @@ public class ExtentReportNG {
                   box-shadow: 0 8px 24px rgba(99, 102, 241, 0.45) !important;
                 }
 
+                .step-img-thumb {
+                  max-width: 175px !important;
+                  max-height: 100px !important;
+                  border-radius: 8px !important;
+                  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+                  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4) !important;
+                  margin-top: 8px !important;
+                  display: block !important;
+                  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
+                  cursor: zoom-in !important;
+                }
+
+                .step-img-thumb:hover {
+                  transform: scale(1.05) !important;
+                  border-color: var(--accent-indigo) !important;
+                  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5) !important;
+                }
+
                 /* Sleek Dark Scrollbars */
                 ::-webkit-scrollbar {
                   width: 8px;
@@ -405,15 +456,124 @@ public class ExtentReportNG {
                 table[border='1'] tr:hover td {
                   background: rgba(99, 102, 241, 0.08) !important;
                 }
+                /* === Lightbox Overlay for Screenshots === */
+                #img-lightbox-overlay {
+                  display: none;
+                  position: fixed;
+                  inset: 0;
+                  background: rgba(0, 0, 0, 0.88);
+                  z-index: 9999;
+                  align-items: center;
+                  justify-content: center;
+                  cursor: zoom-out;
+                  backdrop-filter: blur(8px);
+                  -webkit-backdrop-filter: blur(8px);
+                  animation: fadeIn 0.2s ease;
+                }
+                @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+                #img-lightbox-overlay.active { display: flex !important; }
+                #img-lightbox-overlay img {
+                  max-width: 88vw !important;
+                  max-height: 88vh !important;
+                  border-radius: 12px !important;
+                  border: 2px solid var(--accent-indigo) !important;
+                  box-shadow: 0 20px 60px rgba(0,0,0,0.8) !important;
+                  cursor: default;
+                  transform: none !important;
+                }
+                #img-lightbox-close {
+                  position: absolute;
+                  top: 20px;
+                  right: 28px;
+                  color: #ffffff;
+                  font-size: 2.2rem;
+                  cursor: pointer;
+                  opacity: 0.8;
+                  line-height: 1;
+                  transition: opacity 0.2s, transform 0.2s;
+                  z-index: 10000;
+                }
+                #img-lightbox-close:hover { opacity: 1; transform: scale(1.15); }
+
+                /* === Progress Bars === */
+                .progress {
+                  background-color: rgba(255,255,255,0.08) !important;
+                  border-radius: 8px !important;
+                  height: 8px !important;
+                  overflow: hidden;
+                }
+                .progress-bar.pass-bg {
+                  background: linear-gradient(90deg, #10b981, #059669) !important;
+                  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+                }
+                .progress-bar.fail-bg {
+                  background: linear-gradient(90deg, #ef4444, #dc2626) !important;
+                }
+                .progress-bar.skip-bg {
+                  background: linear-gradient(90deg, #f59e0b, #d97706) !important;
+                }
                 """;
             spark.config().setCss(customCss);
 
             String customJs = """
-                document.addEventListener('DOMContentLoaded', function() {
-                    // Open screenshot images in new tab when clicked
-                    document.querySelectorAll('.row.mb-3 a, .r-img').forEach(function(el) {
-                        el.setAttribute('target', '_blank');
+                /* === Lightbox helpers === */
+                function createLightbox() {
+                    if (document.getElementById('img-lightbox-overlay')) return;
+                    var overlay = document.createElement('div');
+                    overlay.id = 'img-lightbox-overlay';
+                    overlay.innerHTML = '<span id="img-lightbox-close" title="Close">&times;</span><img id="img-lightbox-img" src="" alt="Screenshot" />';
+                    document.body.appendChild(overlay);
+                    overlay.addEventListener('click', function(e) {
+                        if (e.target === overlay || e.target.id === 'img-lightbox-close') {
+                            overlay.classList.remove('active');
+                            document.getElementById('img-lightbox-img').src = '';
+                        }
                     });
+                    document.addEventListener('keydown', function(e) {
+                        if (e.key === 'Escape') {
+                            overlay.classList.remove('active');
+                            document.getElementById('img-lightbox-img').src = '';
+                        }
+                    });
+                }
+
+                function openLightbox(src) {
+                    createLightbox();
+                    document.getElementById('img-lightbox-img').src = src;
+                    document.getElementById('img-lightbox-overlay').classList.add('active');
+                }
+
+                /* === Convert BASE64 badge links into visible thumbnails === */
+                var _convThrottle = null;
+                function convertBase64Badges() {
+                    if (_convThrottle) return;
+                    _convThrottle = setTimeout(function() { _convThrottle = null; }, 120);
+                    document.querySelectorAll("a[data-featherlight='image']:not([data-converted='true'])").forEach(function(a) {
+                        var base64Src = a.getAttribute('href');
+                        if (base64Src && base64Src.startsWith('data:image')) {
+                            a.setAttribute('data-converted', 'true');
+                            a.style.cursor = 'zoom-in';
+                            a.style.display = 'inline-block';
+                            var img = document.createElement('img');
+                            img.src = base64Src;
+                            img.className = 'r-img step-img-thumb';
+                            img.alt = 'Screenshot';
+                            img.title = 'Click to enlarge';
+                            a.innerHTML = '';
+                            a.appendChild(img);
+                            a.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                openLightbox(base64Src);
+                            });
+                        }
+                    });
+                }
+
+                document.addEventListener('DOMContentLoaded', function() {
+                    createLightbox();
+                    convertBase64Badges();
+                    var observer = new MutationObserver(function() { convertBase64Badges(); });
+                    observer.observe(document.body, { childList: true, subtree: true });
                 });
                 """;
             spark.config().setJs(customJs);
