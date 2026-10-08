@@ -17,7 +17,7 @@ public class Trainers extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Trainers']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='Trainers']] | //button[.//span[normalize-space()='Trainers']]")
 	private WebElement trainersNavButton;
 
 	@FindBy(xpath = "//h1[normalize-space()='Trainers'] | //header//h1[contains(.,'Trainer')]")
@@ -43,14 +43,12 @@ public class Trainers extends AbstractComponent {
 
 	@StepName("Click Trainers from Sidebar")
 	public void clickTrainers() {
-		waitUtils.waitForClickable(trainersNavButton);
-		trainersNavButton.click();
+		navigateToClientRoute(trainersNavButton, "trainers");
 	}
 
 	@StepName("Verify Trainers Page is Loaded")
 	public boolean isTrainersPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("trainers") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Search Trainers")

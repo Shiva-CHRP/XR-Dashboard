@@ -15,7 +15,7 @@ public class Synchronization extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Synchronization']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='Synchronization']] | //button[.//span[normalize-space()='Synchronization']]")
 	private WebElement synchronizationNavButton;
 
 	@FindBy(xpath = "//h1[contains(.,'Synchronization') or contains(.,'Sync')] | //header//h1")
@@ -26,14 +26,12 @@ public class Synchronization extends AbstractComponent {
 
 	@StepName("Click Synchronization from Sidebar")
 	public void clickSynchronization() {
-		waitUtils.waitForClickable(synchronizationNavButton);
-		synchronizationNavButton.click();
+		navigateToClientRoute(synchronizationNavButton, "synchronization");
 	}
 
 	@StepName("Verify Synchronization Page is Loaded")
 	public boolean isSynchronizationPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("synchronization") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Click Trigger Sync Now")

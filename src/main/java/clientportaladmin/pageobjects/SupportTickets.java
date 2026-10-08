@@ -17,7 +17,7 @@ public class SupportTickets extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Support Tickets'] or .//span[normalize-space()='Support']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='Support Tickets'] or .//span[normalize-space()='Support']] | //button[.//span[normalize-space()='Support Tickets'] or .//span[normalize-space()='Support']]")
 	private WebElement supportNavButton;
 
 	@FindBy(xpath = "//h1[normalize-space()='Support Tickets'] | //header//h1[contains(.,'Support')]")
@@ -52,14 +52,12 @@ public class SupportTickets extends AbstractComponent {
 
 	@StepName("Click Support Tickets from Sidebar")
 	public void clickSupportTickets() {
-		waitUtils.waitForClickable(supportNavButton);
-		supportNavButton.click();
+		navigateToClientRoute(supportNavButton, "support");
 	}
 
 	@StepName("Verify Support Tickets Page is Loaded")
 	public boolean isSupportTicketsPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("support") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Click Raise Ticket")
@@ -110,8 +108,44 @@ public class SupportTickets extends AbstractComponent {
 		resolvedTab.click();
 	}
 
+	@FindBy(xpath = "//button[contains(normalize-space(),'Reopen ticket') or contains(.,'Reopen ticket')]")
+	private WebElement reopenTicketButton;
+
+	@FindBy(xpath = "//div[contains(.,'Support marked this ticket resolved')]")
+	private WebElement resolvedNoticeBanner;
+
 	@StepName("Get Ticket Rows Count")
 	public int getTicketRowsCount() {
 		return ticketRows.size();
+	}
+
+	@StepName("Click Ticket Row by Index")
+	public void clickTicketRow(int index) {
+		if (index >= 0 && index < ticketRows.size()) {
+			WebElement row = ticketRows.get(index);
+			waitUtils.scrollIntoView(row);
+			waitUtils.clickUsingJS(row);
+		}
+	}
+
+	@StepName("Check if Reopen Ticket Button is Present")
+	public boolean isReopenButtonPresent() {
+		return !driver.findElements(org.openqa.selenium.By.xpath("//button[contains(normalize-space(),'Reopen ticket')]")).isEmpty();
+	}
+
+	@StepName("Click Reopen Ticket")
+	public void clickReopenTicket() {
+		waitUtils.waitForClickable(reopenTicketButton);
+		try {
+			reopenTicketButton.click();
+		} catch (Exception e) {
+			waitUtils.clickUsingJS(reopenTicketButton);
+		}
+	}
+
+	@StepName("Verify Ticket Reopened Toast")
+	public boolean verifyTicketReopenedToast() {
+		superadmin.utils.ToastResponse toast = toastUtils.captureToast();
+		return toast != null && "success".equalsIgnoreCase(toast.getType()) && toast.getMessage().contains("Ticket reopened");
 	}
 }

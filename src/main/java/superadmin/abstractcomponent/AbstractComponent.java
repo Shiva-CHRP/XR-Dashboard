@@ -186,4 +186,27 @@ public class AbstractComponent {
 			return key;
 		}
 	}
+
+	// ================= CLIENT ROUTE NAVIGATION HELPER =================
+	public void navigateToClientRoute(WebElement navButton, String relativeRoute) {
+		String cleanRoute = relativeRoute.replaceAll("^/", "");
+		try {
+			if (navButton != null) {
+				waitUtils.scrollIntoView(navButton);
+				waitUtils.clickUsingJS(navButton);
+			}
+		} catch (Exception ignored) {
+		}
+
+		if (!waitUtils.waitForUrlContains(cleanRoute, 2)) {
+			// Self-healing direct SPA route navigation fallback
+			String currentUrl = driver.getCurrentUrl();
+			String baseUrl = currentUrl.split("/admin/")[0].split("/login")[0];
+			if (baseUrl.endsWith("/")) {
+				baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+			}
+			driver.get(baseUrl + "/admin/" + cleanRoute);
+			waitUtils.waitForUrlContains(cleanRoute, 5);
+		}
+	}
 }

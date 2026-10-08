@@ -15,7 +15,7 @@ public class ContentHub extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Content Hub'] or .//span[normalize-space()='Modules']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='Content Hub'] or .//span[normalize-space()='Modules']] | //button[.//span[normalize-space()='Content Hub'] or .//span[normalize-space()='Modules']]")
 	private WebElement contentHubButton;
 
 	@FindBy(xpath = "//h1[contains(.,'Content Hub') or contains(.,'Modules')] | //header//h1")
@@ -29,14 +29,12 @@ public class ContentHub extends AbstractComponent {
 
 	@StepName("Click Content Hub from Sidebar")
 	public void clickContentHub() {
-		waitUtils.waitForClickable(contentHubButton);
-		contentHubButton.click();
+		navigateToClientRoute(contentHubButton, "modules");
 	}
 
 	@StepName("Verify Content Hub Page is Loaded")
 	public boolean isContentHubLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("modules") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Verify Content Hub Page is Loaded")

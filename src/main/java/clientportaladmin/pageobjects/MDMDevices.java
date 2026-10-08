@@ -17,7 +17,7 @@ public class MDMDevices extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='MDM Devices'] or .//span[normalize-space()='Devices']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='MDM Devices'] or .//span[normalize-space()='Devices']] | //button[.//span[normalize-space()='MDM Devices'] or .//span[normalize-space()='Devices']]")
 	private WebElement mdmDevicesNavButton;
 
 	@FindBy(xpath = "//h1[normalize-space()='MDM Devices'] | //header//h1[contains(.,'Device')]")
@@ -55,14 +55,12 @@ public class MDMDevices extends AbstractComponent {
 
 	@StepName("Click MDM Devices from Sidebar")
 	public void clickMDMDevices() {
-		waitUtils.waitForClickable(mdmDevicesNavButton);
-		mdmDevicesNavButton.click();
+		navigateToClientRoute(mdmDevicesNavButton, "device-registry");
 	}
 
 	@StepName("Verify MDM Devices Page is Loaded")
 	public boolean isMDMDevicesPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("device-registry") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Search Devices")

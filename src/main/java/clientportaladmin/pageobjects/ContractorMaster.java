@@ -15,7 +15,7 @@ public class ContractorMaster extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//svg[contains(@class,'lucide-handshake')]] | //button[.//span[normalize-space()='Contractor'] or .//span[normalize-space()='Contractor Master'] or .//span[normalize-space()='Partner'] or .//span[normalize-space()='Vendor']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//svg[contains(@class,'lucide-handshake')]] | //button[.//svg[contains(@class,'lucide-handshake')]] | //button[.//span[normalize-space()='Contractor'] or .//span[normalize-space()='Contractor Master'] or .//span[normalize-space()='Partner'] or .//span[normalize-space()='Vendor']]")
 	private WebElement contractorMasterNavButton;
 
 	@FindBy(xpath = "//header//h1 | //h1[contains(.,'Master')] | //h1")
@@ -32,8 +32,7 @@ public class ContractorMaster extends AbstractComponent {
 
 	@StepName("Click Contractor Master from Sidebar")
 	public void clickContractorMaster() {
-		waitUtils.waitForClickable(contractorMasterNavButton);
-		contractorMasterNavButton.click();
+		navigateToClientRoute(contractorMasterNavButton, "partner-master");
 	}
 
 	@StepName("Verify Contractor Master Page is Loaded")

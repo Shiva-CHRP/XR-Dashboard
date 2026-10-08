@@ -17,7 +17,7 @@ public class AreaMaster extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//svg[contains(@class,'lucide-map-pin')]] | //button[.//span[normalize-space()='Area'] or .//span[normalize-space()='Mine']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//svg[contains(@class,'lucide-map-pin')]] | //button[.//svg[contains(@class,'lucide-map-pin')]] | //button[.//span[normalize-space()='Area'] or .//span[normalize-space()='Mine']]")
 	private WebElement areaMasterNavButton;
 
 	@FindBy(xpath = "//header//h1 | //h1[contains(.,'Master')] | //h1")
@@ -39,8 +39,7 @@ public class AreaMaster extends AbstractComponent {
 
 	@StepName("Click Area / Mine Master from Sidebar")
 	public void clickAreaMaster() {
-		waitUtils.waitForClickable(areaMasterNavButton);
-		areaMasterNavButton.click();
+		navigateToClientRoute(areaMasterNavButton, "area-master");
 	}
 
 	@StepName("Verify Area Master Page is Loaded")

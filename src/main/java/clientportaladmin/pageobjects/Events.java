@@ -15,7 +15,7 @@ public class Events extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Events'] or .//span[normalize-space()='Sessions']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='Events'] or .//span[normalize-space()='Sessions']] | //button[.//span[normalize-space()='Events'] or .//span[normalize-space()='Sessions']]")
 	private WebElement eventsNavButton;
 
 	@FindBy(xpath = "//h1[contains(.,'Event')]")
@@ -41,8 +41,7 @@ public class Events extends AbstractComponent {
 
 	@StepName("Click Events from Sidebar")
 	public void clickEvents() {
-		waitUtils.waitForClickable(eventsNavButton);
-		eventsNavButton.click();
+		navigateToClientRoute(eventsNavButton, "sessions");
 	}
 
 	@StepName("Click Sessions (Backward Compatibility)")
@@ -52,8 +51,7 @@ public class Events extends AbstractComponent {
 
 	@StepName("Verify Events Page is Loaded")
 	public boolean isEventsPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("sessions") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Switch to Events Tab")

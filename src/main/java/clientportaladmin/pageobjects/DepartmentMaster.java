@@ -15,7 +15,7 @@ public class DepartmentMaster extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//svg[contains(@class,'lucide-folder-tree')]] | //button[.//span[normalize-space()='Department'] or .//span[normalize-space()='Department Master']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//svg[contains(@class,'lucide-folder-tree')]] | //button[.//svg[contains(@class,'lucide-folder-tree')]] | //button[.//span[normalize-space()='Department'] or .//span[normalize-space()='Department Master']]")
 	private WebElement departmentMasterNavButton;
 
 	@FindBy(xpath = "//header//h1 | //h1[contains(.,'Master')] | //h1")
@@ -32,8 +32,7 @@ public class DepartmentMaster extends AbstractComponent {
 
 	@StepName("Click Department Master from Sidebar")
 	public void clickDepartmentMaster() {
-		waitUtils.waitForClickable(departmentMasterNavButton);
-		departmentMasterNavButton.click();
+		navigateToClientRoute(departmentMasterNavButton, "department-master");
 	}
 
 	@StepName("Verify Department Master Page is Loaded")

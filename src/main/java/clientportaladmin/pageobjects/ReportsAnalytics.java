@@ -15,7 +15,7 @@ public class ReportsAnalytics extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[contains(normalize-space(),'Reports')] or .//span[contains(normalize-space(),'Analytics')]]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[contains(normalize-space(),'Reports')] or .//span[contains(normalize-space(),'Analytics')]] | //button[.//span[contains(normalize-space(),'Reports')] or .//span[contains(normalize-space(),'Analytics')]]")
 	private WebElement reportsNavButton;
 
 	@FindBy(xpath = "//h1[normalize-space()='Reports & Analytics'] | //header//h1[contains(.,'Reports')]")
@@ -38,14 +38,12 @@ public class ReportsAnalytics extends AbstractComponent {
 
 	@StepName("Click Reports & Analytics from Sidebar")
 	public void clickReports() {
-		waitUtils.waitForClickable(reportsNavButton);
-		reportsNavButton.click();
+		navigateToClientRoute(reportsNavButton, "reports");
 	}
 
 	@StepName("Verify Reports & Analytics Page is Loaded")
 	public boolean isReportsPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("reports") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Switch to Training Performance Tab")

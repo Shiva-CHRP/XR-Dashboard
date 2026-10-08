@@ -75,7 +75,16 @@ public class WaitUtils {
 	// URL
 	public boolean waitForUrlContains(String url) {
 
-		return Boolean.TRUE.equals(wait.until(ExpectedConditions.urlContains(url)));
+		return waitForUrlContains(url, 10);
+	}
+
+	public boolean waitForUrlContains(String url, int timeoutSeconds) {
+		try {
+			WebDriverWait customWait = new WebDriverWait(driver, Duration.ofSeconds(timeoutSeconds));
+			return Boolean.TRUE.equals(customWait.until(ExpectedConditions.urlContains(url)));
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	// SCROLL

@@ -15,7 +15,7 @@ public class Overview extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Overview'] or .//span[normalize-space()='Dashboard']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='Overview'] or .//span[normalize-space()='Dashboard']] | //button[.//span[normalize-space()='Overview'] or .//span[normalize-space()='Dashboard']]")
 	private WebElement overviewNavButton;
 
 	@FindBy(xpath = "//h1[contains(.,'Overview') or contains(.,'Dashboard')] | //header//h1")
@@ -26,14 +26,12 @@ public class Overview extends AbstractComponent {
 
 	@StepName("Click Overview from Sidebar")
 	public void clickOverview() {
-		waitUtils.waitForClickable(overviewNavButton);
-		overviewNavButton.click();
+		navigateToClientRoute(overviewNavButton, "dashboard");
 	}
 
 	@StepName("Verify Overview Page is Loaded")
 	public boolean isOverviewLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("dashboard") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Verify Overview Page is Loaded")

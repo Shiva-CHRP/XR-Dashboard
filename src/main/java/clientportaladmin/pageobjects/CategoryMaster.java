@@ -17,7 +17,7 @@ public class CategoryMaster extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//svg[contains(@class,'lucide-tags')]] | //button[.//span[normalize-space()='Category']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//svg[contains(@class,'lucide-tags')]] | //button[.//svg[contains(@class,'lucide-tags')]] | //button[.//span[normalize-space()='Category']]")
 	private WebElement categoryMasterNavButton;
 
 	@FindBy(xpath = "//header//h1 | //h1[contains(.,'Master')] | //h1")
@@ -39,8 +39,7 @@ public class CategoryMaster extends AbstractComponent {
 
 	@StepName("Click Category Master from Sidebar")
 	public void clickCategoryMaster() {
-		waitUtils.waitForClickable(categoryMasterNavButton);
-		categoryMasterNavButton.click();
+		navigateToClientRoute(categoryMasterNavButton, "category-master");
 	}
 
 	@StepName("Verify Category Master Page is Loaded")

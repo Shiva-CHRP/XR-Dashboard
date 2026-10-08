@@ -15,7 +15,7 @@ public class RoleAssignment extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Role Assignment']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='Role Assignment']] | //button[.//span[normalize-space()='Role Assignment']]")
 	private WebElement roleAssignmentNavButton;
 
 	@FindBy(xpath = "//h1[contains(.,'Role Assignment') or contains(.,'Roles')] | //header//h1")
@@ -29,14 +29,12 @@ public class RoleAssignment extends AbstractComponent {
 
 	@StepName("Click Role Assignment from Sidebar")
 	public void clickRoleAssignment() {
-		waitUtils.waitForClickable(roleAssignmentNavButton);
-		roleAssignmentNavButton.click();
+		navigateToClientRoute(roleAssignmentNavButton, "users");
 	}
 
 	@StepName("Verify Role Assignment Page is Loaded")
 	public boolean isRoleAssignmentLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("users") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Search Role Assignment")

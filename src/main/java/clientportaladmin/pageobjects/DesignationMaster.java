@@ -15,7 +15,7 @@ public class DesignationMaster extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//svg[contains(@class,'lucide-badge-check')]] | //button[.//span[normalize-space()='Designation'] or .//span[normalize-space()='Designation Master']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//svg[contains(@class,'lucide-badge-check')]] | //button[.//svg[contains(@class,'lucide-badge-check')]] | //button[.//span[normalize-space()='Designation'] or .//span[normalize-space()='Designation Master']]")
 	private WebElement designationMasterNavButton;
 
 	@FindBy(xpath = "//header//h1 | //h1[contains(.,'Master')] | //h1")
@@ -32,8 +32,7 @@ public class DesignationMaster extends AbstractComponent {
 
 	@StepName("Click Designation Master from Sidebar")
 	public void clickDesignationMaster() {
-		waitUtils.waitForClickable(designationMasterNavButton);
-		designationMasterNavButton.click();
+		navigateToClientRoute(designationMasterNavButton, "designation-master");
 	}
 
 	@StepName("Verify Designation Master Page is Loaded")

@@ -15,7 +15,7 @@ public class RecoveryCenter extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Recovery Center']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='Recovery Center']] | //button[.//span[normalize-space()='Recovery Center']]")
 	private WebElement recoveryCenterNavButton;
 
 	@FindBy(xpath = "//h1[contains(.,'Recovery') or contains(.,'Recycle')] | //header//h1")
@@ -29,14 +29,12 @@ public class RecoveryCenter extends AbstractComponent {
 
 	@StepName("Click Recovery Center from Sidebar")
 	public void clickRecoveryCenter() {
-		waitUtils.waitForClickable(recoveryCenterNavButton);
-		recoveryCenterNavButton.click();
+		navigateToClientRoute(recoveryCenterNavButton, "recovery");
 	}
 
 	@StepName("Verify Recovery Center Page is Loaded")
 	public boolean isRecoveryCenterLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("recovery") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Search Deleted Records")

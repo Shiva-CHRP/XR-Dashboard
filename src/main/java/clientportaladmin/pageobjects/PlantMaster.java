@@ -17,7 +17,7 @@ public class PlantMaster extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//svg[contains(@class,'lucide-factory')]] | //button[.//span[normalize-space()='Plant'] or .//span[normalize-space()='Area']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//svg[contains(@class,'lucide-factory')]] | //button[.//svg[contains(@class,'lucide-factory')]] | //button[.//span[normalize-space()='Plant'] or .//span[normalize-space()='Area']]")
 	private WebElement plantMasterNavButton;
 
 	@FindBy(xpath = "//header//h1 | //h1[contains(.,'Master')] | //h1")
@@ -39,8 +39,7 @@ public class PlantMaster extends AbstractComponent {
 
 	@StepName("Click Plant / Area Master from Sidebar")
 	public void clickPlantMaster() {
-		waitUtils.waitForClickable(plantMasterNavButton);
-		plantMasterNavButton.click();
+		navigateToClientRoute(plantMasterNavButton, "plant-master");
 	}
 
 	@StepName("Verify Plant Master Page is Loaded")

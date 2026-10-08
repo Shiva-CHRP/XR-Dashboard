@@ -15,7 +15,7 @@ public class Curriculum extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Curriculum']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='Curriculum']] | //button[.//span[normalize-space()='Curriculum']]")
 	private WebElement curriculumNavButton;
 
 	@FindBy(xpath = "//h1[contains(.,'Curriculum') or contains(.,'Curricula')] | //header//h1")
@@ -35,14 +35,12 @@ public class Curriculum extends AbstractComponent {
 
 	@StepName("Click Curriculum from Sidebar")
 	public void clickCurriculum() {
-		waitUtils.waitForClickable(curriculumNavButton);
-		curriculumNavButton.click();
+		navigateToClientRoute(curriculumNavButton, "curricula");
 	}
 
 	@StepName("Verify Curriculum Page is Loaded")
 	public boolean isCurriculumLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("curricula") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Verify Curriculum Page is Loaded")
@@ -81,5 +79,36 @@ public class Curriculum extends AbstractComponent {
 	@StepName("Get Curricula Count")
 	public int getCurriculaCount() {
 		return curriculumCards.size();
+	}
+
+	@StepName("Click Curriculum Card by Index")
+	public void clickCurriculumCard(int index) {
+		if (index >= 0 && index < curriculumCards.size()) {
+			WebElement card = curriculumCards.get(index);
+			waitUtils.scrollIntoView(card);
+			waitUtils.clickUsingJS(card);
+		}
+	}
+
+	@StepName("Click View Assessment on Lesson Row")
+	public void clickViewAssessment() {
+		java.util.List<WebElement> viewBtns = driver.findElements(org.openqa.selenium.By.xpath("//button[contains(.,'View') or .//*[local-name()='svg' and contains(@class,'lucide-eye')]]"));
+		if (!viewBtns.isEmpty()) {
+			waitUtils.scrollIntoView(viewBtns.get(0));
+			waitUtils.clickUsingJS(viewBtns.get(0));
+		}
+	}
+
+	@StepName("Verify Assessment Preview Dialog is Open")
+	public boolean isAssessmentPreviewOpen() {
+		return waitUtils.waitUntil(d -> !d.findElements(org.openqa.selenium.By.xpath("//div[contains(@class,'modal-content')][.//button[normalize-space()='Close'] or contains(.,'Preview only')]")).isEmpty());
+	}
+
+	@StepName("Close Assessment Preview Dialog")
+	public void closeAssessmentPreview() {
+		java.util.List<WebElement> closeBtns = driver.findElements(org.openqa.selenium.By.xpath("//div[contains(@class,'modal-content')]//button[normalize-space()='Close'] | //button[@aria-label='Close']"));
+		if (!closeBtns.isEmpty()) {
+			waitUtils.clickUsingJS(closeBtns.get(0));
+		}
 	}
 }

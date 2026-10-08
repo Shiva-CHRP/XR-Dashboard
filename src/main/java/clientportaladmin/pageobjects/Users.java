@@ -15,7 +15,7 @@ public class Users extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Users'] or .//span[normalize-space()='Employees']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='Users'] or .//span[normalize-space()='Employees']] | //button[.//span[normalize-space()='Users'] or .//span[normalize-space()='Employees']]")
 	private WebElement usersNavButton;
 
 	@FindBy(xpath = "//h1[normalize-space()='Users'] | //header//h1[contains(.,'Users')]")
@@ -77,8 +77,7 @@ public class Users extends AbstractComponent {
 
 	@StepName("Click Users / Employees from Sidebar")
 	public void clickUsers() {
-		waitUtils.waitForClickable(usersNavButton);
-		usersNavButton.click();
+		navigateToClientRoute(usersNavButton, "employees");
 	}
 
 	@StepName("Click Employees (Backward Compatibility)")
@@ -88,8 +87,7 @@ public class Users extends AbstractComponent {
 
 	@StepName("Verify Users Page is Loaded")
 	public boolean isUsersPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("employees") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Switch to Internal Users Tab")

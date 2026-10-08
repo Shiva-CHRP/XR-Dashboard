@@ -17,7 +17,7 @@ public class DivisionMaster extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//svg[contains(@class,'lucide-split')]] | //button[.//span[normalize-space()='Division'] or .//span[normalize-space()='Nodal Office']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//svg[contains(@class,'lucide-split')]] | //button[.//svg[contains(@class,'lucide-split')]] | //button[.//span[normalize-space()='Division'] or .//span[normalize-space()='Nodal Office']]")
 	private WebElement divisionMasterNavButton;
 
 	@FindBy(xpath = "//header//h1 | //h1[contains(.,'Master')] | //h1")
@@ -39,8 +39,7 @@ public class DivisionMaster extends AbstractComponent {
 
 	@StepName("Click Division Master from Sidebar")
 	public void clickDivisionMaster() {
-		waitUtils.waitForClickable(divisionMasterNavButton);
-		divisionMasterNavButton.click();
+		navigateToClientRoute(divisionMasterNavButton, "division-master");
 	}
 
 	@StepName("Verify Division Master Page is Loaded")

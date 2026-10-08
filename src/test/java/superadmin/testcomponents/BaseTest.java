@@ -112,6 +112,7 @@ public class BaseTest {
 	public SubmissionTracker submissionTracker;
 	public Support support;
 	public SystemHealth systemHealth;
+	public superadmin.pageobjects.Settings superAdminSettings;
 
 	public AreaMaster areaMaster;
 	public AssignCurriculums assignCurriculums;
@@ -211,6 +212,7 @@ public class BaseTest {
 		submissionTracker = new SubmissionTracker(driver);
 		support = new Support(driver);
 		systemHealth = new SystemHealth(driver);
+		superAdminSettings = new superadmin.pageobjects.Settings(driver);
 	}
 
 	public void initializeClientAdminPageObjects() {

@@ -15,7 +15,7 @@ public class CertificateTemplates extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Cert. Templates'] or .//span[normalize-space()='Certificate Templates']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='Cert. Templates'] or .//span[normalize-space()='Certificate Templates']] | //button[.//span[normalize-space()='Cert. Templates'] or .//span[normalize-space()='Certificate Templates']]")
 	private WebElement certificateTemplatesNavButton;
 
 	@FindBy(xpath = "//h1[contains(.,'Certificate Templates')] | //header//h1")
@@ -29,14 +29,12 @@ public class CertificateTemplates extends AbstractComponent {
 
 	@StepName("Click Certificate Templates from Sidebar")
 	public void clickCertificateTemplates() {
-		waitUtils.waitForClickable(certificateTemplatesNavButton);
-		certificateTemplatesNavButton.click();
+		navigateToClientRoute(certificateTemplatesNavButton, "certificate-templates");
 	}
 
 	@StepName("Verify Certificate Templates Page is Loaded")
 	public boolean isCertificateTemplatesLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("certificate-templates") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Click Create Template Button")

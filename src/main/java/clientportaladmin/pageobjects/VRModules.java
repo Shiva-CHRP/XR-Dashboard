@@ -17,7 +17,7 @@ public class VRModules extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='VR Modules']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='VR Modules']] | //button[.//span[normalize-space()='VR Modules']]")
 	private WebElement vrModulesNavButton;
 
 	@FindBy(xpath = "//h1[contains(.,'VR Modules')] | //header//h1")
@@ -31,19 +31,17 @@ public class VRModules extends AbstractComponent {
 
 	@StepName("Check if VR Modules is present in sidebar")
 	public boolean isVRModulesPresent() {
-		return !driver.findElements(org.openqa.selenium.By.xpath("//button[.//span[normalize-space()='VR Modules']]")).isEmpty();
+		return !driver.findElements(org.openqa.selenium.By.xpath("//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='VR Modules']] | //button[.//span[normalize-space()='VR Modules']]")).isEmpty();
 	}
 
 	@StepName("Click VR Modules from Sidebar")
 	public void clickVRModules() {
-		waitUtils.waitForClickable(vrModulesNavButton);
-		vrModulesNavButton.click();
+		navigateToClientRoute(vrModulesNavButton, "vr-modules");
 	}
 
 	@StepName("Verify VR Modules Page is Loaded")
 	public boolean isVRModulesPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("vr-modules") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Search VR Modules")

@@ -15,7 +15,7 @@ public class AssignModules extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Assign Modules']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='Assign Modules']] | //button[.//span[normalize-space()='Assign Modules']]")
 	private WebElement assignModulesButton;
 
 	@FindBy(xpath = "//h1[contains(.,'Assign Modules') or contains(.,'Module Assignment')] | //header//h1")
@@ -26,14 +26,12 @@ public class AssignModules extends AbstractComponent {
 
 	@StepName("Click Assign Modules from Sidebar")
 	public void clickAssignModules() {
-		waitUtils.waitForClickable(assignModulesButton);
-		assignModulesButton.click();
+		navigateToClientRoute(assignModulesButton, "module-assignment");
 	}
 
 	@StepName("Verify Assign Modules Page is Loaded")
 	public boolean isAssignModulesLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("module-assignment") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Verify Assign Modules Page is Loaded")

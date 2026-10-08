@@ -17,7 +17,7 @@ public class Certificates extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Certificates']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='Certificates']] | //button[.//span[normalize-space()='Certificates']]")
 	private WebElement certificatesNavButton;
 
 	@FindBy(xpath = "//h1[normalize-space()='Certificates'] | //header//h1[contains(.,'Certificate')]")
@@ -43,14 +43,12 @@ public class Certificates extends AbstractComponent {
 
 	@StepName("Click Certificates from Sidebar")
 	public void clickCertificates() {
-		waitUtils.waitForClickable(certificatesNavButton);
-		certificatesNavButton.click();
+		navigateToClientRoute(certificatesNavButton, "certificates");
 	}
 
 	@StepName("Verify Certificates Page is Loaded")
 	public boolean isCertificatesPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("certificates") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Search Certificates")

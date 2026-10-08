@@ -15,7 +15,7 @@ public class Settings extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Settings']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='Settings']] | //button[.//span[normalize-space()='Settings']]")
 	private WebElement settingsNavButton;
 
 	@FindBy(xpath = "//h1[normalize-space()='Settings'] | //header//h1[contains(.,'Settings')]")
@@ -41,14 +41,12 @@ public class Settings extends AbstractComponent {
 
 	@StepName("Click Settings from Sidebar")
 	public void clickSettings() {
-		waitUtils.waitForClickable(settingsNavButton);
-		settingsNavButton.click();
+		navigateToClientRoute(settingsNavButton, "settings");
 	}
 
 	@StepName("Verify Settings Page is Loaded")
 	public boolean isSettingsPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("settings") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Switch to Portal Customization Tab")

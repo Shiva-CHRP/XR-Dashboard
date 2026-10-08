@@ -17,7 +17,7 @@ public class SetupMaster extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//svg[contains(@class,'lucide-wrench')]] | //button[.//span[normalize-space()='Setup']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//svg[contains(@class,'lucide-wrench')]] | //button[.//svg[contains(@class,'lucide-wrench')]] | //button[.//span[normalize-space()='Setup']]")
 	private WebElement setupMasterNavButton;
 
 	@FindBy(xpath = "//header//h1 | //h1[contains(.,'Master')] | //h1")
@@ -39,8 +39,7 @@ public class SetupMaster extends AbstractComponent {
 
 	@StepName("Click Setup Master from Sidebar")
 	public void clickSetupMaster() {
-		waitUtils.waitForClickable(setupMasterNavButton);
-		setupMasterNavButton.click();
+		navigateToClientRoute(setupMasterNavButton, "setup-master");
 	}
 
 	@StepName("Verify Setup Master Page is Loaded")

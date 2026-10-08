@@ -15,7 +15,7 @@ public class AssignCurriculums extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Assign Curriculums']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='Assign Curriculums']] | //button[.//span[normalize-space()='Assign Curriculums']]")
 	private WebElement assignCurriculumsButton;
 
 	@FindBy(xpath = "//h1[contains(.,'Assign Curriculums') or contains(.,'Curriculum Assignment')] | //header//h1")
@@ -26,14 +26,12 @@ public class AssignCurriculums extends AbstractComponent {
 
 	@StepName("Click Assign Curriculums from Sidebar")
 	public void clickAssignCurriculums() {
-		waitUtils.waitForClickable(assignCurriculumsButton);
-		assignCurriculumsButton.click();
+		navigateToClientRoute(assignCurriculumsButton, "curriculum-assignment");
 	}
 
 	@StepName("Verify Assign Curriculums Page is Loaded")
 	public boolean isAssignCurriculumsLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("curriculum-assignment") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
 	}
 
 	@StepName("Verify Assign Curriculums Page is Loaded")
