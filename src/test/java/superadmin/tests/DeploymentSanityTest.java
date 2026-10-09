@@ -477,6 +477,12 @@ public class DeploymentSanityTest extends BaseTest {
 			softAssert.assertTrue(offlinePortalRelease.isPageLoaded(), "Offline Releases page should remain loaded after closing notes");
 		}
 
+		// 3. Multi-Stream Tab Switching (EXE vs APK)
+		offlinePortalRelease.switchToApkTab();
+		softAssert.assertTrue(offlinePortalRelease.isPageLoaded(), "Offline Releases page should remain loaded on APK tab");
+		offlinePortalRelease.switchToExeTab();
+		softAssert.assertTrue(offlinePortalRelease.isPageLoaded(), "Offline Releases page should remain loaded on EXE tab");
+
 		softAssert.assertAll();
 	}
 
@@ -571,7 +577,7 @@ public class DeploymentSanityTest extends BaseTest {
 	// 20. SUPER ADMIN NOTIFICATIONS SCREEN
 	// =========================================================================
 
-	@Test(priority = 20, dependsOnMethods = {"Verify_Super_Admin_Settings_Screen"})
+	@Test(priority = 20, dependsOnMethods = {"Verify_Governance_Dashboard_Screen"})
 	@TestInfo(module = "Sanity - Notifications", description = "Verify Super Admin Notifications Feed, Filters and Header Controls", priority = "Medium")
 	public void Verify_Super_Admin_Notifications_Screen() {
 		adminNotifications.navigateToNotifications();
@@ -586,7 +592,7 @@ public class DeploymentSanityTest extends BaseTest {
 	// 21. ROLE SWITCH TO VR DEVELOPER
 	// =========================================================================
 
-	@Test(priority = 21, dependsOnMethods = {"Verify_Super_Admin_Notifications_Screen"})
+	@Test(priority = 21, dependsOnMethods = {"Verify_Login_Screen_And_Authenticate"})
 	@TestInfo(module = "Sanity - Role Switch", description = "Switch Role to VR Developer", priority = "Critical")
 	public void Verify_Role_Switch_To_VR_Developer() {
 		loginPage.switchToVRDeveloper();

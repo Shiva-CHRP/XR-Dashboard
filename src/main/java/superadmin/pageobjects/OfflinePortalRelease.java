@@ -39,8 +39,14 @@ public class OfflinePortalRelease extends AbstractComponent {
 	@FindBy(xpath = "//a[@href='/super-admin/offline-releases']")
 	private WebElement offlineReleaseLink;
 
-	@FindBy(xpath = "//h1[contains(text(),'Offline Portal Releases')]")
+	@FindBy(xpath = "//h1[contains(text(),'Offline Portal Releases') or contains(text(),'Offline Portal APK Releases')]")
 	private WebElement pageTitle;
+
+	@FindBy(xpath = "//*[@id='release-tab-exe'] | //button[@role='tab' and contains(.,'EXE')]")
+	private WebElement exeTab;
+
+	@FindBy(xpath = "//*[@id='release-tab-apk'] | //button[@role='tab' and contains(.,'APK')]")
+	private WebElement apkTab;
 
 	@FindBy(xpath = "//span[contains(text(),'Deployment:')]")
 	private WebElement deploymentEnvironmentBadge;
@@ -48,7 +54,7 @@ public class OfflinePortalRelease extends AbstractComponent {
 	@FindBy(xpath = "//button[contains(.,'Refresh')]")
 	private WebElement refreshButton;
 
-	@FindBy(xpath = "//button[contains(.,'Upload Release')]")
+	@FindBy(xpath = "//button[contains(.,'Upload Release') or contains(.,'Upload APK Release')]")
 	private WebElement uploadReleaseButton;
 
 	// =========================================================================
@@ -351,5 +357,48 @@ public class OfflinePortalRelease extends AbstractComponent {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	@StepName("Switch to EXE Releases Tab")
+	public void clickExeTab() {
+		try {
+			if (isApkTabPresent()) {
+				waitUtils.waitForClickable(exeTab);
+				exeTab.click();
+			}
+		} catch (Exception e) {
+			try {
+				waitUtils.clickUsingJS(exeTab);
+			} catch (Exception ignored) {
+			}
+		}
+	}
+
+	public void switchToExeTab() {
+		clickExeTab();
+	}
+
+	@StepName("Switch to APK Releases Tab")
+	public void clickApkTab() {
+		try {
+			if (isApkTabPresent()) {
+				waitUtils.waitForClickable(apkTab);
+				apkTab.click();
+			}
+		} catch (Exception e) {
+			try {
+				waitUtils.clickUsingJS(apkTab);
+			} catch (Exception ignored) {
+			}
+		}
+	}
+
+	public void switchToApkTab() {
+		clickApkTab();
+	}
+
+	@StepName("Verify APK Tab is Present")
+	public boolean isApkTabPresent() {
+		return !driver.findElements(By.xpath("//*[@id='release-tab-apk'] | //button[@role='tab' and contains(.,'APK')]")).isEmpty();
 	}
 }

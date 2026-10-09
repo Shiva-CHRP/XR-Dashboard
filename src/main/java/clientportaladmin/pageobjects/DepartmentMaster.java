@@ -15,13 +15,13 @@ public class DepartmentMaster extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//svg[contains(@class,'lucide-folder-tree')]] | //button[.//svg[contains(@class,'lucide-folder-tree')]] | //button[.//span[normalize-space()='Department'] or .//span[normalize-space()='Department Master']]")
+	@FindBy(xpath = "//aside//button[normalize-space()='Department' or .//span[normalize-space()='Department']] | //aside//button[.//svg[contains(@class,'lucide-folder-tree')]]")
 	private WebElement departmentMasterNavButton;
 
 	@FindBy(xpath = "//header//h1 | //h1[contains(.,'Master')] | //h1")
 	private WebElement pageHeaderTitle;
 
-	@FindBy(xpath = "//input[contains(@placeholder,'Search') or contains(@placeholder,'search')]")
+	@FindBy(xpath = "//input[contains(@class,'fb-search-input') or contains(@placeholder,'Search') or contains(@placeholder,'search')]")
 	private WebElement searchInput;
 
 	@FindBy(xpath = "//button[contains(normalize-space(),'Add') or contains(.,'Create')]")
@@ -60,5 +60,11 @@ public class DepartmentMaster extends AbstractComponent {
 	@StepName("Get Department Rows Count")
 	public int getDepartmentRowsCount() {
 		return departmentRows.size();
+	}
+
+	@StepName("Is Empty Table State Displayed")
+	public boolean isEmptyTableStateDisplayed() {
+		return !driver.findElements(org.openqa.selenium.By.xpath("//td[contains(.,'No') or contains(.,'found') or @colSpan] | //div[contains(.,'No') and contains(.,'found')]")).isEmpty()
+				|| getDepartmentRowsCount() == 0;
 	}
 }

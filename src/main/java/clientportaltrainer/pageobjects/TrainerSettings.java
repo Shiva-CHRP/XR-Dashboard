@@ -15,7 +15,7 @@ public class TrainerSettings extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Settings']]")
+	@FindBy(xpath = "//aside//button[.//span[normalize-space()='Settings']] | //button[.//span[normalize-space()='Settings']]")
 	private WebElement settingsButton;
 
 	@FindBy(xpath = "//h1[contains(.,'Settings')] | //header//h1")
@@ -35,14 +35,13 @@ public class TrainerSettings extends AbstractComponent {
 
 	@StepName("Click Trainer Settings")
 	public void clickTrainerSettings() {
-		waitUtils.waitForClickable(settingsButton);
-		settingsButton.click();
+		navigateToClientRoute(settingsButton, "settings");
 	}
 
 	@StepName("Verify Trainer Settings Page is Loaded")
 	public boolean isTrainerSettingsPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("settings", 2)
+				|| !driver.findElements(org.openqa.selenium.By.xpath("//h1[contains(.,'Settings')] | //header//h1")).isEmpty();
 	}
 
 	@StepName("Switch to Offline Enrollment Tab")

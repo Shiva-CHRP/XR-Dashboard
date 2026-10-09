@@ -439,4 +439,23 @@ public class ClientDeploymentSanityTest extends ClientBaseTest {
 
 		softAssert.assertAll();
 	}
+
+	// =========================================================================
+	// 11. DATA SYNCHRONIZATION & DUPLICATE CONFLICTS
+	// =========================================================================
+
+	@Test(priority = 28, dependsOnMethods = {"Verify_Overview_Dashboard"})
+	@TestInfo(module = "Sanity - Duplicate Conflicts", description = "Verify Duplicate Conflicts Screen, Open/Resolved Tabs and Table/Empty State", priority = "High")
+	public void Verify_Duplicate_Conflicts_Screen_And_Tabs() {
+		duplicateConflicts.clickDuplicateConflicts();
+		softAssert.assertTrue(duplicateConflicts.isDuplicateConflictsPageLoaded(), "Duplicate Conflicts page should be loaded");
+
+		duplicateConflicts.switchToResolvedTab();
+		softAssert.assertTrue(duplicateConflicts.isDuplicateConflictsPageLoaded(), "Resolved tab should remain functional");
+
+		duplicateConflicts.switchToOpenTab();
+		softAssert.assertTrue(duplicateConflicts.isDuplicateConflictsPageLoaded(), "Open tab should remain functional");
+
+		softAssert.assertAll();
+	}
 }

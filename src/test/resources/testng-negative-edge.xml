@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="CHRP Platform Negative &amp; Edge Case Validation Suite" verbose="1">
+
+    <listeners>
+        <listener class-name="superadmin.listener.Listener"/>
+    </listeners>
+
+    <test name="Super Admin Authentication Negative &amp; Security" preserve-order="true">
+        <classes>
+            <class name="superadmin.tests.SuperAdminAuthNegativeTest"/>
+        </classes>
+    </test>
+
+    <test name="Super Admin Search and Filter Edge Cases" preserve-order="true">
+        <classes>
+            <class name="superadmin.tests.SuperAdminSearchAndFilterEdgeTest"/>
+        </classes>
+    </test>
+
+    <test name="Super Admin Form Validation Edge Cases" preserve-order="true">
+        <classes>
+            <class name="superadmin.tests.SuperAdminFormValidationEdgeTest"/>
+        </classes>
+    </test>
+
+    <test name="Client Portal Authentication Negative &amp; Multi-Tenant Security" preserve-order="true">
+        <classes>
+            <class name="clientportaladmin.tests.ClientAuthNegativeTest"/>
+        </classes>
+    </test>
+
+    <test name="Client Portal Search and Filter Edge Cases" preserve-order="true">
+        <classes>
+            <class name="clientportaladmin.tests.ClientSearchAndFilterEdgeTest"/>
+        </classes>
+    </test>
+
+    <test name="Client Portal Form Validation Edge Cases" preserve-order="true">
+        <classes>
+            <class name="clientportaladmin.tests.ClientFormValidationEdgeTest"/>
+        </classes>
+    </test>
+
+    <test name="Client Manager and Trainer Role Edge Cases" preserve-order="true">
+        <classes>
+            <class name="clientportalmanager.tests.ManagerAndTrainerEdgeTest"/>
+        </classes>
+    </test>
+
+</suite>

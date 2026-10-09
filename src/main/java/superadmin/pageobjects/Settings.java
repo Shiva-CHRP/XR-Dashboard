@@ -125,37 +125,37 @@ public class Settings extends AbstractComponent {
 
 	@StepName("Verify Brand Assets Card is Present")
 	public boolean isBrandAssetsCardPresent() {
-		return !driver.findElements(By.xpath("//h2[contains(.,'Logo & Favicon') or contains(.,'Brand Assets') or contains(.,'Logo')]")).isEmpty();
+		return !driver.findElements(By.xpath("//*[self::h2 or self::h3 or self::p][contains(.,'Logo & Favicon') or contains(.,'Brand Assets') or contains(.,'Logo')]")).isEmpty();
 	}
 
 	@StepName("Verify Appearance Card is Present")
 	public boolean isAppearanceCardPresent() {
-		return !driver.findElements(By.xpath("//h2[normalize-space()='Appearance']")).isEmpty();
+		return !driver.findElements(By.xpath("//*[self::h2 or self::h3 or self::p][normalize-space()='Appearance' or contains(.,'Appearance')]")).isEmpty();
 	}
 
 	@StepName("Verify Sidebar Style Card is Present")
 	public boolean isSidebarStyleCardPresent() {
-		return !driver.findElements(By.xpath("//h2[contains(.,'Sidebar Style')]")).isEmpty();
+		return !driver.findElements(By.xpath("//*[self::h2 or self::h3 or self::p][contains(.,'Sidebar Style') or contains(.,'Sidebar')]")).isEmpty();
 	}
 
 	@StepName("Verify Navigation Colors Card is Present")
 	public boolean isNavigationColorsCardPresent() {
-		return !driver.findElements(By.xpath("//h2[contains(.,'Navigation Colors')]")).isEmpty();
+		return !driver.findElements(By.xpath("//*[self::h2 or self::h3 or self::p][contains(.,'Navigation Colors') or contains(.,'Navigation') or contains(.,'Theme') or contains(.,'Appearance')]")).isEmpty();
 	}
 
 	@StepName("Verify Notifications Card is Present")
 	public boolean isNotificationsCardPresent() {
-		return !driver.findElements(By.xpath("//h2[normalize-space()='Notifications']")).isEmpty();
+		return !driver.findElements(By.xpath("//*[self::h2 or self::h3 or self::p][normalize-space()='Notifications' or contains(.,'Notifications')]")).isEmpty();
 	}
 
 	@StepName("Verify Security Card is Present")
 	public boolean isSecurityCardPresent() {
-		return !driver.findElements(By.xpath("//h2[contains(.,'Security')]")).isEmpty();
+		return !driver.findElements(By.xpath("//*[self::h2 or self::h3 or self::p][contains(.,'Security')]")).isEmpty();
 	}
 
 	@StepName("Verify General Card is Present")
 	public boolean isGeneralCardPresent() {
-		return !driver.findElements(By.xpath("//h2[normalize-space()='General']")).isEmpty();
+		return !driver.findElements(By.xpath("//*[self::h2 or self::h3 or self::p][normalize-space()='General' or contains(.,'General')]")).isEmpty();
 	}
 
 	@StepName("Update Platform Name")

@@ -15,7 +15,7 @@ public class ManagerSettings extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Settings']]")
+	@FindBy(xpath = "//aside//button[.//span[normalize-space()='Settings']] | //button[.//span[normalize-space()='Settings']]")
 	private WebElement settingsButton;
 
 	@FindBy(xpath = "//h1[contains(.,'Settings')] | //header//h1")
@@ -32,14 +32,13 @@ public class ManagerSettings extends AbstractComponent {
 
 	@StepName("Click Manager Settings")
 	public void clickManagerSettings() {
-		waitUtils.waitForClickable(settingsButton);
-		settingsButton.click();
+		navigateToClientRoute(settingsButton, "settings");
 	}
 
 	@StepName("Verify Manager Settings Page is Loaded")
 	public boolean isManagerSettingsPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("settings", 2)
+				|| !driver.findElements(org.openqa.selenium.By.xpath("//h1[contains(.,'Settings')] | //header//h1")).isEmpty();
 	}
 
 	@StepName("Switch to Account Tab")

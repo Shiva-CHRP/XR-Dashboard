@@ -19,6 +19,7 @@ public class ManagerSmokeTest extends ClientBaseTest {
 	@TestInfo(module = "Client Manager", description = "Login to Client Portal as Manager", priority = "Critical")
 	public void login_As_Manager() throws InterruptedException {
 		clientLogin.loginToClient(orgCode, email, password);
+		managerOverview.isManagerOverviewPageLoaded();
 	}
 
 	@Test(priority = 2, dependsOnMethods = {"login_As_Manager"})

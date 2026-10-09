@@ -26,6 +26,7 @@ import clientportaladmin.pageobjects.Curriculum;
 import clientportaladmin.pageobjects.DepartmentMaster;
 import clientportaladmin.pageobjects.DesignationMaster;
 import clientportaladmin.pageobjects.DivisionMaster;
+import clientportaladmin.pageobjects.DuplicateConflicts;
 import clientportaladmin.pageobjects.Events;
 import clientportaladmin.pageobjects.Overview;
 import clientportaladmin.pageobjects.PlantMaster;
@@ -89,6 +90,7 @@ public class BaseTest {
 	protected SoftAssert softAssert;
 	public WebDriver driver;
 	public ToastUtils toastUtils;
+	public superadmin.utils.WaitUtils waitUtils;
 	protected ExtentTest test;
 	WebDriverFactory factory;
 
@@ -128,6 +130,7 @@ public class BaseTest {
 	public DepartmentMaster departmentMaster;
 	public DesignationMaster designationMaster;
 	public DivisionMaster divisionMaster;
+	public DuplicateConflicts duplicateConflicts;
 	public Events events;
 	public clientportaladmin.pageobjects.MDMDevices clientMdmDevices;
 	public Overview overview;
@@ -167,6 +170,7 @@ public class BaseTest {
 		factory = new WebDriverFactory();
 		extent = ExtentReportNG.getInstance();
 		driver = factory.initializeDriver();
+		waitUtils = new superadmin.utils.WaitUtils(driver);
 		initializePageObjects();
 		initializeSuperAdminPageObjects();
 		initializeClientAdminPageObjects();
@@ -232,6 +236,7 @@ public class BaseTest {
 		departmentMaster = new DepartmentMaster(driver);
 		designationMaster = new DesignationMaster(driver);
 		divisionMaster = new DivisionMaster(driver);
+		duplicateConflicts = new DuplicateConflicts(driver);
 		events = new Events(driver);
 		overview = new Overview(driver);
 		plantMaster = new PlantMaster(driver);

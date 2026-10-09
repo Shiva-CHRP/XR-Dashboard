@@ -114,7 +114,7 @@ public class LoginPage extends AbstractComponent {
 		waitUtils.waitForVisibility(emailAddress);
 		waitUtils.waitForClickable(emailAddress);
 		try {
-			emailAddress.clear();
+			emailAddress.sendKeys(org.openqa.selenium.Keys.chord(org.openqa.selenium.Keys.CONTROL, "a"), org.openqa.selenium.Keys.BACK_SPACE);
 		} catch (Exception e) {
 			clickUsingJS(emailAddress);
 		}
@@ -126,7 +126,7 @@ public class LoginPage extends AbstractComponent {
 		waitUtils.waitForVisibility(password);
 		waitUtils.waitForClickable(password);
 		try {
-			password.clear();
+			password.sendKeys(org.openqa.selenium.Keys.chord(org.openqa.selenium.Keys.CONTROL, "a"), org.openqa.selenium.Keys.BACK_SPACE);
 		} catch (Exception e) {
 			clickUsingJS(password);
 		}
@@ -172,8 +172,8 @@ public class LoginPage extends AbstractComponent {
 	@StepName("Clear Sign In Fields")
 	public void clearFields() {
 		try {
-			emailAddress.clear();
-			password.clear();
+			emailAddress.sendKeys(org.openqa.selenium.Keys.chord(org.openqa.selenium.Keys.CONTROL, "a"), org.openqa.selenium.Keys.BACK_SPACE);
+			password.sendKeys(org.openqa.selenium.Keys.chord(org.openqa.selenium.Keys.CONTROL, "a"), org.openqa.selenium.Keys.BACK_SPACE);
 		} catch (Exception ignored) {
 		}
 	}

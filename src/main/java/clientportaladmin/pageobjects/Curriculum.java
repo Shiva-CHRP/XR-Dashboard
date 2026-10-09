@@ -1,5 +1,8 @@
 package clientportaladmin.pageobjects;
 
+import java.util.List;
+
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -40,7 +43,8 @@ public class Curriculum extends AbstractComponent {
 
 	@StepName("Verify Curriculum Page is Loaded")
 	public boolean isCurriculumLoaded() {
-		return waitUtils.waitForUrlContains("curricula") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
+		return waitUtils.waitForUrlContains("curricula", 2)
+				|| !driver.findElements(org.openqa.selenium.By.xpath("//h1[normalize-space()='Curriculum' or contains(.,'Curricul')]")).isEmpty();
 	}
 
 	@StepName("Verify Curriculum Page is Loaded")
@@ -52,7 +56,8 @@ public class Curriculum extends AbstractComponent {
 	public void clickBrowseCatalogue() {
 		java.util.List<WebElement> items = driver.findElements(org.openqa.selenium.By.xpath("//button[contains(.,'Browse Catalogue')] | //a[contains(.,'Browse Catalogue')] | //button[contains(.,'All')]"));
 		if (!items.isEmpty()) {
-			items.get(0).click();
+			waitUtils.scrollIntoView(items.get(0));
+			waitUtils.clickUsingJS(items.get(0));
 		}
 	}
 
@@ -60,15 +65,32 @@ public class Curriculum extends AbstractComponent {
 	public void clickMyCurriculums() {
 		java.util.List<WebElement> items = driver.findElements(org.openqa.selenium.By.xpath("//button[contains(.,'My Curriculums')] | //a[contains(.,'My Curriculums')] | //button[contains(.,'Free')]"));
 		if (!items.isEmpty()) {
-			items.get(0).click();
+			waitUtils.scrollIntoView(items.get(0));
+			waitUtils.clickUsingJS(items.get(0));
 		}
 	}
 
 	@StepName("Search Curricula")
 	public void searchCurricula(String query) {
-		waitUtils.waitForVisibility(searchInput);
-		searchInput.clear();
-		searchInput.sendKeys(query);
+		By searchBy = By.xpath("//input[contains(translate(@placeholder,'SEARCH','search'),'search')]");
+		try {
+			WebElement input = waitUtils.waitForVisibility(searchBy);
+			waitUtils.waitForClickable(input);
+			waitUtils.scrollIntoView(input);
+			try {
+				input.clear();
+			} catch (Exception e) {
+				input.sendKeys(org.openqa.selenium.Keys.chord(org.openqa.selenium.Keys.CONTROL, "a"), org.openqa.selenium.Keys.BACK_SPACE);
+			}
+			input.sendKeys(query);
+		} catch (Exception e) {
+			List<WebElement> inputs = driver.findElements(searchBy);
+			if (!inputs.isEmpty()) {
+				((org.openqa.selenium.JavascriptExecutor) driver).executeScript(
+						"arguments[0].value = arguments[1]; arguments[0].dispatchEvent(new Event('input', { bubbles: true }));",
+						inputs.get(0), query);
+			}
+		}
 	}
 
 	@StepName("Search Curriculums")
@@ -110,5 +132,16 @@ public class Curriculum extends AbstractComponent {
 		if (!closeBtns.isEmpty()) {
 			waitUtils.clickUsingJS(closeBtns.get(0));
 		}
+	}
+
+	@StepName("Clear Curricula Search")
+	public void clearSearch() {
+		searchCurricula("");
+	}
+
+	@StepName("Is Empty State Displayed")
+	public boolean isEmptyStateDisplayed() {
+		return !driver.findElements(org.openqa.selenium.By.xpath("//div[contains(.,'No') and (contains(.,'found') or contains(.,'available'))] | //p[contains(.,'No') and contains(.,'curricul')]")).isEmpty()
+				|| getCurriculaCount() == 0;
 	}
 }

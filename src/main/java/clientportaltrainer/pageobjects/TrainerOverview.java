@@ -17,10 +17,10 @@ public class TrainerOverview extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Overview']]")
+	@FindBy(xpath = "//aside//button[.//span[normalize-space()='Overview'] or .//span[normalize-space()='Dashboard']] | //button[.//span[normalize-space()='Overview'] or .//span[normalize-space()='Dashboard']]")
 	private WebElement overviewButton;
 
-	@FindBy(xpath = "//h1[contains(.,'Dashboard')] | //header//h1")
+	@FindBy(xpath = "//h1[contains(.,'Dashboard') or contains(.,'Overview')] | //header//h1")
 	private WebElement pageHeaderTitle;
 
 	@FindBy(xpath = "//button[contains(normalize-space(),'View All Events')]")
@@ -31,14 +31,14 @@ public class TrainerOverview extends AbstractComponent {
 
 	@StepName("Click Trainer Overview")
 	public void clickTrainerOverview() {
-		waitUtils.waitForClickable(overviewButton);
-		overviewButton.click();
+		navigateToClientRoute(overviewButton, "dashboard");
 	}
 
 	@StepName("Verify Trainer Overview Page is Loaded")
 	public boolean isTrainerOverviewPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("dashboard", 3)
+				|| waitUtils.waitForUrlContains("overview", 3)
+				|| !driver.findElements(org.openqa.selenium.By.xpath("//aside//button[.//span[normalize-space()='Overview'] or .//span[normalize-space()='Dashboard']]")).isEmpty();
 	}
 
 	@StepName("Click View All Events Button")

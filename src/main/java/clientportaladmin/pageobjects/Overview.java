@@ -1,5 +1,6 @@
 package clientportaladmin.pageobjects;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -18,7 +19,7 @@ public class Overview extends AbstractComponent {
 	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='Overview'] or .//span[normalize-space()='Dashboard']] | //button[.//span[normalize-space()='Overview'] or .//span[normalize-space()='Dashboard']]")
 	private WebElement overviewNavButton;
 
-	@FindBy(xpath = "//h1[contains(.,'Overview') or contains(.,'Dashboard')] | //header//h1")
+	@FindBy(xpath = "//h1[contains(.,'Overview') or contains(.,'Dashboard')]")
 	private WebElement pageHeaderTitle;
 
 	@FindBy(xpath = "//div[contains(@class,'grid')]//div[contains(@class,'card') or contains(@class,'portal-card')]")
@@ -31,7 +32,10 @@ public class Overview extends AbstractComponent {
 
 	@StepName("Verify Overview Page is Loaded")
 	public boolean isOverviewLoaded() {
-		return waitUtils.waitForUrlContains("dashboard") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
+		return waitUtils.waitForUrlContains("dashboard", 2)
+				|| waitUtils.waitForUrlContains("overview", 2)
+				|| (!driver.findElements(By.xpath("//aside//button[.//span[normalize-space()='Overview'] or .//span[normalize-space()='Dashboard']]")).isEmpty()
+						&& !driver.findElements(By.xpath("//h1[contains(.,'Overview') or contains(.,'Dashboard')]")).isEmpty());
 	}
 
 	@StepName("Verify Overview Page is Loaded")

@@ -15,13 +15,13 @@ public class DesignationMaster extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//svg[contains(@class,'lucide-badge-check')]] | //button[.//svg[contains(@class,'lucide-badge-check')]] | //button[.//span[normalize-space()='Designation'] or .//span[normalize-space()='Designation Master']]")
+	@FindBy(xpath = "//aside//button[normalize-space()='Designation' or .//span[normalize-space()='Designation']] | //aside//button[.//svg[contains(@class,'lucide-badge-check')]]")
 	private WebElement designationMasterNavButton;
 
 	@FindBy(xpath = "//header//h1 | //h1[contains(.,'Master')] | //h1")
 	private WebElement pageHeaderTitle;
 
-	@FindBy(xpath = "//input[contains(@placeholder,'Search') or contains(@placeholder,'search')]")
+	@FindBy(xpath = "//input[contains(@class,'fb-search-input') or contains(@placeholder,'Search') or contains(@placeholder,'search')]")
 	private WebElement searchInput;
 
 	@FindBy(xpath = "//button[contains(normalize-space(),'Add') or contains(.,'Create')]")
@@ -60,5 +60,11 @@ public class DesignationMaster extends AbstractComponent {
 	@StepName("Get Designation Rows Count")
 	public int getDesignationRowsCount() {
 		return designationRows.size();
+	}
+
+	@StepName("Is Empty Table State Displayed")
+	public boolean isEmptyTableStateDisplayed() {
+		return !driver.findElements(org.openqa.selenium.By.xpath("//td[contains(.,'No') or contains(.,'found') or @colSpan] | //div[contains(.,'No') and contains(.,'found')]")).isEmpty()
+				|| getDesignationRowsCount() == 0;
 	}
 }

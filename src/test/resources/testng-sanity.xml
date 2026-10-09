@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="CHRP Simulation Platform Automation Suite" verbose="1">
+<suite name="Enterprise Post-Deployment Sanity Suite" verbose="1">
 
     <listeners>
         <listener class-name="superadmin.listener.Listener"/>
@@ -17,4 +17,5 @@
             <class name="clientportaladmin.tests.ClientDeploymentSanityTest"/>
         </classes>
     </test>
+
 </suite>

@@ -17,10 +17,10 @@ public class TrainerMyEvents extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='My Events']]")
+	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='Events'] or .//span[normalize-space()='Sessions'] or .//span[normalize-space()='My Events']] | //button[.//span[normalize-space()='Events'] or .//span[normalize-space()='Sessions'] or .//span[normalize-space()='My Events']]")
 	private WebElement myEventsButton;
 
-	@FindBy(xpath = "//h1[contains(.,'My Events') or contains(.,'Events')] | //header//h1")
+	@FindBy(xpath = "//h1[contains(.,'Event') or contains(.,'Session')] | //header//h1")
 	private WebElement pageHeaderTitle;
 
 	@FindBy(xpath = "//button[normalize-space()='Events']")
@@ -37,14 +37,14 @@ public class TrainerMyEvents extends AbstractComponent {
 
 	@StepName("Click Trainer My Events")
 	public void clickTrainerMyEvents() {
-		waitUtils.waitForClickable(myEventsButton);
-		myEventsButton.click();
+		navigateToClientRoute(myEventsButton, "sessions");
 	}
 
 	@StepName("Verify Trainer My Events Page is Loaded")
 	public boolean isTrainerMyEventsPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("sessions", 2)
+				|| waitUtils.waitForUrlContains("events", 2)
+				|| !driver.findElements(org.openqa.selenium.By.xpath("//h1[contains(.,'Event') or contains(.,'Session')] | //header//h1")).isEmpty();
 	}
 
 	@StepName("Switch to Events Tab")
@@ -69,5 +69,11 @@ public class TrainerMyEvents extends AbstractComponent {
 	@StepName("Get Event Rows Count")
 	public int getEventRowsCount() {
 		return eventRows.size();
+	}
+
+	@StepName("Is Empty Table State Displayed")
+	public boolean isEmptyTableStateDisplayed() {
+		return !driver.findElements(org.openqa.selenium.By.xpath("//td[contains(.,'No') or contains(.,'found') or @colSpan] | //div[contains(.,'No') and contains(.,'found')]")).isEmpty()
+				|| getEventRowsCount() == 0;
 	}
 }

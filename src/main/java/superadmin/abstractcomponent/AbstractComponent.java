@@ -190,23 +190,54 @@ public class AbstractComponent {
 	// ================= CLIENT ROUTE NAVIGATION HELPER =================
 	public void navigateToClientRoute(WebElement navButton, String relativeRoute) {
 		String cleanRoute = relativeRoute.replaceAll("^/", "");
+		if (waitUtils.waitForUrlContains(cleanRoute, 1)) {
+			return;
+		}
+		boolean clicked = false;
 		try {
 			if (navButton != null) {
+				waitUtils.waitForClickable(navButton);
 				waitUtils.scrollIntoView(navButton);
-				waitUtils.clickUsingJS(navButton);
+				try {
+					navButton.click();
+					clicked = true;
+				} catch (Exception clickEx) {
+					waitUtils.clickUsingJS(navButton);
+					clicked = true;
+				}
 			}
-		} catch (Exception ignored) {
+		} catch (Exception e) {
+			// Proxy element resolution fallback
 		}
 
-		if (!waitUtils.waitForUrlContains(cleanRoute, 2)) {
-			// Self-healing direct SPA route navigation fallback
-			String currentUrl = driver.getCurrentUrl();
-			String baseUrl = currentUrl.split("/admin/")[0].split("/login")[0];
-			if (baseUrl.endsWith("/")) {
-				baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+		if (!clicked || !waitUtils.waitForUrlContains(cleanRoute, 3)) {
+			try {
+				String label = cleanRoute.replace("-master", "").replace("-", " ").trim().toLowerCase();
+				java.util.List<WebElement> matchingButtons = driver.findElements(org.openqa.selenium.By.xpath(
+						"//aside//button[contains(translate(normalize-space(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'" + label + "')]"));
+				if (!matchingButtons.isEmpty()) {
+					waitUtils.scrollIntoView(matchingButtons.get(0));
+					waitUtils.clickUsingJS(matchingButtons.get(0));
+				}
+			} catch (Exception ignored) {
 			}
-			driver.get(baseUrl + "/admin/" + cleanRoute);
-			waitUtils.waitForUrlContains(cleanRoute, 5);
 		}
+		if (!driver.findElements(org.openqa.selenium.By.xpath("//button[contains(normalize-space(),'Log Out Device')]")).isEmpty()) {
+			try {
+				driver.findElements(org.openqa.selenium.By.xpath("//button[contains(normalize-space(),'Log Out Device')]")).get(0).click();
+				waitUtils.waitUntil(d -> !d.findElements(org.openqa.selenium.By.xpath("//aside//button")).isEmpty(), 15);
+				if (!waitUtils.waitForUrlContains(cleanRoute, 2)) {
+					String label = cleanRoute.replace("-master", "").replace("-", " ").trim().toLowerCase();
+					java.util.List<WebElement> matchingButtons = driver.findElements(org.openqa.selenium.By.xpath(
+							"//aside//button[contains(translate(normalize-space(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'" + label + "')]"));
+					if (!matchingButtons.isEmpty()) {
+						waitUtils.scrollIntoView(matchingButtons.get(0));
+						waitUtils.clickUsingJS(matchingButtons.get(0));
+					}
+				}
+			} catch (Exception ignored) {
+			}
+		}
+		waitUtils.waitForUrlContains(cleanRoute, 5);
 	}
 }

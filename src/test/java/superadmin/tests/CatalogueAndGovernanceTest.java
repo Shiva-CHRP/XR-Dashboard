@@ -60,6 +60,14 @@ public class CatalogueAndGovernanceTest extends BaseTest {
 	}
 
 	@Test(priority = 8, dependsOnMethods = {"login_For_Catalogue_And_Governance"})
+	@TestInfo(module = "Governance", description = "Navigate to Offline Portal Releases and verify stream tabs", priority = "High")
+	public void navigate_To_Offline_Releases() {
+		offlinePortalRelease.clickOfflinePortalRelease();
+		offlinePortalRelease.switchToApkTab();
+		offlinePortalRelease.switchToExeTab();
+	}
+
+	@Test(priority = 9, dependsOnMethods = {"login_For_Catalogue_And_Governance"})
 	@TestInfo(module = "Governance", description = "Logout after Catalogue and Governance tests", priority = "Low")
 	public void logout_After_Tests() throws InterruptedException {
 		loginPage.clickProfile();

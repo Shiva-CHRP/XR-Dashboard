@@ -19,6 +19,7 @@ public class TrainerSmokeTest extends ClientBaseTest {
 	@TestInfo(module = "Client Trainer", description = "Login to Client Portal as Trainer", priority = "Critical")
 	public void login_As_Trainer() throws InterruptedException {
 		clientLogin.loginToClient(orgCode, email, password);
+		trainerOverview.isTrainerOverviewPageLoaded();
 	}
 
 	@Test(priority = 2, dependsOnMethods = {"login_As_Trainer"})

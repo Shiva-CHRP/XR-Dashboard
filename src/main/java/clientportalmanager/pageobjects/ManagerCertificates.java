@@ -17,7 +17,7 @@ public class ManagerCertificates extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Certificates']]")
+	@FindBy(xpath = "//aside//button[.//span[normalize-space()='Certificates']] | //button[.//span[normalize-space()='Certificates']]")
 	private WebElement certificatesButton;
 
 	@FindBy(xpath = "//h1[contains(.,'Certificates')] | //header//h1")
@@ -34,14 +34,13 @@ public class ManagerCertificates extends AbstractComponent {
 
 	@StepName("Click Manager Certificates")
 	public void clickManagerCertificates() {
-		waitUtils.waitForClickable(certificatesButton);
-		certificatesButton.click();
+		navigateToClientRoute(certificatesButton, "certificates");
 	}
 
 	@StepName("Verify Manager Certificates Page is Loaded")
 	public boolean isManagerCertificatesPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("certificates", 2)
+				|| !driver.findElements(org.openqa.selenium.By.xpath("//h1[contains(.,'Certificates')] | //header//h1")).isEmpty();
 	}
 
 	@StepName("Search Certificates")

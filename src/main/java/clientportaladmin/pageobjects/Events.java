@@ -15,7 +15,7 @@ public class Events extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//aside[contains(@class,'lg:flex')]//button[.//span[normalize-space()='Events'] or .//span[normalize-space()='Sessions']] | //button[.//span[normalize-space()='Events'] or .//span[normalize-space()='Sessions']]")
+	@FindBy(xpath = "//aside//button[normalize-space()='Events' or .//span[normalize-space()='Events']] | //aside//button[normalize-space()='Sessions' or .//span[normalize-space()='Sessions']]")
 	private WebElement eventsNavButton;
 
 	@FindBy(xpath = "//h1[contains(.,'Event')]")
@@ -30,7 +30,7 @@ public class Events extends AbstractComponent {
 	@FindBy(xpath = "//button[contains(normalize-space(),'Create Event')] | //button[contains(normalize-space(),'Create Session')]")
 	private WebElement createEventButton;
 
-	@FindBy(xpath = "//input[contains(@placeholder,'Search') or contains(@placeholder,'search')]")
+	@FindBy(xpath = "//input[contains(@class,'fb-search-input') or contains(@placeholder,'Search') or contains(@placeholder,'search') or contains(@placeholder,'event')]")
 	private WebElement searchInput;
 
 	@FindBy(xpath = "//button[contains(normalize-space(),'Export')]")
@@ -41,7 +41,14 @@ public class Events extends AbstractComponent {
 
 	@StepName("Click Events from Sidebar")
 	public void clickEvents() {
-		navigateToClientRoute(eventsNavButton, "sessions");
+		try {
+			org.openqa.selenium.WebElement btn = driver.findElement(org.openqa.selenium.By.xpath("//aside//button[contains(.,'Events')]"));
+			waitUtils.scrollIntoView(btn);
+			waitUtils.clickUsingJS(btn);
+		} catch (Exception e) {
+			navigateToClientRoute(eventsNavButton, "sessions");
+		}
+		waitUtils.waitForUrlContains("sessions", 5);
 	}
 
 	@StepName("Click Sessions (Backward Compatibility)")
@@ -51,7 +58,12 @@ public class Events extends AbstractComponent {
 
 	@StepName("Verify Events Page is Loaded")
 	public boolean isEventsPageLoaded() {
-		return waitUtils.waitForUrlContains("sessions") || (pageHeaderTitle != null && pageHeaderTitle.isDisplayed());
+		try {
+			return waitUtils.waitForUrlContains("sessions", 5) 
+					|| !driver.findElements(org.openqa.selenium.By.xpath("//h1[contains(.,'Event') or contains(.,'Session')]")).isEmpty();
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	@StepName("Switch to Events Tab")

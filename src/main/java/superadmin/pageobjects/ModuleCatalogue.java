@@ -410,6 +410,17 @@ public class ModuleCatalogue extends AbstractComponent {
 		}
 	}
 
+	@StepName("Get Module Cards Count")
+	public int getModuleCardsCount() {
+		return moduleCards.size();
+	}
+
+	@StepName("Is Empty Catalogue State Displayed")
+	public boolean isEmptyCatalogueStateDisplayed() {
+		return !driver.findElements(By.xpath("//div[contains(.,'No') and (contains(.,'found') or contains(.,'available'))] | //p[contains(.,'No') and contains(.,'module')]")).isEmpty()
+				|| moduleCards.isEmpty();
+	}
+
 	// =========================================================================
 	// ACTION METHODS: Listing Items (Cards & Rows)
 	// =========================================================================

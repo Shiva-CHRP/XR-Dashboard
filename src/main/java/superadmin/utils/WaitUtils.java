@@ -108,6 +108,11 @@ public class WaitUtils {
 		return wait.until(condition);
 	}
 
+	public <T> T waitUntil(java.util.function.Function<? super WebDriver, T> condition, int timeoutSeconds) {
+		WebDriverWait customWait = new WebDriverWait(driver, Duration.ofSeconds(timeoutSeconds));
+		return customWait.until(condition);
+	}
+
 	public WebDriverWait getWait() {
 		return wait;
 	}

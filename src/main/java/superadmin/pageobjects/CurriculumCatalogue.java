@@ -355,6 +355,17 @@ public class CurriculumCatalogue extends AbstractComponent {
 		}
 	}
 
+	@StepName("Get Curriculums Count")
+	public int getCurriculumsCount() {
+		return curriculumCards.size();
+	}
+
+	@StepName("Is Empty Catalogue State Displayed")
+	public boolean isEmptyCatalogueStateDisplayed() {
+		return !driver.findElements(By.xpath("//div[contains(.,'No') and (contains(.,'found') or contains(.,'available'))] | //p[contains(.,'No') and contains(.,'curricul')]")).isEmpty()
+				|| curriculumCards.isEmpty();
+	}
+
 	// =========================================================================
 	// ACTION METHODS: Curriculum Listing (Cards & Rows)
 	// =========================================================================

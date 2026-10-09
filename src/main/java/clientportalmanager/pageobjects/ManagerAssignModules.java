@@ -17,10 +17,10 @@ public class ManagerAssignModules extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Assign Modules']]")
+	@FindBy(xpath = "//aside//button[.//span[normalize-space()='Assign Modules']] | //button[.//span[normalize-space()='Assign Modules']]")
 	private WebElement assignModulesButton;
 
-	@FindBy(xpath = "//h1[contains(.,'Assign Modules')] | //header//h1")
+	@FindBy(xpath = "//h1[contains(.,'Assign Modules') or contains(.,'Module Assignment')] | //header//h1")
 	private WebElement pageHeaderTitle;
 
 	@FindBy(xpath = "//input[contains(@placeholder,'Search Trainers') or contains(@placeholder,'Search')]")
@@ -34,14 +34,24 @@ public class ManagerAssignModules extends AbstractComponent {
 
 	@StepName("Click Manager Assign Modules")
 	public void clickManagerAssignModules() {
-		waitUtils.waitForClickable(assignModulesButton);
-		assignModulesButton.click();
+		try {
+			WebElement btn = driver.findElement(org.openqa.selenium.By.xpath("//aside//button[contains(.,'Assign Modules')]"));
+			waitUtils.scrollIntoView(btn);
+			waitUtils.clickUsingJS(btn);
+		} catch (Exception e) {
+			navigateToClientRoute(assignModulesButton, "assign-modules");
+		}
+		try {
+			waitUtils.waitUntil(d -> isManagerAssignModulesPageLoaded(), 5);
+		} catch (Exception ignored) {
+		}
 	}
 
 	@StepName("Verify Manager Assign Modules Page is Loaded")
 	public boolean isManagerAssignModulesPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("assign-modules", 2)
+				|| waitUtils.waitForUrlContains("module-assignment", 2)
+				|| !driver.findElements(org.openqa.selenium.By.xpath("//h1[contains(.,'Assign Modules') or contains(.,'Module Assignment')] | //header//h1")).isEmpty();
 	}
 
 	@StepName("Search Trainers")
@@ -54,5 +64,14 @@ public class ManagerAssignModules extends AbstractComponent {
 	@StepName("Get Trainer Items Count")
 	public int getTrainerItemsCount() {
 		return trainerItems.size();
+	}
+
+	@StepName("Is Assign Button Enabled")
+	public boolean isAssignButtonEnabled() {
+		try {
+			return assignButton.isEnabled();
+		} catch (Exception e) {
+			return false;
+		}
 	}
 }

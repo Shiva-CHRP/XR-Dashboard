@@ -346,6 +346,11 @@ public class OrganizationPage extends AbstractComponent {
 		addOrganisationButton.click();
 	}
 
+	@StepName("Is Add Organization Modal Displayed")
+	public boolean isAddOrganizationModalDisplayed() {
+		return !driver.findElements(By.xpath("//input[@placeholder='e.g. Schneider Electric or SCHNEIDER'] | //div[@role='dialog']")).isEmpty();
+	}
+
 	@StepName("Search Organization")
 	public void searchOrganization(String searchText) {
 		waitElementToBeClickable(organizationSearch);
@@ -367,6 +372,17 @@ public class OrganizationPage extends AbstractComponent {
 			});
 		} catch (Exception ignored) {
 		}
+	}
+
+	@StepName("Get Organizations Table Row Count")
+	public int getTableRowCount() {
+		return driver.findElements(By.xpath("//table//tbody//tr[count(td) > 1 and not(.//td[@colSpan])]")).size();
+	}
+
+	@StepName("Is Empty Table State Displayed")
+	public boolean isEmptyTableStateDisplayed() {
+		return !driver.findElements(By.xpath("//td[contains(.,'No') or contains(.,'found') or @colSpan] | //div[contains(.,'No') and contains(.,'found')]")).isEmpty()
+				|| getTableRowCount() == 0;
 	}
 
 	@StepName("Filter Organizations by Status")
@@ -1101,7 +1117,7 @@ public class OrganizationPage extends AbstractComponent {
 
 	public boolean isOfflineConfigTabLoaded() {
 		try {
-			return waitUtils.waitUntil(d -> !d.findElements(By.xpath("//h3[contains(text(),'Offline Portal')] | //*[contains(text(),'Enable Offline Portal')]")).isEmpty());
+			return waitUtils.waitUntil(d -> !d.findElements(By.xpath("//h3[contains(text(),'Offline Portal')] | //*[contains(text(),'Enable Offline Portal') or contains(text(),'Desktop App') or contains(text(),'Android App')]")).isEmpty());
 		} catch (Exception e) {
 			return false;
 		}

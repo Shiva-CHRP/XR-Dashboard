@@ -17,7 +17,7 @@ public class ManagerAssignCurriculums extends AbstractComponent {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//button[.//span[normalize-space()='Assign Curriculums']]")
+	@FindBy(xpath = "//aside//button[.//span[normalize-space()='Assign Curriculums']] | //button[.//span[normalize-space()='Assign Curriculums']]")
 	private WebElement assignCurriculumsButton;
 
 	@FindBy(xpath = "//h1[contains(.,'Assign Curricul')] | //header//h1")
@@ -34,14 +34,24 @@ public class ManagerAssignCurriculums extends AbstractComponent {
 
 	@StepName("Click Manager Assign Curriculums")
 	public void clickManagerAssignCurriculums() {
-		waitUtils.waitForClickable(assignCurriculumsButton);
-		assignCurriculumsButton.click();
+		try {
+			WebElement btn = driver.findElement(org.openqa.selenium.By.xpath("//aside//button[contains(.,'Assign Curricul')]"));
+			waitUtils.scrollIntoView(btn);
+			waitUtils.clickUsingJS(btn);
+		} catch (Exception e) {
+			navigateToClientRoute(assignCurriculumsButton, "assign-curricula");
+		}
+		try {
+			waitUtils.waitUntil(d -> isManagerAssignCurriculumsPageLoaded(), 5);
+		} catch (Exception ignored) {
+		}
 	}
 
 	@StepName("Verify Manager Assign Curriculums Page is Loaded")
 	public boolean isManagerAssignCurriculumsPageLoaded() {
-		waitUtils.waitForVisibility(pageHeaderTitle);
-		return pageHeaderTitle.isDisplayed();
+		return waitUtils.waitForUrlContains("assign-curricula", 2)
+				|| waitUtils.waitForUrlContains("curriculum-assignment", 2)
+				|| !driver.findElements(org.openqa.selenium.By.xpath("//h1[contains(.,'Assign Curricul')] | //header//h1")).isEmpty();
 	}
 
 	@StepName("Search Trainers")
@@ -54,5 +64,14 @@ public class ManagerAssignCurriculums extends AbstractComponent {
 	@StepName("Get Trainer Items Count")
 	public int getTrainerItemsCount() {
 		return trainerItems.size();
+	}
+
+	@StepName("Is Assign Button Enabled")
+	public boolean isAssignButtonEnabled() {
+		try {
+			return assignButton.isEnabled();
+		} catch (Exception e) {
+			return false;
+		}
 	}
 }

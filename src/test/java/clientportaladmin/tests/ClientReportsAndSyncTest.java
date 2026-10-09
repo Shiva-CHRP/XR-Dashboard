@@ -44,4 +44,12 @@ public class ClientReportsAndSyncTest extends ClientBaseTest {
 	public void testNavigateToEventsSessions() {
 		events.clickSessions();
 	}
+
+	@Test(priority = 6, dependsOnMethods = {"login_For_Reports_And_Sync"})
+	@TestInfo(module = "Client Reports & Sync", description = "Navigate to Duplicate Conflicts Section and verify tabs", priority = "High")
+	public void testNavigateToDuplicateConflicts() {
+		duplicateConflicts.clickDuplicateConflicts();
+		duplicateConflicts.switchToResolvedTab();
+		duplicateConflicts.switchToOpenTab();
+	}
 }
