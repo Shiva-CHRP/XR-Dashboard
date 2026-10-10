@@ -16,7 +16,7 @@ import superadmin.utils.ConfigReader;
  * Verifies non-existent queries, special character sanitization, and filter reset restoration.
  */
 @Listeners(Listener.class)
-@Test(groups = {"regression", "superadmin"})
+@Test(groups = {"Regression", "Superadmin"})
 public class SuperAdminSearchAndFilterEdgeTest extends BaseTest {
 
 	@BeforeClass(alwaysRun = true)

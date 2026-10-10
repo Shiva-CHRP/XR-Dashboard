@@ -9,7 +9,7 @@ import superadmin.annotations.TestInfo;
 import superadmin.listener.Listener;
 
 @Listeners(Listener.class)
-@Test(groups = {"e2e", "clientportal", "regression"})
+@Test(groups = {"E2E", "Clientportal", "Regression"})
 public class ClientUserManagementTest extends ClientBaseTest {
 
 	@BeforeClass(alwaysRun = true)

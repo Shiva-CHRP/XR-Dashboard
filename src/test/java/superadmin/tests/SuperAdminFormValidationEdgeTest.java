@@ -16,7 +16,7 @@ import superadmin.utils.ConfigReader;
  * Validates mandatory field constraints and clean modal dismissal without polluting persistent data.
  */
 @Listeners(Listener.class)
-@Test(groups = {"regression", "superadmin"})
+@Test(groups = {"Regression", "Superadmin"})
 public class SuperAdminFormValidationEdgeTest extends BaseTest {
 
 	@BeforeClass(alwaysRun = true)

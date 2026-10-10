@@ -9,7 +9,7 @@ import superadmin.listener.Listener;
 import superadmin.testcomponents.BaseTest;
 
 @Listeners(Listener.class)
-@Test(groups = {"e2e", "superadmin", "regression"})
+@Test(groups = {"E2E", "Superadmin", "Regression"})
 public class DeveloperPortalTest extends BaseTest {
 
 	@BeforeClass(alwaysRun = true)

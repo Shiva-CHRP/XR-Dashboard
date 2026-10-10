@@ -9,7 +9,7 @@ import superadmin.listener.Listener;
 import superadmin.utils.ConfigReader;
 
 @Listeners(Listener.class)
-@Test(groups = {"smoke", "clientportal", "regression"})
+@Test(groups = {"Smoke", "Clientportal", "Regression"})
 public class ManagerSmokeTest extends ClientBaseTest {
 
 	String orgCode = ConfigReader.getClientOrgCode();

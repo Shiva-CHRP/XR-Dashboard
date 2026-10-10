@@ -16,7 +16,7 @@ import superadmin.utils.ConfigReader;
  * Validates blank mandatory field constraints and modal clean dismissals without database modification.
  */
 @Listeners(Listener.class)
-@Test(groups = {"regression", "clientportal"})
+@Test(groups = {"Regression", "Clientportal"})
 public class ClientFormValidationEdgeTest extends ClientBaseTest {
 
 	@BeforeClass(alwaysRun = true)

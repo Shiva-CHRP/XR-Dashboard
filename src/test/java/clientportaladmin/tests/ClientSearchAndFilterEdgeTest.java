@@ -16,7 +16,7 @@ import superadmin.utils.ConfigReader;
  * Verifies employee searches, master data queries, curriculum empty states, and special character sanitization.
  */
 @Listeners(Listener.class)
-@Test(groups = {"regression", "clientportal"})
+@Test(groups = {"Regression", "Clientportal"})
 public class ClientSearchAndFilterEdgeTest extends ClientBaseTest {
 
 	@BeforeClass(alwaysRun = true)

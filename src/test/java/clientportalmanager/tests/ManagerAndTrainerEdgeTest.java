@@ -17,7 +17,7 @@ import superadmin.utils.ToastResponse;
  * Validates negative role authentication, operational boundaries, and search filters.
  */
 @Listeners(Listener.class)
-@Test(groups = {"regression", "clientportal"})
+@Test(groups = {"Regression", "Clientportal"})
 public class ManagerAndTrainerEdgeTest extends ClientBaseTest {
 
 	private String orgCode = ConfigReader.getClientOrgCode();

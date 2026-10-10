@@ -9,7 +9,7 @@ import superadmin.listener.Listener;
 import superadmin.testcomponents.BaseTest;
 
 @Listeners(Listener.class)
-@Test(groups = {"smoke", "superadmin", "regression"})
+@Test(groups = {"Smoke", "Superadmin", "Regression"})
 public class RoleSwitchTest extends BaseTest {
 
 	@BeforeClass(alwaysRun = true)

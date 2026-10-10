@@ -4,7 +4,8 @@ name: Dynamic Test Suite Execution
 # Dynamic Test Suite Execution Workflow (GitHub Actions)
 # CHRP Simulation Platform - Multi-Role Automation Framework
 # Supports 24 dynamic execution combinations:
-# 4 Suites (regression, smoke, sanity, e2e) x 2 Environments (stage, prod) x 3 Portals (all, superadmin, clientportal)
+# 4 Suites (Regression, Smoke, Sanity, E2E) x 2 Environments (Stage, Prod) x 3 Portals (All, Superadmin, Clientportal)
+# Triggers: Manual (workflow_dispatch) & CI/CD Post-Deployment Webhooks (repository_dispatch)
 # ==============================================================================
 
 on:
@@ -13,32 +14,32 @@ on:
       test_suite:
         description: 'Select Test Suite'
         required: true
-        default: 'smoke'
+        default: 'Smoke'
         type: choice
         options:
-          - smoke
-          - sanity
-          - e2e
-          - regression
+          - Smoke
+          - Sanity
+          - E2E
+          - Regression
       environment:
         description: 'Select Target Environment'
         required: true
-        default: 'stage'
+        default: 'Stage'
         type: choice
         options:
-          - stage
-          - prod
+          - Stage
+          - Prod
       portal:
         description: 'Select Portal Scope'
         required: true
-        default: 'all'
+        default: 'All'
         type: choice
         options:
-          - all
-          - superadmin
-          - clientportal
+          - All
+          - Superadmin
+          - Clientportal
       prod_confirmation:
-        description: 'Production Confirmation (Mandatory if environment is prod)'
+        description: 'Production Confirmation (Mandatory if environment is Prod)'
         required: false
         default: false
         type: boolean
@@ -62,9 +63,20 @@ on:
         default: ''
         type: string
 
+  # External deployment webhook trigger (e.g., DevOps deployment scripts / CD webhook)
+  repository_dispatch:
+    types: 
+      - deploy_stage
+      - deploy_prod
+      - post_deployment_sanity
+      - deploy_client_stage
+      - deploy_client_prod
+      - deploy_superadmin_stage
+      - deploy_superadmin_prod
+
 jobs:
   dynamic-execution:
-    name: Run ${{ github.event.inputs.test_suite }} (${{ github.event.inputs.portal }} @ ${{ github.event.inputs.environment }})
+    name: Run ${{ github.event.inputs.test_suite || 'Sanity' }} (${{ github.event.inputs.portal || github.event.action || 'All' }} @ ${{ github.event.inputs.environment || 'Deployment' }})
     runs-on: ubuntu-latest
 
     steps:
@@ -81,16 +93,73 @@ jobs:
       - name: Validate Inputs & Resolve TestNG Suite
         id: resolve_config
         run: |
-          SUITE="${{ github.event.inputs.test_suite }}"
-          ENV="${{ github.event.inputs.environment }}"
-          PORTAL="${{ github.event.inputs.portal }}"
-          PROD_CONFIRM="${{ github.event.inputs.prod_confirmation }}"
-          BROWSER="${{ github.event.inputs.browser }}"
-          CUSTOM_URL="${{ github.event.inputs.custom_url }}"
-          CUSTOM_CLIENT_URL="${{ github.event.inputs.custom_client_url }}"
+          # 1. Determine trigger source: manual workflow_dispatch vs CI/CD repository_dispatch
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            SUITE="${{ github.event.inputs.test_suite }}"
+            ENV="${{ github.event.inputs.environment }}"
+            PORTAL="${{ github.event.inputs.portal }}"
+            PROD_CONFIRM="${{ github.event.inputs.prod_confirmation }}"
+            BROWSER="${{ github.event.inputs.browser || 'chrome' }}"
+            CUSTOM_URL="${{ github.event.inputs.custom_url }}"
+            CUSTOM_CLIENT_URL="${{ github.event.inputs.custom_client_url }}"
+          elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            ACTION="${{ github.event.action }}"
+            echo "Received repository_dispatch event with action: $ACTION"
+
+            # Post-deployment CI/CD webhooks trigger Sanity suite by default
+            SUITE="${{ github.event.client_payload.test_suite || 'Sanity' }}"
+
+            # Target Environment resolution
+            if [[ "$ACTION" =~ "prod" ]]; then
+              ENV="Prod"
+              PROD_CONFIRM="true" # Automated CD pipeline webhook has authorization
+            elif [[ "$ACTION" =~ "stage" ]]; then
+              ENV="Stage"
+              PROD_CONFIRM="false"
+            else
+              PAYLOAD_ENV="${{ github.event.client_payload.environment || 'Stage' }}"
+              if [ "$(echo "$PAYLOAD_ENV" | tr '[:upper:]' '[:lower:]')" = "prod" ]; then
+                ENV="Prod"
+                PROD_CONFIRM="true"
+              else
+                ENV="Stage"
+                PROD_CONFIRM="false"
+              fi
+            fi
+
+            # Target Portal resolution
+            if [[ "$ACTION" =~ "client" ]]; then
+              PORTAL="Clientportal"
+            elif [[ "$ACTION" =~ "superadmin" ]]; then
+              PORTAL="Superadmin"
+            else
+              PAYLOAD_PORTAL="${{ github.event.client_payload.portal || 'All' }}"
+              case "$(echo "$PAYLOAD_PORTAL" | tr '[:upper:]' '[:lower:]')" in
+                client|clientportal) PORTAL="Clientportal" ;;
+                superadmin) PORTAL="Superadmin" ;;
+                *) PORTAL="All" ;;
+              esac
+            fi
+
+            BROWSER="${{ github.event.client_payload.browser || 'chrome' }}"
+            CUSTOM_URL="${{ github.event.client_payload.url || '' }}"
+            CUSTOM_CLIENT_URL="${{ github.event.client_payload.client_url || '' }}"
+          else
+            SUITE="Smoke"
+            ENV="Stage"
+            PORTAL="All"
+            PROD_CONFIRM="false"
+            BROWSER="chrome"
+            CUSTOM_URL=""
+            CUSTOM_CLIENT_URL=""
+          fi
+
+          SUITE_LOWER=$(echo "$SUITE" | tr '[:upper:]' '[:lower:]')
+          ENV_LOWER=$(echo "$ENV" | tr '[:upper:]' '[:lower:]')
+          PORTAL_LOWER=$(echo "$PORTAL" | tr '[:upper:]' '[:lower:]')
 
           echo "=========================================================================="
-          echo "  Validating Workflow Dispatch Inputs"
+          echo "  Resolved Execution Configuration (${{ github.event_name }})"
           echo "=========================================================================="
           echo "  Test Suite         : $SUITE"
           echo "  Target Environment : $ENV"
@@ -100,37 +169,37 @@ jobs:
           echo "=========================================================================="
 
           # 1. Validate Test Suite
-          case "$SUITE" in
+          case "$SUITE_LOWER" in
             regression|smoke|sanity|e2e) ;;
-            *) echo "::error::Invalid test suite: '$SUITE'. Allowed: regression, smoke, sanity, e2e"
+            *) echo "::error::Invalid test suite: '$SUITE'. Allowed: Smoke, Sanity, E2E, Regression"
                exit 1 ;;
           esac
 
           # 2. Validate Environment
-          case "$ENV" in
+          case "$ENV_LOWER" in
             stage|prod) ;;
-            *) echo "::error::Invalid environment: '$ENV'. Allowed: stage, prod"
+            *) echo "::error::Invalid environment: '$ENV'. Allowed: Stage, Prod"
                exit 1 ;;
           esac
 
           # 3. Validate Portal Scope
-          case "$PORTAL" in
+          case "$PORTAL_LOWER" in
             all|superadmin|clientportal) ;;
-            *) echo "::error::Invalid portal scope: '$PORTAL'. Allowed: all, superadmin, clientportal"
+            *) echo "::error::Invalid portal scope: '$PORTAL'. Allowed: All, Superadmin, Clientportal"
                exit 1 ;;
           esac
 
           # 4. Production Safeguard Gate
-          if [ "$ENV" = "prod" ]; then
+          if [ "$ENV_LOWER" = "prod" ]; then
             if [ "$PROD_CONFIRM" != "true" ]; then
-              echo "::error::[SAFETY ABORT] Production execution requested without confirmation. You must check 'prod_confirmation' when targeting 'prod' environment."
+              echo "::error::[SAFETY ABORT] Production execution requested without confirmation. You must check 'prod_confirmation' when targeting 'Prod' environment."
               exit 2
             fi
             echo "[SAFETY CHECK PASSED] Production execution confirmed by operator."
           fi
 
           # 5. Resolve Suite XML Path
-          SUITE_FILE="src/test/resources/suites/${SUITE}-${PORTAL}.xml"
+          SUITE_FILE="src/test/resources/suites/${SUITE_LOWER}-${PORTAL_LOWER}.xml"
           if [ ! -f "$SUITE_FILE" ]; then
             echo "::error::Resolved TestNG suite file not found: $SUITE_FILE"
             exit 3
@@ -139,7 +208,7 @@ jobs:
 
           # 6. Export outputs for downstream steps
           echo "test_suite=$SUITE" >> $GITHUB_OUTPUT
-          echo "environment=$ENV" >> $GITHUB_OUTPUT
+          echo "environment=$ENV_LOWER" >> $GITHUB_OUTPUT
           echo "portal=$PORTAL" >> $GITHUB_OUTPUT
           echo "suite_file=$SUITE_FILE" >> $GITHUB_OUTPUT
           echo "browser=$BROWSER" >> $GITHUB_OUTPUT

@@ -20,7 +20,7 @@ import superadmin.utils.ConfigReader;
  * across Super Admin and VR Developer roles without corrupting or mutating persistent data.
  */
 @Listeners(Listener.class)
-@Test(groups = {"sanity", "superadmin", "regression"})
+@Test(groups = {"Sanity", "Superadmin", "Regression"})
 public class DeploymentSanityTest extends BaseTest {
 
 	private String username;
