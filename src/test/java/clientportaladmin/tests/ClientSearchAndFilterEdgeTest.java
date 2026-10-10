@@ -16,11 +16,13 @@ import superadmin.utils.ConfigReader;
  * Verifies employee searches, master data queries, curriculum empty states, and special character sanitization.
  */
 @Listeners(Listener.class)
+@Test(groups = {"regression", "clientportal"})
 public class ClientSearchAndFilterEdgeTest extends ClientBaseTest {
 
-	private String orgCode = ConfigReader.getClientOrgCode();
-	private String email = ConfigReader.getClientUsername();
-	private String password = ConfigReader.getClientPassword();
+	@BeforeClass(alwaysRun = true)
+	public void searchEdgePrerequisite() {
+		loginAsClientAdmin();
+	}
 
 	@BeforeMethod(alwaysRun = true)
 	public void setupSoftAssert() {
@@ -28,14 +30,6 @@ public class ClientSearchAndFilterEdgeTest extends ClientBaseTest {
 	}
 
 	@Test(priority = 1)
-	@TestInfo(module = "Client Search Edge Cases", description = "Login to Client Portal for Search Edge Tests", priority = "Critical")
-	public void login_As_ClientAdmin() throws InterruptedException {
-		clientLogin.loginToClient(orgCode, email, password);
-		softAssert.assertTrue(overview.isOverviewPageLoaded(), "Overview dashboard should be loaded post-login");
-		softAssert.assertAll();
-	}
-
-	@Test(priority = 2, dependsOnMethods = {"login_As_ClientAdmin"})
 	@TestInfo(module = "Client Search Edge Cases", description = "Verify User / Employee search with non-existent query displays empty state", priority = "High")
 	public void verify_Employee_Search_Non_Existent_Query() {
 		users.clickUsers();
@@ -46,7 +40,7 @@ public class ClientSearchAndFilterEdgeTest extends ClientBaseTest {
 		softAssert.assertAll();
 	}
 
-	@Test(priority = 3, dependsOnMethods = {"login_As_ClientAdmin"})
+	@Test(priority = 2)
 	@TestInfo(module = "Client Search Edge Cases", description = "Verify User search handles special characters safely", priority = "High")
 	public void verify_Employee_Search_Special_Characters() {
 		users.searchUsers("!@#$%^&*()'<script>");
@@ -56,7 +50,7 @@ public class ClientSearchAndFilterEdgeTest extends ClientBaseTest {
 		softAssert.assertAll();
 	}
 
-	@Test(priority = 4, dependsOnMethods = {"login_As_ClientAdmin"})
+	@Test(priority = 3)
 	@TestInfo(module = "Client Search Edge Cases", description = "Verify User search clear restores table records", priority = "Medium")
 	public void verify_Employee_Search_Clear_Restores_Data() {
 		int initialCount = users.getTableRowCount();
@@ -68,7 +62,7 @@ public class ClientSearchAndFilterEdgeTest extends ClientBaseTest {
 		softAssert.assertAll();
 	}
 
-	@Test(priority = 5, dependsOnMethods = {"login_As_ClientAdmin"})
+	@Test(priority = 4)
 	@TestInfo(module = "Client Search Edge Cases", description = "Verify Department Master search with non-existent query renders empty state", priority = "Medium")
 	public void verify_Department_Master_Non_Existent_Search() {
 		departmentMaster.clickDepartmentMaster();
@@ -79,7 +73,7 @@ public class ClientSearchAndFilterEdgeTest extends ClientBaseTest {
 		softAssert.assertAll();
 	}
 
-	@Test(priority = 6, dependsOnMethods = {"login_As_ClientAdmin"})
+	@Test(priority = 5)
 	@TestInfo(module = "Client Search Edge Cases", description = "Verify Designation Master search with non-existent query renders empty state", priority = "Medium")
 	public void verify_Designation_Master_Non_Existent_Search() {
 		designationMaster.clickDesignationMaster();
@@ -90,7 +84,7 @@ public class ClientSearchAndFilterEdgeTest extends ClientBaseTest {
 		softAssert.assertAll();
 	}
 
-	@Test(priority = 7, dependsOnMethods = {"login_As_ClientAdmin"})
+	@Test(priority = 6)
 	@TestInfo(module = "Client Search Edge Cases", description = "Verify Curriculum Catalogue non-existent query renders empty state", priority = "High")
 	public void verify_Curriculum_Search_Non_Existent_Query() {
 		curriculum.clickCurriculum();
@@ -101,7 +95,7 @@ public class ClientSearchAndFilterEdgeTest extends ClientBaseTest {
 		softAssert.assertAll();
 	}
 
-	@Test(priority = 8, dependsOnMethods = {"login_As_ClientAdmin"})
+	@Test(priority = 7)
 	@TestInfo(module = "Client Search Edge Cases", description = "Verify Duplicate Conflicts status filter toggle renders data or empty state cleanly", priority = "Medium")
 	public void verify_Duplicate_Conflicts_Filter_And_State() {
 		duplicateConflicts.clickDuplicateConflicts();

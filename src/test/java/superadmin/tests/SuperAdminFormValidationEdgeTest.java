@@ -16,10 +16,13 @@ import superadmin.utils.ConfigReader;
  * Validates mandatory field constraints and clean modal dismissal without polluting persistent data.
  */
 @Listeners(Listener.class)
+@Test(groups = {"regression", "superadmin"})
 public class SuperAdminFormValidationEdgeTest extends BaseTest {
 
-	private String username = ConfigReader.getUsername();
-	private String password = ConfigReader.getPassword();
+	@BeforeClass(alwaysRun = true)
+	public void formValidationPrerequisite() {
+		loginAsSuperAdmin();
+	}
 
 	@BeforeMethod(alwaysRun = true)
 	public void setupSoftAssert() {
@@ -27,19 +30,6 @@ public class SuperAdminFormValidationEdgeTest extends BaseTest {
 	}
 
 	@Test(priority = 1)
-	@TestInfo(module = "Form Validation Edge Cases", description = "Login as Super Admin for Form Validation Tests", priority = "Critical")
-	public void login_As_SuperAdmin() throws InterruptedException {
-		if (!driver.getCurrentUrl().contains("/login")) {
-			driver.get(ConfigReader.getUrl());
-		}
-		loginPage.enterUsername(username);
-		loginPage.enterPassword(password);
-		loginPage.clickLogin();
-		loginPage.dashboardName();
-		softAssert.assertAll();
-	}
-
-	@Test(priority = 2, dependsOnMethods = {"login_As_SuperAdmin"})
 	@TestInfo(module = "Form Validation Edge Cases", description = "Verify Add Organization wizard blocks submission when mandatory fields are omitted", priority = "High")
 	public void verify_Add_Organization_Blank_Mandatory_Fields() {
 		organizationPage.clickOrganizations();

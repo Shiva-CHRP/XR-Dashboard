@@ -16,6 +16,7 @@ import superadmin.utils.ToastResponse;
  * Validates Org Code validation, invalid credentials, change organization flow, and route guards.
  */
 @Listeners(Listener.class)
+@Test(groups = {"regression", "clientportal"})
 public class ClientAuthNegativeTest extends ClientBaseTest {
 
 	private String validOrgCode;

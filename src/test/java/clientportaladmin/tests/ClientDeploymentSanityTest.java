@@ -27,6 +27,7 @@ import superadmin.utils.JsonReader;
  * search mechanisms, and modal forms across the Client Portal without corrupting persistent data.
  */
 @Listeners(Listener.class)
+@Test(groups = {"sanity", "clientportal", "regression"})
 public class ClientDeploymentSanityTest extends ClientBaseTest {
 
 	private String orgCode;

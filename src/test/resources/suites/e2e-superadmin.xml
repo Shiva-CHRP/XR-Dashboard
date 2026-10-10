@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="SuperAdmin End-to-End Suite" verbose="1">
+
+    <listeners>
+        <listener class-name="superadmin.listener.Listener"/>
+    </listeners>
+
+    <test name="SuperAdmin Lifecycle E2E Tests" preserve-order="true">
+        <classes>
+            <class name="superadmin.tests.OrganizationTest"/>
+            <class name="superadmin.tests.CatalogueAndGovernanceTest"/>
+            <class name="superadmin.tests.DeveloperPortalTest"/>
+        </classes>
+    </test>
+
+</suite>

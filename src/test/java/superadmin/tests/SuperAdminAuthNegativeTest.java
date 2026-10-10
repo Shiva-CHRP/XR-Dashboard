@@ -16,6 +16,7 @@ import superadmin.utils.ToastResponse;
  * Validates error toasts, inline banners, input masking, and unauthorized route guards.
  */
 @Listeners(Listener.class)
+@Test(groups = {"regression", "superadmin"})
 public class SuperAdminAuthNegativeTest extends BaseTest {
 
 	private String validUsername;

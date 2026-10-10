@@ -17,6 +17,7 @@ import superadmin.utils.ToastResponse;
  * Validates negative role authentication, operational boundaries, and search filters.
  */
 @Listeners(Listener.class)
+@Test(groups = {"regression", "clientportal"})
 public class ManagerAndTrainerEdgeTest extends ClientBaseTest {
 
 	private String orgCode = ConfigReader.getClientOrgCode();
@@ -77,9 +78,7 @@ public class ManagerAndTrainerEdgeTest extends ClientBaseTest {
 		softAssert.assertAll();
 	}
 
-	@Test(priority = 3)
-	@TestInfo(module = "Manager & Trainer Edge Cases", description = "Login to Client Portal for Operations Testing", priority = "Critical")
-	public void login_For_Operations_Testing() throws InterruptedException {
+	private void ensureClientAdminLoggedIn() {
 		driver.get(ConfigReader.getClientUrl());
 		clientLogin.loginToClient(orgCode, clientAdminEmail, clientAdminPassword);
 		clientLogin.handleSessionLimitIfPresent();
@@ -87,13 +86,12 @@ public class ManagerAndTrainerEdgeTest extends ClientBaseTest {
 			waitUtils.waitUntil(d -> overview.isOverviewPageLoaded() || !d.findElements(org.openqa.selenium.By.xpath("//aside//button")).isEmpty(), 15);
 		} catch (Exception ignored) {
 		}
-		softAssert.assertTrue(overview.isOverviewPageLoaded(), "Overview dashboard should load post-login");
-		softAssert.assertAll();
 	}
 
-	@Test(priority = 4, dependsOnMethods = {"login_For_Operations_Testing"})
+	@Test(priority = 3)
 	@TestInfo(module = "Manager & Trainer Edge Cases", description = "Verify Assign Curriculums search handles non-existent query safely", priority = "High")
 	public void verify_Assign_Curriculums_Non_Existent_Search() {
+		ensureClientAdminLoggedIn();
 		assignCurriculums.clickAssignCurriculums();
 		softAssert.assertTrue(assignCurriculums.isAssignCurriculumsLoaded(), "Assign Curriculums page should be loaded");
 		assignCurriculums.searchTrainers("__NO_TRAINER_EXISTS_404__");
@@ -102,7 +100,7 @@ public class ManagerAndTrainerEdgeTest extends ClientBaseTest {
 		softAssert.assertAll();
 	}
 
-	@Test(priority = 5, dependsOnMethods = {"login_For_Operations_Testing"})
+	@Test(priority = 4)
 	@TestInfo(module = "Manager & Trainer Edge Cases", description = "Verify Assign Modules search handles non-existent query safely", priority = "High")
 	public void verify_Assign_Modules_Non_Existent_Search() {
 		assignModules.clickAssignModules();
@@ -113,7 +111,7 @@ public class ManagerAndTrainerEdgeTest extends ClientBaseTest {
 		softAssert.assertAll();
 	}
 
-	@Test(priority = 6, dependsOnMethods = {"login_For_Operations_Testing"})
+	@Test(priority = 5)
 	@TestInfo(module = "Manager & Trainer Edge Cases", description = "Verify Sessions search with non-existent query renders safely", priority = "Medium")
 	public void verify_Sessions_Non_Existent_Search() {
 		events.clickSessions();

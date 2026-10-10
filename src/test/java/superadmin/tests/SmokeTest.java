@@ -10,6 +10,7 @@ import superadmin.testcomponents.BaseTest;
 import superadmin.utils.ConfigReader;
 
 @Listeners(Listener.class)
+@Test(groups = {"smoke", "superadmin", "regression"})
 public class SmokeTest extends BaseTest {
 	String username = ConfigReader.getUsername();
 	String password = ConfigReader.getPassword();

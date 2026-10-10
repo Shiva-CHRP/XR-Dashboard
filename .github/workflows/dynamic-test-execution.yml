@@ -1,0 +1,299 @@
+name: Dynamic Test Suite Execution
+
+# ==============================================================================
+# Dynamic Test Suite Execution Workflow (GitHub Actions)
+# CHRP Simulation Platform - Multi-Role Automation Framework
+# Supports 24 dynamic execution combinations:
+# 4 Suites (regression, smoke, sanity, e2e) x 2 Environments (stage, prod) x 3 Portals (all, superadmin, clientportal)
+# ==============================================================================
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_suite:
+        description: 'Select Test Suite'
+        required: true
+        default: 'smoke'
+        type: choice
+        options:
+          - smoke
+          - sanity
+          - e2e
+          - regression
+      environment:
+        description: 'Select Target Environment'
+        required: true
+        default: 'stage'
+        type: choice
+        options:
+          - stage
+          - prod
+      portal:
+        description: 'Select Portal Scope'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - superadmin
+          - clientportal
+      prod_confirmation:
+        description: 'Production Confirmation (Mandatory if environment is prod)'
+        required: false
+        default: false
+        type: boolean
+      browser:
+        description: 'Select Browser'
+        required: false
+        default: 'chrome'
+        type: choice
+        options:
+          - chrome
+          - firefox
+          - edge
+      custom_url:
+        description: 'Custom SuperAdmin URL override (optional)'
+        required: false
+        default: ''
+        type: string
+      custom_client_url:
+        description: 'Custom Client Portal URL override (optional)'
+        required: false
+        default: ''
+        type: string
+
+jobs:
+  dynamic-execution:
+    name: Run ${{ github.event.inputs.test_suite }} (${{ github.event.inputs.portal }} @ ${{ github.event.inputs.environment }})
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Validate Inputs & Resolve TestNG Suite
+        id: resolve_config
+        run: |
+          SUITE="${{ github.event.inputs.test_suite }}"
+          ENV="${{ github.event.inputs.environment }}"
+          PORTAL="${{ github.event.inputs.portal }}"
+          PROD_CONFIRM="${{ github.event.inputs.prod_confirmation }}"
+          BROWSER="${{ github.event.inputs.browser }}"
+          CUSTOM_URL="${{ github.event.inputs.custom_url }}"
+          CUSTOM_CLIENT_URL="${{ github.event.inputs.custom_client_url }}"
+
+          echo "=========================================================================="
+          echo "  Validating Workflow Dispatch Inputs"
+          echo "=========================================================================="
+          echo "  Test Suite         : $SUITE"
+          echo "  Target Environment : $ENV"
+          echo "  Portal Scope       : $PORTAL"
+          echo "  Browser            : $BROWSER"
+          echo "  Prod Confirmation  : $PROD_CONFIRM"
+          echo "=========================================================================="
+
+          # 1. Validate Test Suite
+          case "$SUITE" in
+            regression|smoke|sanity|e2e) ;;
+            *) echo "::error::Invalid test suite: '$SUITE'. Allowed: regression, smoke, sanity, e2e"
+               exit 1 ;;
+          esac
+
+          # 2. Validate Environment
+          case "$ENV" in
+            stage|prod) ;;
+            *) echo "::error::Invalid environment: '$ENV'. Allowed: stage, prod"
+               exit 1 ;;
+          esac
+
+          # 3. Validate Portal Scope
+          case "$PORTAL" in
+            all|superadmin|clientportal) ;;
+            *) echo "::error::Invalid portal scope: '$PORTAL'. Allowed: all, superadmin, clientportal"
+               exit 1 ;;
+          esac
+
+          # 4. Production Safeguard Gate
+          if [ "$ENV" = "prod" ]; then
+            if [ "$PROD_CONFIRM" != "true" ]; then
+              echo "::error::[SAFETY ABORT] Production execution requested without confirmation. You must check 'prod_confirmation' when targeting 'prod' environment."
+              exit 2
+            fi
+            echo "[SAFETY CHECK PASSED] Production execution confirmed by operator."
+          fi
+
+          # 5. Resolve Suite XML Path
+          SUITE_FILE="src/test/resources/suites/${SUITE}-${PORTAL}.xml"
+          if [ ! -f "$SUITE_FILE" ]; then
+            echo "::error::Resolved TestNG suite file not found: $SUITE_FILE"
+            exit 3
+          fi
+          echo "Resolved Suite XML File: $SUITE_FILE"
+
+          # 6. Export outputs for downstream steps
+          echo "test_suite=$SUITE" >> $GITHUB_OUTPUT
+          echo "environment=$ENV" >> $GITHUB_OUTPUT
+          echo "portal=$PORTAL" >> $GITHUB_OUTPUT
+          echo "suite_file=$SUITE_FILE" >> $GITHUB_OUTPUT
+          echo "browser=$BROWSER" >> $GITHUB_OUTPUT
+          echo "custom_url=$CUSTOM_URL" >> $GITHUB_OUTPUT
+          echo "custom_client_url=$CUSTOM_CLIENT_URL" >> $GITHUB_OUTPUT
+
+      - name: Execute Tests via Maven
+        id: run_tests
+        continue-on-error: true
+        env:
+          STAGE_USERNAME: ${{ secrets.STAGE_USERNAME }}
+          STAGE_PASSWORD: ${{ secrets.STAGE_PASSWORD }}
+          PROD_USERNAME: ${{ secrets.PROD_USERNAME }}
+          PROD_PASSWORD: ${{ secrets.PROD_PASSWORD }}
+          STAGE_CLIENT_ORG_CODE: ${{ secrets.STAGE_CLIENT_ORG_CODE }}
+          STAGE_CLIENT_USERNAME: ${{ secrets.STAGE_CLIENT_USERNAME }}
+          STAGE_CLIENT_PASSWORD: ${{ secrets.STAGE_CLIENT_PASSWORD }}
+          STAGE_CLIENT_MANAGER_USERNAME: ${{ secrets.STAGE_CLIENT_MANAGER_USERNAME }}
+          STAGE_CLIENT_MANAGER_PASSWORD: ${{ secrets.STAGE_CLIENT_MANAGER_PASSWORD }}
+          STAGE_CLIENT_TRAINER_USERNAME: ${{ secrets.STAGE_CLIENT_TRAINER_USERNAME }}
+          STAGE_CLIENT_TRAINER_PASSWORD: ${{ secrets.STAGE_CLIENT_TRAINER_PASSWORD }}
+          PROD_CLIENT_ORG_CODE: ${{ secrets.PROD_CLIENT_ORG_CODE }}
+          PROD_CLIENT_USERNAME: ${{ secrets.PROD_CLIENT_USERNAME }}
+          PROD_CLIENT_PASSWORD: ${{ secrets.PROD_CLIENT_PASSWORD }}
+          PROD_CLIENT_MANAGER_USERNAME: ${{ secrets.PROD_CLIENT_MANAGER_USERNAME }}
+          PROD_CLIENT_MANAGER_PASSWORD: ${{ secrets.PROD_CLIENT_MANAGER_PASSWORD }}
+          PROD_CLIENT_TRAINER_USERNAME: ${{ secrets.PROD_CLIENT_TRAINER_USERNAME }}
+          PROD_CLIENT_TRAINER_PASSWORD: ${{ secrets.PROD_CLIENT_TRAINER_PASSWORD }}
+          CLIENT_ORG_CODE: ${{ secrets.CLIENT_ORG_CODE }}
+          CLIENT_USERNAME: ${{ secrets.CLIENT_USERNAME }}
+          CLIENT_PASSWORD: ${{ secrets.CLIENT_PASSWORD }}
+        run: |
+          SUITE_FILE="${{ steps.resolve_config.outputs.suite_file }}"
+          ENV="${{ steps.resolve_config.outputs.environment }}"
+          BROWSER="${{ steps.resolve_config.outputs.browser }}"
+          CUSTOM_URL="${{ steps.resolve_config.outputs.custom_url }}"
+          CUSTOM_CLIENT_URL="${{ steps.resolve_config.outputs.custom_client_url }}"
+
+          MVN_ARGS="-DsuiteXmlFile=$SUITE_FILE -Denv=$ENV -Dbrowser=$BROWSER -Dheadless=true"
+
+          if [ -n "$CUSTOM_URL" ]; then
+            MVN_ARGS="$MVN_ARGS -Durl=$CUSTOM_URL"
+          fi
+
+          if [ -n "$CUSTOM_CLIENT_URL" ]; then
+            MVN_ARGS="$MVN_ARGS -DclientUrl=$CUSTOM_CLIENT_URL"
+          fi
+
+          echo "=========================================================================="
+          echo "  Launching Maven Test Execution"
+          echo "  Command: mvn test $MVN_ARGS"
+          echo "=========================================================================="
+
+          mvn test $MVN_ARGS
+
+      - name: Parse Test Results & Publish Summary
+        if: always()
+        id: parse_results
+        run: |
+          SUITE="${{ steps.resolve_config.outputs.test_suite }}"
+          ENV="${{ steps.resolve_config.outputs.environment }}"
+          PORTAL="${{ steps.resolve_config.outputs.portal }}"
+          SUITE_FILE="${{ steps.resolve_config.outputs.suite_file }}"
+          BROWSER="${{ steps.resolve_config.outputs.browser }}"
+
+          TOTAL_TESTS=0
+          TOTAL_FAILURES=0
+          TOTAL_ERRORS=0
+          TOTAL_SKIPPED=0
+          TOTAL_TIME="0"
+
+          # Parse Surefire XML report files if available
+          if [ -d "target/surefire-reports" ]; then
+            for f in target/surefire-reports/TEST-*.xml; do
+              if [ -f "$f" ]; then
+                TESTS=$(grep -oE 'tests="[0-9]+"' "$f" | head -1 | grep -oE '[0-9]+' || echo "0")
+                FAILURES=$(grep -oE 'failures="[0-9]+"' "$f" | head -1 | grep -oE '[0-9]+' || echo "0")
+                ERRORS=$(grep -oE 'errors="[0-9]+"' "$f" | head -1 | grep -oE '[0-9]+' || echo "0")
+                SKIPPED=$(grep -oE 'skipped="[0-9]+"' "$f" | head -1 | grep -oE '[0-9]+' || echo "0")
+                TIME=$(grep -oE 'time="[0-9.]+"' "$f" | head -1 | grep -oE '[0-9.]+' || echo "0")
+
+                TOTAL_TESTS=$((TOTAL_TESTS + TESTS))
+                TOTAL_FAILURES=$((TOTAL_FAILURES + FAILURES + ERRORS))
+                TOTAL_SKIPPED=$((TOTAL_SKIPPED + SKIPPED))
+              fi
+            done
+          fi
+
+          TOTAL_PASSED=$((TOTAL_TESTS - TOTAL_FAILURES - TOTAL_SKIPPED))
+          if [ $TOTAL_PASSED -lt 0 ]; then TOTAL_PASSED=0; fi
+
+          if [ $TOTAL_FAILURES -eq 0 ] && [ $TOTAL_TESTS -gt 0 ]; then
+            STATUS_BADGE="PASSED"
+          elif [ $TOTAL_TESTS -eq 0 ]; then
+            STATUS_BADGE="NO TESTS"
+          else
+            STATUS_BADGE="FAILED"
+          fi
+
+          echo "=========================================================================="
+          echo "  Execution Results Summary"
+          echo "=========================================================================="
+          echo "  Total Tests : $TOTAL_TESTS"
+          echo "  Passed      : $TOTAL_PASSED"
+          echo "  Failed      : $TOTAL_FAILURES"
+          echo "  Skipped     : $TOTAL_SKIPPED"
+          echo "  Status      : $STATUS_BADGE"
+          echo "=========================================================================="
+
+          # Generate Markdown Summary for GitHub Step Summary
+          {
+            echo "## Dynamic Test Execution Summary"
+            echo ""
+            echo "| Parameter | Value |"
+            echo "| :--- | :--- |"
+            echo "| **Test Suite** | \`$SUITE\` |"
+            echo "| **Target Environment** | \`$ENV\` |"
+            echo "| **Portal Scope** | \`$PORTAL\` |"
+            echo "| **Suite XML File** | \`$SUITE_FILE\` |"
+            echo "| **Browser** | \`$BROWSER\` (headless) |"
+            echo ""
+            echo "### Execution Statistics"
+            echo ""
+            echo "| Total | Passed | Failed | Skipped | Status |"
+            echo "| :---: | :---: | :---: | :---: | :---: |"
+            echo "| **$TOTAL_TESTS** | $TOTAL_PASSED | $TOTAL_FAILURES | $TOTAL_SKIPPED | **$STATUS_BADGE** |"
+            echo ""
+            echo "> ExtentReports HTML dashboard and Surefire XML reports are archived below as artifacts."
+          } >> $GITHUB_STEP_SUMMARY
+
+          echo "total_failures=$TOTAL_FAILURES" >> $GITHUB_OUTPUT
+
+      - name: Archive ExtentReports Dashboard & Test Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestReports-${{ steps.resolve_config.outputs.test_suite }}-${{ steps.resolve_config.outputs.portal }}-${{ steps.resolve_config.outputs.environment }}
+          path: |
+            reports/
+            test-output/
+            target/surefire-reports/
+          retention-days: 14
+
+      - name: Check Final Execution Status
+        if: always()
+        run: |
+          FAILURES="${{ steps.parse_results.outputs.total_failures || '0' }}"
+          MAVEN_OUTCOME="${{ steps.run_tests.outcome }}"
+
+          if [ "$MAVEN_OUTCOME" != "success" ] && [ "$FAILURES" != "0" ]; then
+            echo "::error::Test suite execution had $FAILURES failure(s)."
+            exit 1
+          elif [ "$MAVEN_OUTCOME" != "success" ]; then
+            echo "::error::Maven test command failed."
+            exit 1
+          fi
+          echo "All executed tests passed successfully."

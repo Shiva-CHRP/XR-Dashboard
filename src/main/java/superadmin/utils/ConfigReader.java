@@ -195,18 +195,90 @@ public class ConfigReader {
 	}
 
 	public static String getClientManagerUsername() {
-		return prop.getProperty("clientManagerUsername");
+		String sys = System.getProperty("clientManagerUsername");
+		if (sys != null && !sys.trim().isEmpty()) {
+			return sys.trim();
+		}
+		String env = getEnv();
+		if ("prod".equalsIgnoreCase(env) || "production".equalsIgnoreCase(env)) {
+			String envUser = System.getenv("PROD_CLIENT_MANAGER_USERNAME");
+			if (envUser != null && !envUser.trim().isEmpty()) return envUser.trim();
+			String prodUser = prop.getProperty("prod.clientManagerUsername");
+			if (prodUser != null && !prodUser.trim().isEmpty()) return prodUser.trim();
+		} else if ("stage".equalsIgnoreCase(env) || "staging".equalsIgnoreCase(env)) {
+			String envUser = System.getenv("STAGE_CLIENT_MANAGER_USERNAME");
+			if (envUser != null && !envUser.trim().isEmpty()) return envUser.trim();
+			String stageUser = prop.getProperty("stage.clientManagerUsername");
+			if (stageUser != null && !stageUser.trim().isEmpty()) return stageUser.trim();
+		}
+		String envGeneral = System.getenv("CLIENT_MANAGER_USERNAME");
+		if (envGeneral != null && !envGeneral.trim().isEmpty()) return envGeneral.trim();
+		return get("clientManagerUsername");
 	}
 
 	public static String getClientManagerPassword() {
-		return prop.getProperty("clientManagerPassword");
+		String sys = System.getProperty("clientManagerPassword");
+		if (sys != null && !sys.trim().isEmpty()) {
+			return sys.trim();
+		}
+		String env = getEnv();
+		if ("prod".equalsIgnoreCase(env) || "production".equalsIgnoreCase(env)) {
+			String envPass = System.getenv("PROD_CLIENT_MANAGER_PASSWORD");
+			if (envPass != null && !envPass.trim().isEmpty()) return envPass.trim();
+			String prodPass = prop.getProperty("prod.clientManagerPassword");
+			if (prodPass != null && !prodPass.trim().isEmpty()) return prodPass.trim();
+		} else if ("stage".equalsIgnoreCase(env) || "staging".equalsIgnoreCase(env)) {
+			String envPass = System.getenv("STAGE_CLIENT_MANAGER_PASSWORD");
+			if (envPass != null && !envPass.trim().isEmpty()) return envPass.trim();
+			String stagePass = prop.getProperty("stage.clientManagerPassword");
+			if (stagePass != null && !stagePass.trim().isEmpty()) return stagePass.trim();
+		}
+		String envGeneral = System.getenv("CLIENT_MANAGER_PASSWORD");
+		if (envGeneral != null && !envGeneral.trim().isEmpty()) return envGeneral.trim();
+		return get("clientManagerPassword");
 	}
 
 	public static String getClientTrainerUsername() {
-		return prop.getProperty("clientTrainerUsername");
+		String sys = System.getProperty("clientTrainerUsername");
+		if (sys != null && !sys.trim().isEmpty()) {
+			return sys.trim();
+		}
+		String env = getEnv();
+		if ("prod".equalsIgnoreCase(env) || "production".equalsIgnoreCase(env)) {
+			String envUser = System.getenv("PROD_CLIENT_TRAINER_USERNAME");
+			if (envUser != null && !envUser.trim().isEmpty()) return envUser.trim();
+			String prodUser = prop.getProperty("prod.clientTrainerUsername");
+			if (prodUser != null && !prodUser.trim().isEmpty()) return prodUser.trim();
+		} else if ("stage".equalsIgnoreCase(env) || "staging".equalsIgnoreCase(env)) {
+			String envUser = System.getenv("STAGE_CLIENT_TRAINER_USERNAME");
+			if (envUser != null && !envUser.trim().isEmpty()) return envUser.trim();
+			String stageUser = prop.getProperty("stage.clientTrainerUsername");
+			if (stageUser != null && !stageUser.trim().isEmpty()) return stageUser.trim();
+		}
+		String envGeneral = System.getenv("CLIENT_TRAINER_USERNAME");
+		if (envGeneral != null && !envGeneral.trim().isEmpty()) return envGeneral.trim();
+		return get("clientTrainerUsername");
 	}
 
 	public static String getClientTrainerPassword() {
-		return prop.getProperty("clientTrainerPassword");
+		String sys = System.getProperty("clientTrainerPassword");
+		if (sys != null && !sys.trim().isEmpty()) {
+			return sys.trim();
+		}
+		String env = getEnv();
+		if ("prod".equalsIgnoreCase(env) || "production".equalsIgnoreCase(env)) {
+			String envPass = System.getenv("PROD_CLIENT_TRAINER_PASSWORD");
+			if (envPass != null && !envPass.trim().isEmpty()) return envPass.trim();
+			String prodPass = prop.getProperty("prod.clientTrainerPassword");
+			if (prodPass != null && !prodPass.trim().isEmpty()) return prodPass.trim();
+		} else if ("stage".equalsIgnoreCase(env) || "staging".equalsIgnoreCase(env)) {
+			String envPass = System.getenv("STAGE_CLIENT_TRAINER_PASSWORD");
+			if (envPass != null && !envPass.trim().isEmpty()) return envPass.trim();
+			String stagePass = prop.getProperty("stage.clientTrainerPassword");
+			if (stagePass != null && !stagePass.trim().isEmpty()) return stagePass.trim();
+		}
+		String envGeneral = System.getenv("CLIENT_TRAINER_PASSWORD");
+		if (envGeneral != null && !envGeneral.trim().isEmpty()) return envGeneral.trim();
+		return get("clientTrainerPassword");
 	}
 }

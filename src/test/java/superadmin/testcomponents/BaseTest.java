@@ -275,6 +275,40 @@ public class BaseTest {
 		trainerSchedule = new TrainerSchedule(driver);
 		trainerSettings = new TrainerSettings(driver);
 	}
+
+	public void loginAsSuperAdmin() {
+		if (!driver.getCurrentUrl().contains("/login")) {
+			driver.get(ConfigReader.getUrl());
+		}
+		loginPage.enterUsername(ConfigReader.getUsername());
+		loginPage.enterPassword(ConfigReader.getPassword());
+		loginPage.clickLogin();
+		loginPage.dashboardName();
+	}
+
+	public void loginAsClientAdmin() {
+		if (!driver.getCurrentUrl().contains("/login")) {
+			driver.get(ConfigReader.getClientUrl());
+		}
+		clientLogin.loginToClient(ConfigReader.getClientOrgCode(), ConfigReader.getClientUsername(), ConfigReader.getClientPassword());
+	}
+
+	public void loginAsClientManager() {
+		if (!driver.getCurrentUrl().contains("/login")) {
+			driver.get(ConfigReader.getClientUrl());
+		}
+		clientLogin.loginToClient(ConfigReader.getClientOrgCode(), ConfigReader.getClientManagerUsername(), ConfigReader.getClientManagerPassword());
+		managerOverview.isManagerOverviewPageLoaded();
+	}
+
+	public void loginAsClientTrainer() {
+		if (!driver.getCurrentUrl().contains("/login")) {
+			driver.get(ConfigReader.getClientUrl());
+		}
+		clientLogin.loginToClient(ConfigReader.getClientOrgCode(), ConfigReader.getClientTrainerUsername(), ConfigReader.getClientTrainerPassword());
+		trainerOverview.isTrainerOverviewPageLoaded();
+	}
+
 	public void assertToast(ToastResponse toast, String expectedMessage, String expectedType) {
 
 		Assert.assertEquals(toast.getMessage(), expectedMessage);

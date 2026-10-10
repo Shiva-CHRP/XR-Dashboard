@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="ClientPortal Full Regression Suite" verbose="1">
+
+    <listeners>
+        <listener class-name="superadmin.listener.Listener"/>
+    </listeners>
+
+    <test name="ClientPortal Multi-Role Smoke" preserve-order="true">
+        <classes>
+            <class name="clientportaladmin.tests.ClientSmokeTest"/>
+            <class name="clientportalmanager.tests.ManagerSmokeTest"/>
+            <class name="clientportaltrainer.tests.TrainerSmokeTest"/>
+        </classes>
+    </test>
+
+    <test name="ClientPortal Post-Deployment Sanity" preserve-order="true">
+        <classes>
+            <class name="clientportaladmin.tests.ClientDeploymentSanityTest"/>
+        </classes>
+    </test>
+
+    <test name="ClientPortal Operations E2E Tests" preserve-order="true">
+        <classes>
+            <class name="clientportaladmin.tests.ClientUserManagementTest"/>
+            <class name="clientportaladmin.tests.ClientCurriculumAndContentTest"/>
+            <class name="clientportaladmin.tests.ClientReportsAndSyncTest"/>
+        </classes>
+    </test>
+
+    <test name="ClientPortal Security &amp; Operational Edge Cases" preserve-order="true">
+        <classes>
+            <class name="clientportaladmin.tests.ClientAuthNegativeTest"/>
+            <class name="clientportaladmin.tests.ClientFormValidationEdgeTest"/>
+            <class name="clientportaladmin.tests.ClientSearchAndFilterEdgeTest"/>
+            <class name="clientportalmanager.tests.ManagerAndTrainerEdgeTest"/>
+        </classes>
+    </test>
+
+</suite>

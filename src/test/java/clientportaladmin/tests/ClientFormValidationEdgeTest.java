@@ -16,11 +16,13 @@ import superadmin.utils.ConfigReader;
  * Validates blank mandatory field constraints and modal clean dismissals without database modification.
  */
 @Listeners(Listener.class)
+@Test(groups = {"regression", "clientportal"})
 public class ClientFormValidationEdgeTest extends ClientBaseTest {
 
-	private String orgCode = ConfigReader.getClientOrgCode();
-	private String email = ConfigReader.getClientUsername();
-	private String password = ConfigReader.getClientPassword();
+	@BeforeClass(alwaysRun = true)
+	public void formValidationPrerequisite() {
+		loginAsClientAdmin();
+	}
 
 	@BeforeMethod(alwaysRun = true)
 	public void setupSoftAssert() {
@@ -28,14 +30,6 @@ public class ClientFormValidationEdgeTest extends ClientBaseTest {
 	}
 
 	@Test(priority = 1)
-	@TestInfo(module = "Client Form Validation", description = "Login to Client Portal for Form Validation Tests", priority = "Critical")
-	public void login_As_ClientAdmin() throws InterruptedException {
-		clientLogin.loginToClient(orgCode, email, password);
-		softAssert.assertTrue(overview.isOverviewPageLoaded(), "Overview dashboard should be loaded post-login");
-		softAssert.assertAll();
-	}
-
-	@Test(priority = 2, dependsOnMethods = {"login_As_ClientAdmin"})
 	@TestInfo(module = "Client Form Validation", description = "Verify Add User modal prevents submission when fields are blank", priority = "High")
 	public void verify_Add_User_Blank_Mandatory_Fields() {
 		users.clickUsers();

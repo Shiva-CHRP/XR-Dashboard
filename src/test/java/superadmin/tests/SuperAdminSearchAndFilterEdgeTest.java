@@ -16,10 +16,13 @@ import superadmin.utils.ConfigReader;
  * Verifies non-existent queries, special character sanitization, and filter reset restoration.
  */
 @Listeners(Listener.class)
+@Test(groups = {"regression", "superadmin"})
 public class SuperAdminSearchAndFilterEdgeTest extends BaseTest {
 
-	private String username = ConfigReader.getUsername();
-	private String password = ConfigReader.getPassword();
+	@BeforeClass(alwaysRun = true)
+	public void searchEdgePrerequisite() {
+		loginAsSuperAdmin();
+	}
 
 	@BeforeMethod(alwaysRun = true)
 	public void setupSoftAssert() {
@@ -27,19 +30,6 @@ public class SuperAdminSearchAndFilterEdgeTest extends BaseTest {
 	}
 
 	@Test(priority = 1)
-	@TestInfo(module = "Search Edge Cases", description = "Login as Super Admin for Edge Case Tests", priority = "Critical")
-	public void login_As_SuperAdmin() throws InterruptedException {
-		if (!driver.getCurrentUrl().contains("/login")) {
-			driver.get(ConfigReader.getUrl());
-		}
-		loginPage.enterUsername(username);
-		loginPage.enterPassword(password);
-		loginPage.clickLogin();
-		loginPage.dashboardName();
-		softAssert.assertAll();
-	}
-
-	@Test(priority = 2, dependsOnMethods = {"login_As_SuperAdmin"})
 	@TestInfo(module = "Search Edge Cases", description = "Verify Organization Search with Non-Existent Query renders empty state", priority = "High")
 	public void verify_Organization_Search_Non_Existent_Query() {
 		organizationPage.clickOrganizations();
