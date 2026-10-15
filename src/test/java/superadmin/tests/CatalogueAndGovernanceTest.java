@@ -1,5 +1,6 @@
 package superadmin.tests;
 
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -61,10 +62,13 @@ public class CatalogueAndGovernanceTest extends BaseTest {
 		offlinePortalRelease.switchToExeTab();
 	}
 
-	@Test(priority = 8)
-	@TestInfo(module = "Governance", description = "Logout after Catalogue and Governance tests", priority = "Low")
-	public void logout_After_Tests() throws InterruptedException {
-		loginPage.clickProfile();
-		loginPage.clickLogOut();
+	@AfterClass(alwaysRun = true)
+	public void tearDownCatalogueAndGovernanceTest() {
+		try {
+			loginPage.clickProfile();
+			loginPage.clickLogOut();
+		} catch (Exception e) {
+			// Best-effort cleanup prior to driver quit
+		}
 	}
 }

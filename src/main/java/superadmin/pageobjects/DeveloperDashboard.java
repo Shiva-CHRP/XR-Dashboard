@@ -123,6 +123,11 @@ public class DeveloperDashboard extends AbstractComponent {
 		));
 	}
 
+	@StepName("Click on the Developer Dashboard (Alias)")
+	public void clickDashboard() {
+		clickDeveloperDashboard();
+	}
+
 	@StepName("Verify Developer Dashboard is loaded")
 	public boolean isPageLoaded() {
 		try {

@@ -1,24 +1,46 @@
 [
   {
-    "fullName": "Aarav Sharma",
-    "employeeId": "EMP-IND-1001",
-    "email": "aarav.sharma@automationtest.com",
-    "role": "Employee",
-    "department": "Safety & Operations",
-    "designation": "Safety Officer",
+    "fullName": "Kavita Reddy",
+    "employeeId": "EMP-QA-501",
+    "email": "kavita.reddy@automationtest.com",
+    "role": "Manager",
+    "department": "Heavy Machinery Operations",
+    "designation": "Senior Safety Auditor",
     "contractorName": "",
     "employeeType": "internal",
     "status": "Active"
   },
   {
-    "fullName": "Vikram Patel",
-    "employeeId": "CON-IND-2001",
-    "email": "vikram.patel@contractorqa.com",
+    "fullName": "Suresh Raina",
+    "employeeId": "EMP-QA-502",
+    "email": "suresh.raina@automationtest.com",
+    "role": "Trainer",
+    "department": "Heavy Machinery Operations",
+    "designation": "Senior Safety Auditor",
+    "contractorName": "",
+    "employeeType": "internal",
+    "status": "Active"
+  },
+  {
+    "fullName": "Tariq Mansoor",
+    "employeeId": "CON-QA-701",
+    "email": "tariq.mansoor@contractorqa.com",
     "role": "Contractor Worker",
-    "department": "Plant Maintenance",
-    "designation": "Mechanical Technician",
-    "contractorName": "Apex Infrastructure Ltd",
+    "department": "Heavy Machinery Operations",
+    "designation": "Senior Safety Auditor",
+    "contractorName": "Zenith Technical Solutions",
     "employeeType": "contractor",
+    "status": "Active"
+  },
+  {
+    "fullName": "Aarav Sharma",
+    "employeeId": "EMP-IND-1001",
+    "email": "aarav.sharma@automationtest.com",
+    "role": "Employee",
+    "department": "Heavy Machinery Operations",
+    "designation": "Senior Safety Auditor",
+    "contractorName": "",
+    "employeeType": "internal",
     "status": "Active"
   }
 ]

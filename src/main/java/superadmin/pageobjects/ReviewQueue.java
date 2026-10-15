@@ -173,9 +173,31 @@ public class ReviewQueue extends AbstractComponent {
 		return pendingReviewCard.getText();
 	}
 
+	@StepName("Get Pending Review Count as Integer")
+	public int getPendingReviewCountInt() {
+		try {
+			waitUtils.waitForVisibility(pendingReviewCard);
+			String text = pendingReviewCard.getText().replaceAll("[^0-9]", "").trim();
+			return text.isEmpty() ? 0 : Integer.parseInt(text);
+		} catch (Exception e) {
+			return 0;
+		}
+	}
+
 	@StepName("Get Approved Count")
 	public String getApprovedCount() {
 		return approvedCard.getText();
+	}
+
+	@StepName("Get Approved Count as Integer")
+	public int getApprovedCountInt() {
+		try {
+			waitUtils.waitForVisibility(approvedCard);
+			String text = approvedCard.getText().replaceAll("[^0-9]", "").trim();
+			return text.isEmpty() ? 0 : Integer.parseInt(text);
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 
 	@StepName("Get Rejected Count")
@@ -183,15 +205,29 @@ public class ReviewQueue extends AbstractComponent {
 		return rejectedCard.getText();
 	}
 
+	@StepName("Get Rejected Count as Integer")
+	public int getRejectedCountInt() {
+		try {
+			waitUtils.waitForVisibility(rejectedCard);
+			String text = rejectedCard.getText().replaceAll("[^0-9]", "").trim();
+			return text.isEmpty() ? 0 : Integer.parseInt(text);
+		} catch (Exception e) {
+			return 0;
+		}
+	}
+
 	// =========================================================================
 	// Action Methods: Search & Filters
 	// =========================================================================
 
-	@StepName("Search Module by Name")
+	@StepName("Search Module by Name: {0}")
 	public void searchModule(String query) {
-		waitElementToBeClickable(searchInput);
-		searchInput.clear();
-		searchInput.sendKeys(query);
+		waitUtils.waitForVisibility(searchInput);
+		searchInput.sendKeys(org.openqa.selenium.Keys.chord(org.openqa.selenium.Keys.CONTROL, "a"), org.openqa.selenium.Keys.BACK_SPACE);
+		if (query != null && !query.isEmpty()) {
+			searchInput.sendKeys(query);
+		}
+		waitForLoadingToComplete();
 	}
 
 	@StepName("Filter Review Queue by Status")
@@ -233,25 +269,48 @@ public class ReviewQueue extends AbstractComponent {
 		return tableRows.size();
 	}
 
-	@StepName("Verify Module Present in Review Queue")
+	@StepName("Verify Module Present in Review Queue: {0}")
 	public boolean isModulePresent(String moduleName) {
 		try {
 			searchModule(moduleName);
-			WebElement row = driver.findElement(By.xpath(
-					"//tr[.//span[contains(text(),'" + moduleName + "')] or .//td[contains(.,'" + moduleName + "')]]"));
+			By rowLocator = By.xpath("//table//tbody//tr[.//span[contains(text(),'" + moduleName + "')] or .//td[contains(.,'" + moduleName + "')]]");
+			WebElement row = waitUtils.waitForVisibility(rowLocator);
 			return row.isDisplayed();
 		} catch (Exception e) {
 			return false;
 		}
 	}
 
-	@StepName("Click on Module Row for Review")
+	@StepName("Check if Module Present in Queue (Alias): {0}")
+	public boolean isModulePresentInQueue(String moduleName) {
+		return isModulePresent(moduleName);
+	}
+
+	@StepName("Open Review Detail for Module Name: {0}")
+	public boolean openReviewDetailForModule(String moduleName) {
+		try {
+			searchModule(moduleName);
+			By rowLocator = By.xpath("//table//tbody//tr[.//span[contains(text(),'" + moduleName + "')] or .//td[contains(.,'" + moduleName + "')]]");
+			WebElement row = waitUtils.waitForVisibility(rowLocator);
+			List<WebElement> actionBtns = row.findElements(By.xpath(".//button[contains(.,'Review') or contains(.,'View')]"));
+			if (!actionBtns.isEmpty()) {
+				waitUtils.waitForClickable(actionBtns.get(0));
+				clickUsingJS(actionBtns.get(0));
+			} else {
+				waitUtils.waitForClickable(row);
+				clickUsingJS(row);
+			}
+			waitUtils.waitForUrlContains("/modules/review/");
+			waitUtils.waitForVisibility(backToQueueButton);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	@StepName("Click on Module Row for Review: {0}")
 	public void clickModuleForReview(String moduleName) {
-		searchModule(moduleName);
-		WebElement row = driver.findElement(By.xpath(
-				"//tr[.//span[contains(text(),'" + moduleName + "')] or .//td[contains(.,'" + moduleName + "')]]"));
-		waitElementToBeClickable(row);
-		row.click();
+		openReviewDetailForModule(moduleName);
 	}
 
 	@StepName("Get Module Status from Table Row")
@@ -434,5 +493,36 @@ public class ReviewQueue extends AbstractComponent {
 				return false;
 			}
 		}
+	}
+
+	@StepName("Verify Review Queue Page is Loaded (Alias)")
+	public boolean isReviewQueueLoaded() {
+		return isPageLoaded();
+	}
+
+	@StepName("Search Pending Modules (Alias)")
+	public void searchPendingModules(String query) {
+		searchModule(query);
+	}
+
+	@StepName("Has Matching Pending Modules")
+	public boolean hasMatchingPendingModules() {
+		return getRowCount() > 0;
+	}
+
+	@StepName("Open Module Review Drawer / Detail")
+	public void openModuleReviewDrawer(String moduleName) {
+		clickModuleForReview(moduleName);
+	}
+
+	@StepName("Enter Review Notes (Alias)")
+	public void enterReviewNotes(String notes) {
+		enterDecisionRationale(notes);
+	}
+
+	@StepName("Click Approve Module")
+	public void clickApproveModule() {
+		clickApproveButton();
+		confirmDecisionInModal();
 	}
 }

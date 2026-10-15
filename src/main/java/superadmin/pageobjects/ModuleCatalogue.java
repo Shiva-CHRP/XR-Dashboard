@@ -523,6 +523,109 @@ public class ModuleCatalogue extends AbstractComponent {
 		waitForTableOrCardsToLoad();
 	}
 
+	@StepName("Open Module Details after Search Filter: {0}")
+	public boolean openModuleDetailAfterSearch(String moduleName) {
+		searchModule(moduleName);
+		try {
+			if (isGridViewActive()) {
+				WebElement card = findCardByName(moduleName);
+				if (card != null) {
+					try {
+						openCard3DotsMenu(moduleName);
+						waitUtils.waitForClickable(menuViewDetailsOption);
+						menuViewDetailsOption.click();
+					} catch (Exception e) {
+						waitUtils.waitForClickable(card);
+						card.click();
+					}
+					waitUtils.waitUntil(ExpectedConditions.or(
+							ExpectedConditions.visibilityOf(detailModuleTitle),
+							ExpectedConditions.urlContains("/catalogue/")
+					));
+					return true;
+				}
+			} else {
+				WebElement row = findRowByName(moduleName);
+				if (row != null) {
+					try {
+						openRow3DotsMenu(moduleName);
+						waitUtils.waitForClickable(menuViewDetailsOption);
+						menuViewDetailsOption.click();
+					} catch (Exception e) {
+						waitUtils.waitForClickable(row);
+						row.click();
+					}
+					waitUtils.waitUntil(ExpectedConditions.or(
+							ExpectedConditions.visibilityOf(detailModuleTitle),
+							ExpectedConditions.urlContains("/catalogue/")
+					));
+					return true;
+				}
+			}
+		} catch (Exception e) {
+			return false;
+		}
+		return false;
+	}
+
+	@StepName("Open Manage Access after Search Filter: {0}")
+	public boolean openManageAccessAfterSearch(String moduleName) {
+		searchModule(moduleName);
+		try {
+			if (isGridViewActive()) {
+				WebElement card = findCardByName(moduleName);
+				if (card != null) {
+					try {
+						WebElement accessBtn = card.findElement(By.xpath(".//button[contains(.,'Manage Access')]"));
+						waitUtils.waitForClickable(accessBtn);
+						accessBtn.click();
+					} catch (Exception e) {
+						openCard3DotsMenu(moduleName);
+						waitUtils.waitForClickable(menuManageAccessOption);
+						menuManageAccessOption.click();
+					}
+				}
+			} else {
+				openRow3DotsMenu(moduleName);
+				waitUtils.waitForClickable(menuManageAccessOption);
+				menuManageAccessOption.click();
+			}
+			waitUtils.waitForVisibility(accessModalTitle);
+			return isAccessModalDisplayed();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	@StepName("Archive Module after Search Filter: {0}")
+	public void archiveModuleAfterSearch(String moduleName) {
+		clickActiveTab();
+		searchModule(moduleName);
+		if (isGridViewActive()) {
+			openCard3DotsMenu(moduleName);
+		} else {
+			openRow3DotsMenu(moduleName);
+		}
+		waitUtils.waitForClickable(menuArchiveOption);
+		menuArchiveOption.click();
+		waitUtils.waitForVisibility(archiveModalTitle);
+		confirmArchiveModule();
+	}
+
+	@StepName("Unarchive Module after Search Filter: {0}")
+	public void unarchiveModuleAfterSearch(String moduleName) {
+		clickArchivedTab();
+		searchModule(moduleName);
+		if (isGridViewActive()) {
+			openCard3DotsMenu(moduleName);
+		} else {
+			openRow3DotsMenu(moduleName);
+		}
+		waitUtils.waitForClickable(menuUnarchiveOption);
+		menuUnarchiveOption.click();
+		waitForTableOrCardsToLoad();
+	}
+
 	// =========================================================================
 	// ACTION METHODS: Manage Access Modal
 	// =========================================================================
@@ -917,5 +1020,55 @@ public class ModuleCatalogue extends AbstractComponent {
 				return hasCards || hasRows || emptyCard;
 			});
 		} catch (Exception ignored) {}
+	}
+
+	@StepName("Verify Module Catalogue is Loaded (Alias)")
+	public boolean isModuleCatalogueLoaded() {
+		return isPageLoaded();
+	}
+
+	@StepName("Search Modules (Alias)")
+	public void searchModules(String query) {
+		searchModule(query);
+	}
+
+	@StepName("Is Module Present in Catalogue (Alias)")
+	public boolean isModulePresentInCatalogue(String moduleName) {
+		return isModulePresent(moduleName);
+	}
+
+	@StepName("Open Module Details (Alias)")
+	public void openModuleDetails(String moduleName) {
+		openModuleDetail(moduleName);
+	}
+
+	@StepName("Is Module Details Modal Displayed (Alias)")
+	public boolean isModuleDetailsModalDisplayed() {
+		return isDetailPageLoaded() || (detailModuleTitle != null && detailModuleTitle.isDisplayed());
+	}
+
+	@StepName("Close Module Details Modal (Alias)")
+	public void closeModuleDetailsModal() {
+		clickBackToCatalogue();
+	}
+
+	@StepName("Open Manage Access (Alias)")
+	public void openManageAccess(String moduleName) {
+		clickManageAccess(moduleName);
+	}
+
+	@StepName("Is Manage Access Modal Displayed (Alias)")
+	public boolean isManageAccessModalDisplayed() {
+		return accessModalTitle != null && accessModalTitle.isDisplayed();
+	}
+
+	@StepName("Close Manage Access Modal (Alias)")
+	public void closeManageAccessModal() {
+		cancelAccessModal();
+	}
+
+	@StepName("Cancel Manage Access Modal (Alias)")
+	public void cancelManageAccessModal() {
+		cancelAccessModal();
 	}
 }

@@ -18,7 +18,18 @@ public class ClientMasterData {
 	@JsonProperty("code")
 	private String code;
 
+	@JsonProperty("renamedName")
+	private String renamedName;
+
 	public ClientMasterData() {
+	}
+
+	public String getRenamedName() {
+		return renamedName;
+	}
+
+	public void setRenamedName(String renamedName) {
+		this.renamedName = renamedName;
 	}
 
 	public String getMasterType() {

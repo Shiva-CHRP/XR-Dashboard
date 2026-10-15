@@ -66,4 +66,15 @@
         </classes>
     </test>
 
+    <test name="End-to-End Multi-Portal Workflows &amp; Security" preserve-order="true">
+        <classes>
+            <class name="e2e.tests.SuperAdminOrgLifecycleE2ETest"/>
+            <class name="e2e.tests.VRModuleAndCatalogueE2ETest"/>
+            <class name="e2e.tests.ClientPortalConfigE2ETest"/>
+            <class name="e2e.tests.ManagerTrainerWorkflowE2ETest"/>
+            <class name="e2e.tests.SecurityAndIsolationE2ETest"/>
+            <class name="e2e.tests.MasterPlatformE2ETest"/>
+        </classes>
+    </test>
+
 </suite>

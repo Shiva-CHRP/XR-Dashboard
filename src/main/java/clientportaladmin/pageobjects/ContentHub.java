@@ -53,4 +53,9 @@ public class ContentHub extends AbstractComponent {
 	public int getModuleCardsCount() {
 		return moduleCards.size();
 	}
+
+	@StepName("Is Module List Empty Or Zero")
+	public boolean isModuleListEmptyOrZero() {
+		return moduleCards.isEmpty() || !driver.findElements(org.openqa.selenium.By.xpath("//td[contains(.,'No') or contains(.,'found')] | //div[contains(.,'No') and contains(.,'found')]")).isEmpty();
+	}
 }

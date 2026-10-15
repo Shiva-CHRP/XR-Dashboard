@@ -2,25 +2,50 @@
   {
     "masterType": "Department",
     "name": "Heavy Machinery Operations",
+    "code": "DEP-HMO",
     "description": "Earthmoving and drilling machinery maintenance operations.",
-    "code": "DEP-HMO"
+    "renamedName": "Heavy Plant Engineering"
   },
   {
     "masterType": "Designation",
     "name": "Senior Safety Auditor",
+    "code": "DES-SSA",
     "description": "Responsible for field inspections and VR safety audit compliance.",
-    "code": "DES-SSA"
+    "renamedName": "Principal Safety Specialist"
   },
   {
-    "masterType": "Contractor",
-    "name": "Zenith Technical Solutions",
-    "description": "Third-party technical manpower provider for power plants.",
-    "code": "CON-ZTS"
+    "masterType": "Division",
+    "name": "Mining & Extraction",
+    "code": "DIV-MIN",
+    "description": "Underground and open-cast extraction division.",
+    "renamedName": "Extraction Operations"
   },
   {
     "masterType": "Plant",
     "name": "North Mining Sector Area 4",
+    "code": "PLT-NMS4",
     "description": "Underground mining sector shaft and processing area.",
-    "code": "PLT-NMS4"
+    "renamedName": "Sector 4 Processing Plant"
+  },
+  {
+    "masterType": "Category",
+    "name": "High Voltage Safety",
+    "code": "CAT-HVS",
+    "description": "Electrical substation and transformer maintenance training.",
+    "renamedName": "Electrical & Grid Safety"
+  },
+  {
+    "masterType": "Contractor",
+    "name": "Zenith Technical Solutions",
+    "code": "CON-ZTS",
+    "description": "Third-party technical manpower provider for power plants.",
+    "renamedName": "Zenith Industrial Services"
+  },
+  {
+    "masterType": "Setup",
+    "name": "Mobile VR Rig 01",
+    "code": "SET-VR01",
+    "description": "Portable 6DOF headset rig with wireless tracking stations.",
+    "renamedName": "Deployable VR Cell A"
   }
 ]

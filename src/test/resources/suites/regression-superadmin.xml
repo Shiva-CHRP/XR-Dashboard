@@ -21,6 +21,8 @@
 
     <test name="SuperAdmin Lifecycle E2E Tests" preserve-order="true">
         <classes>
+            <class name="e2e.tests.SuperAdminOrgLifecycleE2ETest"/>
+            <class name="e2e.tests.VRModuleAndCatalogueE2ETest"/>
             <class name="superadmin.tests.OrganizationTest"/>
             <class name="superadmin.tests.CatalogueAndGovernanceTest"/>
             <class name="superadmin.tests.DeveloperPortalTest"/>

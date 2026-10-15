@@ -1,5 +1,6 @@
 package superadmin.tests;
 
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -54,10 +55,13 @@ public class DeveloperPortalTest extends BaseTest {
 		developers.clickDevelopers();
 	}
 
-	@Test(priority = 7)
-	@TestInfo(module = "Developer Portal", description = "Logout from Application after Developer tests", priority = "Low")
-	public void logout_After_Developer_Tests() throws InterruptedException {
-		loginPage.clickProfile();
-		loginPage.clickLogOut();
+	@AfterClass(alwaysRun = true)
+	public void tearDownDeveloperPortalTest() {
+		try {
+			loginPage.clickProfile();
+			loginPage.clickLogOut();
+		} catch (Exception e) {
+			// Best-effort cleanup prior to driver quit
+		}
 	}
 }

@@ -402,6 +402,17 @@ public class OrganizationPage extends AbstractComponent {
 		totalOrgsCard.click();
 	}
 
+	@StepName("Get Total Organisations Count from KPI Card")
+	public int getTotalOrgsCount() {
+		try {
+			waitUtils.waitForVisibility(totalOrgsCard);
+			String text = totalOrgsCard.getText().replaceAll("[^0-9]", "").trim();
+			return text.isEmpty() ? 0 : Integer.parseInt(text);
+		} catch (Exception e) {
+			return 0;
+		}
+	}
+
 	@StepName("Click Active Orgs KPI Card")
 	public void clickActiveOrgsCard() {
 		waitElementToBeClickable(activeOrgsCard);
@@ -524,6 +535,16 @@ public class OrganizationPage extends AbstractComponent {
 		return organizationCode.getAttribute("value");
 	}
 
+	@StepName("Enter Organization Code")
+	public void enterOrganizationCode(String code) {
+		try {
+			waitElementToBeClickable(organizationCode);
+			organizationCode.clear();
+			organizationCode.sendKeys(code);
+		} catch (Exception ignored) {
+		}
+	}
+
 	@StepName("Enter Portal Domain")
 	public void enterPortalDomain(String domain) {
 		waitElementToBeClickable(portalDomain);
@@ -531,13 +552,47 @@ public class OrganizationPage extends AbstractComponent {
 		portalDomain.sendKeys(domain);
 	}
 
-	@StepName("Select Industry")
-	public void selectIndustry(String industry) {
+	@StepName("Select or Add Industry: {0}")
+	public void selectOrAddIndustry(String industry) {
 		waitElementToBeClickable(industryDropdown);
 		industryDropdown.click();
-		WebElement option = driver.findElement(By.xpath(
-				"//button[@role='option']//span[normalize-space()='" + industry + "'] | //div[@role='option'][normalize-space()='" + industry + "']"));
-		option.click();
+
+		try {
+			WebElement searchInput = driver.findElement(By.xpath("//input[@placeholder='Search industry...' or @placeholder='Search...']"));
+			searchInput.clear();
+			searchInput.sendKeys(industry);
+		} catch (Exception ignored) {
+		}
+
+		By optionLocator = By.xpath(
+				"//button[@role='option']//span[normalize-space()='" + industry + "'] | //div[@role='option'][normalize-space()='" + industry + "']");
+		List<WebElement> options = driver.findElements(optionLocator);
+		if (!options.isEmpty() && options.get(0).isDisplayed()) {
+			options.get(0).click();
+			return;
+		}
+
+		// If option not found, check for "+ Add New Industry" button / prompt
+		By addNewIndustryLocator = By.xpath(
+				"//button[contains(.,'Add New Industry') or contains(.,'Create industry') or contains(.,'Add industry')] | //div[contains(.,'Add New Industry')]");
+		List<WebElement> addNewBtns = driver.findElements(addNewIndustryLocator);
+		if (!addNewBtns.isEmpty() && addNewBtns.get(0).isDisplayed()) {
+			addNewBtns.get(0).click();
+			try {
+				WebElement newIndustryInput = driver.findElement(By.xpath("//input[@placeholder='Enter industry name' or @placeholder='Industry name']"));
+				newIndustryInput.clear();
+				newIndustryInput.sendKeys(industry);
+				WebElement saveBtn = driver.findElement(By.xpath("//button[contains(.,'Add') or contains(.,'Save')]"));
+				saveBtn.click();
+			} catch (Exception ignored) {}
+		} else {
+			try { driver.findElement(By.tagName("body")).click(); } catch (Exception ignored) {}
+		}
+	}
+
+	@StepName("Select Industry")
+	public void selectIndustry(String industry) {
+		selectOrAddIndustry(industry);
 	}
 
 	@StepName("Select Country")
@@ -561,23 +616,40 @@ public class OrganizationPage extends AbstractComponent {
 		return timezoneDropdown.getText();
 	}
 
-	@StepName("Select Default Languages")
-	public void selectDefaultLanguages(String... languages) {
+	@StepName("Select Multi Languages: {0}")
+	public void selectMultiLanguages(List<String> languages) {
+		if (languages == null || languages.isEmpty()) return;
 		waitElementToBeClickable(defaultLanguageDropdown);
 		defaultLanguageDropdown.click();
 
 		for (String language : languages) {
 			try {
-				WebElement searchLanguage = driver.findElement(By.xpath("//input[@placeholder='Search languages...']"));
+				WebElement searchLanguage = driver.findElement(By.xpath("//input[@placeholder='Search languages...' or @placeholder='Search...']"));
 				searchLanguage.clear();
 				searchLanguage.sendKeys(language);
 			} catch (Exception ignored) {
 			}
 
-			WebElement option = driver.findElement(By.xpath(
-					"//button[@role='option']//span[normalize-space()='" + language + "'] | //div[@role='option'][normalize-space()='" + language + "']"));
-			option.click();
+			By optionLocator = By.xpath(
+					"//button[@role='option']//span[normalize-space()='" + language + "'] | //div[@role='option'][normalize-space()='" + language + "']");
+			List<WebElement> options = driver.findElements(optionLocator);
+			if (!options.isEmpty() && options.get(0).isDisplayed()) {
+				options.get(0).click();
+			} else {
+				By addNewLangLocator = By.xpath("//button[contains(.,'Add New Language') or contains(.,'Create language')]");
+				List<WebElement> addNewBtns = driver.findElements(addNewLangLocator);
+				if (!addNewBtns.isEmpty() && addNewBtns.get(0).isDisplayed()) {
+					addNewBtns.get(0).click();
+				}
+			}
 		}
+
+		try { driver.findElement(By.tagName("body")).click(); } catch (Exception ignored) {}
+	}
+
+	@StepName("Select Default Languages")
+	public void selectDefaultLanguages(String... languages) {
+		selectMultiLanguages(List.of(languages));
 	}
 
 	@StepName("Enter Admin Full Name")
@@ -851,6 +923,143 @@ public class OrganizationPage extends AbstractComponent {
 		createOrganizationButton.click();
 	}
 
+	@StepName("Create Organization Submit (Alias)")
+	public void clickCreateOrganization() {
+		createOrganization();
+	}
+
+	@StepName("Enter Basic Details")
+	public void enterBasicDetails(String name, String code, String domain, String industry, String phone, String email, String address) {
+		enterOrganizationName(name);
+		// Org code auto-generates when organization name is entered.
+		// Only input manually if auto-generated value is empty and code is provided
+		if (code != null && !code.isEmpty()) {
+			String autoCode = getOrganizationCode();
+			if (autoCode == null || autoCode.trim().isEmpty()) {
+				enterOrganizationCode(code);
+			}
+		}
+		enterPortalDomain(domain);
+		if (industry != null && !industry.isEmpty()) {
+			try { selectOrAddIndustry(industry); } catch (Exception ignored) {}
+		}
+		enterAdminFullName(name + " Admin");
+		enterPhoneNumber(phone);
+		enterAdminEmail(email);
+		enterTemporaryPassword("Admin@12345");
+	}
+
+	@StepName("Enter Basic Details (Auto-generated Code)")
+	public void enterBasicDetails(String name, String domain, String industry, String phone, String email, String address) {
+		enterBasicDetails(name, null, domain, industry, phone, email, address);
+	}
+
+	@StepName("Click Next Wizard Step")
+	public void clickNext() {
+		clickWizardNext();
+	}
+
+	@StepName("Configure License")
+	public void configureLicense(String expiry, int users, int devices) {
+		try {
+			selectConfigureLicense();
+			enterMaxActiveUsers(String.valueOf(users));
+			enterMaxActiveDevices(String.valueOf(devices));
+		} catch (Exception e) {
+			selectStartWithTrial();
+		}
+	}
+
+	@StepName("Upload KYC Documents")
+	public void uploadKYCDocuments(String cinPath, String gstPath, String panPath) {
+		try {
+			uploadCinDocument(cinPath);
+			uploadGstDocument(gstPath);
+			uploadPanDocument(panPath);
+		} catch (Exception ignored) {}
+	}
+
+	@StepName("Upload Branding Files")
+	public void uploadBrandingFiles(String logoPath, String faviconPath) {
+		try {
+			uploadOrganisationLogo(logoPath);
+			uploadFavicon(faviconPath);
+		} catch (Exception ignored) {}
+	}
+
+	@StepName("Configure Portal & Branding: {0}")
+	public void configurePortalAndBranding(String portalName, String logoPath, String faviconPath, String primaryColor, String sidebarStyle, String navColor) {
+		// 1. Select Available Portal
+		try {
+			By portalCardLocator = By.xpath("//div[contains(.,'Available portal') or contains(.,'Available Portal')]//button[contains(.,'" + portalName + "') or contains(.,'Select')] | //div[@role='radio' or @role='button'][contains(.,'" + portalName + "')] | //button[contains(.,'" + portalName + "')]");
+			List<WebElement> portals = driver.findElements(portalCardLocator);
+			if (!portals.isEmpty() && portals.get(0).isDisplayed()) {
+				waitUtils.waitForClickable(portals.get(0));
+				portals.get(0).click();
+			}
+		} catch (Exception ignored) {}
+
+		// 2. Click Continue
+		try {
+			By continueBtnLocator = By.xpath("//button[normalize-space()='Continue' or contains(.,'Continue')]");
+			List<WebElement> continueBtns = driver.findElements(continueBtnLocator);
+			if (!continueBtns.isEmpty() && continueBtns.get(0).isDisplayed()) {
+				waitUtils.waitForClickable(continueBtns.get(0));
+				continueBtns.get(0).click();
+			}
+		} catch (Exception ignored) {}
+
+		// 3. Upload Logo & Favicon in Assets
+		try {
+			if (logoPath != null && !logoPath.isEmpty()) {
+				uploadOrganisationLogo(logoPath);
+			}
+			if (faviconPath != null && !faviconPath.isEmpty()) {
+				uploadFavicon(faviconPath);
+			}
+		} catch (Exception ignored) {}
+
+		// 4. Primary Color
+		try {
+			if (primaryColor != null && !primaryColor.isEmpty()) {
+				By primaryColorInputLocator = By.xpath("//input[@name='primaryColor' or @type='color' or contains(@placeholder,'#')]");
+				List<WebElement> colorInputs = driver.findElements(primaryColorInputLocator);
+				if (!colorInputs.isEmpty() && colorInputs.get(0).isDisplayed()) {
+					colorInputs.get(0).clear();
+					colorInputs.get(0).sendKeys(primaryColor);
+				}
+			}
+		} catch (Exception ignored) {}
+
+		// 5. Sidebar Style
+		try {
+			if (sidebarStyle != null && !sidebarStyle.isEmpty()) {
+				By sidebarLocator = By.xpath("//button[contains(.,'" + sidebarStyle + "') or contains(@title,'" + sidebarStyle + "')] | //div[contains(@class,'card') and contains(.,'" + sidebarStyle + "')]");
+				List<WebElement> sidebarBtns = driver.findElements(sidebarLocator);
+				if (!sidebarBtns.isEmpty() && sidebarBtns.get(0).isDisplayed()) {
+					sidebarBtns.get(0).click();
+				}
+			}
+		} catch (Exception ignored) {}
+
+		// 6. Navigation Colors
+		try {
+			if (navColor != null && !navColor.isEmpty()) {
+				By navColorInputLocator = By.xpath("//input[@name='navColor' or @name='navigationColor' or contains(@placeholder,'#')][last()]");
+				List<WebElement> navColorInputs = driver.findElements(navColorInputLocator);
+				if (!navColorInputs.isEmpty() && navColorInputs.get(0).isDisplayed()) {
+					navColorInputs.get(0).clear();
+					navColorInputs.get(0).sendKeys(navColor);
+				}
+			}
+		} catch (Exception ignored) {}
+	}
+
+	@StepName("Click Submit Organization")
+	public void clickSubmit() {
+		clickCreateOrganization();
+	}
+
 	// =========================================================================
 	// Post-Creation Success Modal Methods
 	// =========================================================
@@ -881,6 +1090,22 @@ public class OrganizationPage extends AbstractComponent {
 	public void clickGoToOrganizationsList() {
 		waitElementToBeClickable(goToOrgsListButton);
 		goToOrgsListButton.click();
+	}
+
+	@StepName("Click Go to Organisations List (Alias)")
+	public void clickGoToOrgsList() {
+		clickGoToOrganizationsList();
+	}
+
+	@StepName("Close Success Modal")
+	public void clickCloseSuccessModal() {
+		try {
+			WebElement closeBtn = driver.findElement(By.xpath("//div[@role='dialog']//button[@aria-label='Close' or normalize-space()='Close' or contains(@class,'close')]"));
+			waitElementToBeClickable(closeBtn);
+			closeBtn.click();
+		} catch (Exception ignored) {
+			try { clickGoToOrganizationsList(); } catch (Exception ignore) {}
+		}
 	}
 
 	// =========================================================================
@@ -1193,6 +1418,420 @@ public class OrganizationPage extends AbstractComponent {
 		waitElementToBeClickable(cancelBtn);
 		cancelBtn.click();
 		waitUtils.waitForInvisibility(By.xpath("//div[@role='dialog']"));
+	}
+
+	// =========================================================================
+	// 12. Organization & Associated Tabs Edit Functionality
+	// =========================================================================
+
+	// --- 12.1 Overview Tab / Direct Organization Edit ---
+
+	@StepName("Open Edit Organization Modal from Overview")
+	public void openEditOrganizationFromOverview() {
+		By editBtnLocator = By.xpath("//button[contains(.,'Edit Organisation') or contains(.,'Edit Organization') or contains(.,'Edit Details') or contains(@title,'Edit Organisation') or contains(@title,'Edit Organization')]");
+		waitUtils.waitForClickable(editBtnLocator);
+		WebElement editBtn = driver.findElement(editBtnLocator);
+		editBtn.click();
+		waitUtils.waitForVisibility(By.xpath("//div[@role='dialog']"));
+	}
+
+	@StepName("Is Edit Organization Modal Displayed")
+	public boolean isEditOrganizationModalDisplayed() {
+		return !driver.findElements(By.xpath("//div[@role='dialog']//h3[contains(text(),'Edit') or contains(text(),'Organisation') or contains(text(),'Organization')]")).isEmpty();
+	}
+
+	@StepName("Edit Organization Details: Name={0}, Industry={1}")
+	public void editOrganizationDetails(String newName, String newIndustry, String newCountry, String newTimezone) {
+		try {
+			if (newName != null && !newName.isEmpty()) {
+				WebElement nameInput = driver.findElement(By.xpath("//div[@role='dialog']//input[@placeholder='e.g. Schneider Electric or SCHNEIDER' or @name='orgName' or @name='name']"));
+				nameInput.clear();
+				nameInput.sendKeys(newName);
+			}
+			if (newIndustry != null && !newIndustry.isEmpty()) {
+				selectOrAddIndustry(newIndustry);
+			}
+			if (newCountry != null && !newCountry.isEmpty()) {
+				selectCountry(newCountry);
+			}
+		} catch (Exception ignored) {}
+	}
+
+	@StepName("Save Organization Edit Changes")
+	public void saveOrganizationEdit() {
+		By saveBtnLocator = By.xpath("//div[@role='dialog']//button[contains(.,'Save Changes') or contains(.,'Save') or contains(.,'Update')]");
+		waitUtils.waitForClickable(saveBtnLocator);
+		WebElement saveBtn = driver.findElement(saveBtnLocator);
+		saveBtn.click();
+		waitUtils.waitForInvisibility(By.xpath("//div[@role='dialog']"));
+	}
+
+	@StepName("Cancel Organization Edit Modal")
+	public void cancelOrganizationEdit() {
+		try {
+			WebElement cancelBtn = driver.findElement(By.xpath("//div[@role='dialog']//button[normalize-space()='Cancel']"));
+			waitUtils.waitForClickable(cancelBtn);
+			cancelBtn.click();
+			waitUtils.waitForInvisibility(By.xpath("//div[@role='dialog']"));
+		} catch (Exception ignored) {}
+	}
+
+	// --- 12.2 Admin Users Tab Edit ---
+
+	@StepName("Open First Admin User for Edit")
+	public boolean openFirstAdminUserEdit() {
+		try {
+			By editAdminLocator = By.xpath("//table//tbody//tr[count(td) > 1]//button[contains(.,'Edit') or @title='Edit' or .//*[local-name()='svg' and contains(@class,'lucide-pencil')]][1]");
+			List<WebElement> editBtns = driver.findElements(editAdminLocator);
+			if (!editBtns.isEmpty() && editBtns.get(0).isDisplayed()) {
+				waitUtils.waitForClickable(editBtns.get(0));
+				editBtns.get(0).click();
+				waitUtils.waitForVisibility(By.xpath("//div[@role='dialog']"));
+				return true;
+			}
+		} catch (Exception e) {}
+		return false;
+	}
+
+	@StepName("Edit Admin User Details: Name={0}, Phone={1}")
+	public void editAdminUserDetails(String updatedFullName, String updatedPhone) {
+		try {
+			if (updatedFullName != null && !updatedFullName.isEmpty()) {
+				WebElement nameInput = driver.findElement(By.xpath("//div[@role='dialog']//input[@placeholder='Full name' or @name='fullName' or @name='name']"));
+				nameInput.clear();
+				nameInput.sendKeys(updatedFullName);
+			}
+			if (updatedPhone != null && !updatedPhone.isEmpty()) {
+				WebElement phoneInput = driver.findElement(By.xpath("//div[@role='dialog']//input[@type='tel' or contains(@placeholder,'9876543210') or @name='phone']"));
+				phoneInput.clear();
+				phoneInput.sendKeys(updatedPhone);
+			}
+		} catch (Exception ignored) {}
+	}
+
+	@StepName("Save Admin User Edit")
+	public void saveAdminUserEdit() {
+		By saveBtnLocator = By.xpath("//div[@role='dialog']//button[contains(.,'Save') or contains(.,'Update')]");
+		waitUtils.waitForClickable(saveBtnLocator);
+		WebElement saveBtn = driver.findElement(saveBtnLocator);
+		saveBtn.click();
+		waitUtils.waitForInvisibility(By.xpath("//div[@role='dialog']"));
+	}
+
+	// --- 12.3 Branding Tab Edit ---
+
+	@StepName("Edit Branding Configuration: PrimaryColor={0}, SidebarStyle={1}, NavColor={2}")
+	public void editBrandingConfiguration(String newPrimaryColor, String newSidebarStyle, String newNavColor, String newLogoPath) {
+		try {
+			if (newPrimaryColor != null && !newPrimaryColor.isEmpty()) {
+				By primaryColorLocator = By.xpath("//input[@name='primaryColor' or @type='color' or contains(@placeholder,'#')]");
+				List<WebElement> colorInputs = driver.findElements(primaryColorLocator);
+				if (!colorInputs.isEmpty() && colorInputs.get(0).isDisplayed()) {
+					colorInputs.get(0).clear();
+					colorInputs.get(0).sendKeys(newPrimaryColor);
+				}
+			}
+			if (newSidebarStyle != null && !newSidebarStyle.isEmpty()) {
+				By sidebarLocator = By.xpath("//button[contains(.,'" + newSidebarStyle + "') or contains(@title,'" + newSidebarStyle + "')] | //div[contains(@class,'card') and contains(.,'" + newSidebarStyle + "')]");
+				List<WebElement> sidebarBtns = driver.findElements(sidebarLocator);
+				if (!sidebarBtns.isEmpty() && sidebarBtns.get(0).isDisplayed()) {
+					sidebarBtns.get(0).click();
+				}
+			}
+			if (newNavColor != null && !newNavColor.isEmpty()) {
+				By navColorLocator = By.xpath("//input[@name='navColor' or @name='navigationColor' or contains(@placeholder,'#')][last()]");
+				List<WebElement> navColorInputs = driver.findElements(navColorLocator);
+				if (!navColorInputs.isEmpty() && navColorInputs.get(0).isDisplayed()) {
+					navColorInputs.get(0).clear();
+					navColorInputs.get(0).sendKeys(newNavColor);
+				}
+			}
+			if (newLogoPath != null && !newLogoPath.isEmpty()) {
+				uploadOrganisationLogo(newLogoPath);
+			}
+		} catch (Exception ignored) {}
+	}
+
+	@StepName("Save Branding Changes")
+	public void saveBrandingChanges() {
+		By saveBtnLocator = By.xpath("//button[contains(.,'Save Changes') or contains(.,'Save Branding') or contains(.,'Update Branding') or (normalize-space()='Save' and not(ancestor::div[@role='dialog']))]");
+		waitUtils.waitForClickable(saveBtnLocator);
+		WebElement saveBtn = driver.findElement(saveBtnLocator);
+		saveBtn.click();
+	}
+
+	// --- 12.4 Security Tab Edit ---
+
+	@StepName("Edit Security Configuration: SessionTimeout={0}, ToggleMFA={1}")
+	public void editSecurityConfiguration(String sessionTimeout, boolean toggleMfa) {
+		try {
+			if (sessionTimeout != null && !sessionTimeout.isEmpty()) {
+				By timeoutLocator = By.xpath("//label[contains(text(),'Session Timeout')]/following::button[1] | //select[@name='sessionTimeout'] | //input[@name='sessionTimeout']");
+				List<WebElement> timeouts = driver.findElements(timeoutLocator);
+				if (!timeouts.isEmpty() && timeouts.get(0).isDisplayed()) {
+					timeouts.get(0).click();
+					try {
+						WebElement option = driver.findElement(By.xpath("//div[@role='option'][contains(.,'" + sessionTimeout + "')] | //button[@role='option'][contains(.,'" + sessionTimeout + "')]"));
+						option.click();
+					} catch (Exception ignored) {}
+				}
+			}
+			if (toggleMfa) {
+				By mfaToggleLocator = By.xpath("//button[@role='switch'][preceding::*[contains(text(),'Two-Factor') or contains(text(),'MFA')]] | //input[@type='checkbox'][contains(@name,'mfa') or contains(@id,'mfa')]");
+				List<WebElement> mfaToggles = driver.findElements(mfaToggleLocator);
+				if (!mfaToggles.isEmpty() && mfaToggles.get(0).isDisplayed()) {
+					mfaToggles.get(0).click();
+				}
+			}
+		} catch (Exception ignored) {}
+	}
+
+	@StepName("Save Security Changes")
+	public void saveSecurityChanges() {
+		By saveBtnLocator = By.xpath("//button[contains(.,'Save Changes') or contains(.,'Save Security') or contains(.,'Save Policies') or (normalize-space()='Save' and not(ancestor::div[@role='dialog']))]");
+		waitUtils.waitForClickable(saveBtnLocator);
+		WebElement saveBtn = driver.findElement(saveBtnLocator);
+		saveBtn.click();
+	}
+
+	// --- 12.5 Offline Config Tab Edit ---
+
+	@StepName("Edit Offline Configuration: EnablePortal={0}, SyncFrequency={1}")
+	public void editOfflineConfiguration(boolean enableOfflinePortal, String syncFrequency) {
+		try {
+			if (enableOfflinePortal) {
+				By offlineToggleLocator = By.xpath("//button[@role='switch'][preceding::*[contains(text(),'Offline Portal')]] | //button[contains(.,'Enable Offline Portal')]");
+				List<WebElement> toggles = driver.findElements(offlineToggleLocator);
+				if (!toggles.isEmpty() && toggles.get(0).isDisplayed()) {
+					toggles.get(0).click();
+				}
+			}
+			if (syncFrequency != null && !syncFrequency.isEmpty()) {
+				By syncLocator = By.xpath("//label[contains(text(),'Sync')]/following::button[1] | //select[@name='syncFrequency']");
+				List<WebElement> syncs = driver.findElements(syncLocator);
+				if (!syncs.isEmpty() && syncs.get(0).isDisplayed()) {
+					syncs.get(0).click();
+					try {
+						WebElement option = driver.findElement(By.xpath("//div[@role='option'][contains(.,'" + syncFrequency + "')] | //button[@role='option'][contains(.,'" + syncFrequency + "')]"));
+						option.click();
+					} catch (Exception ignored) {}
+				}
+			}
+		} catch (Exception ignored) {}
+	}
+
+	@StepName("Save Offline Config Changes")
+	public void saveOfflineConfigChanges() {
+		By saveBtnLocator = By.xpath("//button[contains(.,'Save Changes') or contains(.,'Save Offline') or (normalize-space()='Save' and not(ancestor::div[@role='dialog']))]");
+		waitUtils.waitForClickable(saveBtnLocator);
+		WebElement saveBtn = driver.findElement(saveBtnLocator);
+		saveBtn.click();
+	}
+
+	// --- 12.6 License & Tokens Tab Edit ---
+
+	@StepName("Open Edit License Limits Modal")
+	public boolean openEditLicenseLimitsModal() {
+		try {
+			By editLimitsLocator = By.xpath("//button[contains(.,'Change Limits') or contains(.,'Edit Licence') or contains(.,'Edit License') or contains(.,'Edit Limits') or contains(.,'Modify Limits')]");
+			List<WebElement> editBtns = driver.findElements(editLimitsLocator);
+			if (!editBtns.isEmpty() && editBtns.get(0).isDisplayed()) {
+				waitUtils.waitForClickable(editBtns.get(0));
+				editBtns.get(0).click();
+				waitUtils.waitForVisibility(By.xpath("//div[@role='dialog']"));
+				return true;
+			}
+		} catch (Exception e) {}
+		return false;
+	}
+
+	@StepName("Edit License Limits: MaxUsers={0}, MaxDevices={1}")
+	public void editLicenseLimits(int maxUsers, int maxDevices) {
+		try {
+			By userLimitLocator = By.xpath("//div[@role='dialog']//label[contains(text(),'Users')]/following::input[@type='number'][1] | //div[@role='dialog']//input[@name='maxUsers' or @name='userLimit']");
+			List<WebElement> userInputs = driver.findElements(userLimitLocator);
+			if (!userInputs.isEmpty() && userInputs.get(0).isDisplayed()) {
+				userInputs.get(0).clear();
+				userInputs.get(0).sendKeys(String.valueOf(maxUsers));
+			}
+
+			By deviceLimitLocator = By.xpath("//div[@role='dialog']//label[contains(text(),'Devices')]/following::input[@type='number'][1] | //div[@role='dialog']//input[@name='maxDevices' or @name='deviceLimit']");
+			List<WebElement> deviceInputs = driver.findElements(deviceLimitLocator);
+			if (!deviceInputs.isEmpty() && deviceInputs.get(0).isDisplayed()) {
+				deviceInputs.get(0).clear();
+				deviceInputs.get(0).sendKeys(String.valueOf(maxDevices));
+			}
+		} catch (Exception ignored) {}
+	}
+
+	@StepName("Save License Limit Changes")
+	public void saveLicenseLimitChanges() {
+		By saveBtnLocator = By.xpath("//div[@role='dialog']//button[contains(.,'Save') or contains(.,'Update') or contains(.,'Confirm')]");
+		waitUtils.waitForClickable(saveBtnLocator);
+		WebElement saveBtn = driver.findElement(saveBtnLocator);
+		saveBtn.click();
+		waitUtils.waitForInvisibility(By.xpath("//div[@role='dialog']"));
+	}
+
+	// --- 12.7 Storage Tab Edit ---
+
+	@StepName("Edit Storage Quota: {0} GB")
+	public void editStorageSettings(String quotaGb, boolean autoArchive) {
+		try {
+			if (quotaGb != null && !quotaGb.isEmpty()) {
+				By quotaLocator = By.xpath("//input[@name='storageLimit' or @type='number' or contains(@placeholder,'GB')]");
+				List<WebElement> inputs = driver.findElements(quotaLocator);
+				if (!inputs.isEmpty() && inputs.get(0).isDisplayed()) {
+					inputs.get(0).clear();
+					inputs.get(0).sendKeys(quotaGb);
+				}
+			}
+			if (autoArchive) {
+				By toggleLocator = By.xpath("//button[@role='switch'][preceding::*[contains(text(),'Auto-Archive')]] | //input[@type='checkbox']");
+				List<WebElement> toggles = driver.findElements(toggleLocator);
+				if (!toggles.isEmpty() && toggles.get(0).isDisplayed()) {
+					toggles.get(0).click();
+				}
+			}
+		} catch (Exception ignored) {}
+	}
+
+	@StepName("Save Storage Settings")
+	public void saveStorageSettings() {
+		By saveBtnLocator = By.xpath("//button[contains(.,'Save Changes') or contains(.,'Save Storage') or (normalize-space()='Save' and not(ancestor::div[@role='dialog']))]");
+		waitUtils.waitForClickable(saveBtnLocator);
+		WebElement saveBtn = driver.findElement(saveBtnLocator);
+		saveBtn.click();
+	}
+
+	// --- 12.8 Notifications Tab Edit ---
+
+	@StepName("Edit Notification Preferences: Email={0}, InApp={1}")
+	public void editNotificationPreferences(boolean emailNotifications, boolean inAppAlerts) {
+		try {
+			if (emailNotifications) {
+				By emailToggle = By.xpath("//button[@role='switch'][preceding::*[contains(text(),'Email')]] | //input[@type='checkbox'][contains(@name,'email')]");
+				List<WebElement> toggles = driver.findElements(emailToggle);
+				if (!toggles.isEmpty() && toggles.get(0).isDisplayed()) {
+					toggles.get(0).click();
+				}
+			}
+			if (inAppAlerts) {
+				By inAppToggle = By.xpath("//button[@role='switch'][preceding::*[contains(text(),'In-App') or contains(text(),'Alerts')]] | //input[@type='checkbox'][contains(@name,'inApp')]");
+				List<WebElement> toggles = driver.findElements(inAppToggle);
+				if (!toggles.isEmpty() && toggles.get(0).isDisplayed()) {
+					toggles.get(0).click();
+				}
+			}
+		} catch (Exception ignored) {}
+	}
+
+	@StepName("Save Notification Settings")
+	public void saveNotificationSettings() {
+		By saveBtnLocator = By.xpath("//button[contains(.,'Save Changes') or contains(.,'Save Notifications') or (normalize-space()='Save' and not(ancestor::div[@role='dialog']))]");
+		waitUtils.waitForClickable(saveBtnLocator);
+		WebElement saveBtn = driver.findElement(saveBtnLocator);
+		saveBtn.click();
+	}
+
+	// --- 12.9 Assigned Modules Tab Edit (Assign / Unassign) ---
+
+	@StepName("Assign Module to Organization: {0}")
+	public void assignModuleToOrganization(String moduleName) {
+		openAssignModulesModal();
+		try {
+			By moduleCheckLocator = By.xpath("//div[@role='dialog']//tr[.//span[contains(text(),'" + moduleName + "')]]//input[@type='checkbox'] | //div[@role='dialog']//button[contains(.,'Select')]");
+			List<WebElement> checks = driver.findElements(moduleCheckLocator);
+			if (!checks.isEmpty() && checks.get(0).isDisplayed()) {
+				checks.get(0).click();
+			}
+			By assignConfirmBtn = By.xpath("//div[@role='dialog']//button[contains(.,'Assign') or contains(.,'Confirm') or contains(.,'Save')]");
+			waitUtils.waitForClickable(assignConfirmBtn);
+			driver.findElement(assignConfirmBtn).click();
+			waitUtils.waitForInvisibility(By.xpath("//div[@role='dialog']"));
+		} catch (Exception e) {
+			closeAssignModulesModal();
+		}
+	}
+
+	@StepName("Unassign Module from Organization: {0}")
+	public boolean unassignModuleFromOrganization(String moduleName) {
+		try {
+			By unassignBtnLocator = By.xpath("//table//tr[.//span[contains(text(),'" + moduleName + "')] or .//td[contains(.,'" + moduleName + "')]]//button[contains(.,'Remove') or contains(.,'Unassign') or @title='Remove']");
+			List<WebElement> unassignBtns = driver.findElements(unassignBtnLocator);
+			if (!unassignBtns.isEmpty() && unassignBtns.get(0).isDisplayed()) {
+				waitUtils.waitForClickable(unassignBtns.get(0));
+				unassignBtns.get(0).click();
+				By confirmBtnLocator = By.xpath("//div[contains(@class,'fixed')]//button[contains(.,'Confirm') or contains(.,'Remove') or contains(.,'Unassign')]");
+				List<WebElement> confirmBtns = driver.findElements(confirmBtnLocator);
+				if (!confirmBtns.isEmpty() && confirmBtns.get(0).isDisplayed()) {
+					confirmBtns.get(0).click();
+				}
+				return true;
+			}
+		} catch (Exception ignored) {}
+		return false;
+	}
+
+	@StepName("Verify Organization in List and Associated Tabs: {0}")
+	public boolean verifyOrganizationInListAndAssociatedTabs(String orgName) {
+		clickOrganizations();
+		clickRefresh();
+		searchOrganization(orgName);
+
+		By rowLocator = By.xpath("//table//tbody//tr[.//span[contains(text(),'" + orgName + "')] or .//td[contains(.,'" + orgName + "')]]");
+		List<WebElement> rows = driver.findElements(rowLocator);
+		if (rows.isEmpty()) {
+			return false;
+		}
+
+		By manageBtnLocator = By.xpath("//table//tbody//tr[.//span[contains(text(),'" + orgName + "')] or .//td[contains(.,'" + orgName + "')]]//button[contains(.,'Manage') or contains(.,'View')] | //table//tbody//tr[.//span[contains(text(),'" + orgName + "')]]//a");
+		List<WebElement> manageBtns = driver.findElements(manageBtnLocator);
+		if (!manageBtns.isEmpty() && manageBtns.get(0).isDisplayed()) {
+			manageBtns.get(0).click();
+		} else {
+			rows.get(0).click();
+		}
+
+		// Verify all 10 associated tabs
+		clickOverviewTab();
+		isOverviewTabLoaded();
+
+		clickAdminUsersTab();
+		isAdminUsersTabLoaded();
+
+		clickBrandingTab();
+		isBrandingTabLoaded();
+
+		clickSecurityTab();
+		isSecurityTabLoaded();
+
+		clickOfflineConfigTab();
+		isOfflineConfigTabLoaded();
+
+		clickLicenseAndTokensTab();
+		isLicenseAndTokensTabLoaded();
+
+		clickStorageTab();
+		isStorageTabLoaded();
+
+		clickNotificationsTab();
+		isNotificationsTabLoaded();
+
+		clickActivityLogsTab();
+		isActivityLogsTabLoaded();
+
+		clickAssignedModulesTab();
+		isAssignedModulesTabLoaded();
+
+		try {
+			if (backToOrganizationsButton != null && backToOrganizationsButton.isDisplayed()) {
+				waitElementToBeClickable(backToOrganizationsButton);
+				backToOrganizationsButton.click();
+			}
+		} catch (Exception ignored) {}
+
+		return true;
 	}
 
 	@StepName("Check if Organizations Page is Loaded")

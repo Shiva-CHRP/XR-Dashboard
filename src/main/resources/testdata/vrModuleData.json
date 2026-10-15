@@ -1,0 +1,22 @@
+[
+  {
+    "moduleName": "Hazardous Gas Leakage Emergency Response",
+    "moduleType": "Safety Training",
+    "simulationType": "Guided/Unguided",
+    "setup": "Standard",
+    "version": "1.0.0",
+    "platforms": [
+      "Meta Quest 2",
+      "Meta Quest 3"
+    ],
+    "description": "Comprehensive simulation module for toxic and flammable gas leak isolation procedures in chemical plants.",
+    "buildFilePath": "src/test/resources/fixtures/sample_vr_module.apk",
+    "fileType": "APK",
+    "reviewRationale": "Validated VR interaction controls, safety checklists, and simulation engine. Fully compliant with industrial training standards.",
+    "rejectionReason": "Missing safety audit step 4 and texture package exceeds memory limit.",
+    "grantAccessToOrgs": [
+      "Schneider Electric",
+      "Denso"
+    ]
+  }
+]

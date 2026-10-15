@@ -103,6 +103,11 @@ public class Users extends AbstractComponent {
 				|| !driver.findElements(By.xpath("//h1[contains(.,'User') or contains(.,'Employee') or contains(.,'Contractor') or contains(.,'Partner')] | //header//h1 | //h2[contains(.,'User') or contains(.,'Employee') or contains(.,'Contractor')]")).isEmpty();
 	}
 
+	@StepName("Verify Users Page is Loaded (Alias)")
+	public boolean isUsersLoaded() {
+		return isUsersPageLoaded();
+	}
+
 	@StepName("Switch to Internal Users Tab")
 	public void switchToInternalUsersTab() {
 		List<WebElement> tabs = driver.findElements(By.xpath("//button[(contains(.,'Users') and not(contains(.,'Contractor')) and not(contains(.,'Partner'))) or contains(.,'Internal') or contains(.,'MCL') or contains(.,'JIL')]"));

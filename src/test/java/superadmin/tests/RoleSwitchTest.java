@@ -1,5 +1,6 @@
 package superadmin.tests;
 
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -36,10 +37,13 @@ public class RoleSwitchTest extends BaseTest {
 		loginPage.dashboardName();
 	}
 
-	@Test(priority = 4)
-	@TestInfo(module = "Role Switch", description = "Logout from Application", priority = "Low")
-	public void logout_From_Application() throws InterruptedException {
-		loginPage.clickProfile();
-		loginPage.clickLogOut();
+	@AfterClass(alwaysRun = true)
+	public void tearDownRoleSwitch() {
+		try {
+			loginPage.clickProfile();
+			loginPage.clickLogOut();
+		} catch (Exception e) {
+			// Best-effort cleanup prior to driver quit
+		}
 	}
 }

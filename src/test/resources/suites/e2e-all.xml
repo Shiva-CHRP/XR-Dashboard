@@ -8,6 +8,8 @@
 
     <test name="SuperAdmin Lifecycle E2E Tests" preserve-order="true">
         <classes>
+            <class name="e2e.tests.SuperAdminOrgLifecycleE2ETest"/>
+            <class name="e2e.tests.VRModuleAndCatalogueE2ETest"/>
             <class name="superadmin.tests.OrganizationTest"/>
             <class name="superadmin.tests.CatalogueAndGovernanceTest"/>
             <class name="superadmin.tests.DeveloperPortalTest"/>
@@ -16,9 +18,18 @@
 
     <test name="ClientPortal Operations E2E Tests" preserve-order="true">
         <classes>
+            <class name="e2e.tests.ClientPortalConfigE2ETest"/>
+            <class name="e2e.tests.ManagerTrainerWorkflowE2ETest"/>
             <class name="clientportaladmin.tests.ClientUserManagementTest"/>
             <class name="clientportaladmin.tests.ClientCurriculumAndContentTest"/>
             <class name="clientportaladmin.tests.ClientReportsAndSyncTest"/>
+        </classes>
+    </test>
+
+    <test name="Security Isolation and Master Platform E2E Tests" preserve-order="true">
+        <classes>
+            <class name="e2e.tests.SecurityAndIsolationE2ETest"/>
+            <class name="e2e.tests.MasterPlatformE2ETest"/>
         </classes>
     </test>
 

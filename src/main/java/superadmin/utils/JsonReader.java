@@ -15,17 +15,30 @@ import superadmin.pojo.AssessmentData;
 import superadmin.pojo.CurriculumData;
 import superadmin.pojo.DeveloperData;
 import superadmin.pojo.LicenseData;
+import superadmin.pojo.OrgApplicationData;
 import superadmin.pojo.OrganizationData;
 import superadmin.pojo.QuestionBankData;
 import superadmin.pojo.SupportTicketData;
+import superadmin.pojo.VRModuleData;
 import clientportaladmin.pojo.ClientUserData;
 import clientportaladmin.pojo.ClientEventData;
 import clientportaladmin.pojo.ClientSupportTicketData;
 import clientportaladmin.pojo.ClientMasterData;
+import clientportaladmin.pojo.MDMDeviceData;
 
 public class JsonReader {
 
 	private static final ObjectMapper mapper = new ObjectMapper();
+
+	public static List<OrgApplicationData> getOrgApplicationData(String jsonFilePath) throws IOException {
+		String jsonContent = FileUtils.readFileToString(new File(jsonFilePath), StandardCharsets.UTF_8);
+		return mapper.readValue(jsonContent, new TypeReference<List<OrgApplicationData>>() {});
+	}
+
+	public static List<VRModuleData> getVRModuleData(String jsonFilePath) throws IOException {
+		String jsonContent = FileUtils.readFileToString(new File(jsonFilePath), StandardCharsets.UTF_8);
+		return mapper.readValue(jsonContent, new TypeReference<List<VRModuleData>>() {});
+	}
 
 	public static List<HashMap<String, String>> getJsonData(String jsonFilePath) throws IOException {
 		String jsonContent = FileUtils.readFileToString(new File(jsonFilePath), StandardCharsets.UTF_8);
@@ -85,6 +98,11 @@ public class JsonReader {
 	public static List<ClientMasterData> getClientMasterData(String jsonFilePath) throws IOException {
 		String jsonContent = FileUtils.readFileToString(new File(jsonFilePath), StandardCharsets.UTF_8);
 		return mapper.readValue(jsonContent, new TypeReference<List<ClientMasterData>>() {});
+	}
+
+	public static List<MDMDeviceData> getMdmDeviceData(String jsonFilePath) throws IOException {
+		String jsonContent = FileUtils.readFileToString(new File(jsonFilePath), StandardCharsets.UTF_8);
+		return mapper.readValue(jsonContent, new TypeReference<List<MDMDeviceData>>() {});
 	}
 
 	public static <T> List<T> getJsonData(String jsonFilePath, TypeReference<List<T>> typeReference) throws IOException {
