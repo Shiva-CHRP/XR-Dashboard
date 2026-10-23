@@ -11,6 +11,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import superadmin.abstractcomponent.AbstractComponent;
 import superadmin.annotations.StepName;
+import superadmin.utils.ToastResponse;
 
 /**
  * Enterprise Page Object for Super Admin Developer Management:
@@ -445,7 +446,7 @@ public class Developers extends AbstractComponent {
 	// =========================================================================
 
 	@StepName("Fill and Submit Create Developer Form: {0}, {1}")
-	public void createDeveloper(String fullName, String email, String password, String notes) {
+	public ToastResponse createDeveloper(String fullName, String email, String password, String notes) {
 		waitUtils.waitForVisibility(modalFullNameInput);
 		modalFullNameInput.clear();
 		modalFullNameInput.sendKeys(fullName);
@@ -468,12 +469,38 @@ public class Developers extends AbstractComponent {
 
 		waitUtils.waitForClickable(modalSubmitButton);
 		modalSubmitButton.click();
-		waitUtils.waitForInvisibility(developerModalTitle);
+		ToastResponse toast = toastUtils.captureToast();
+		try {
+			waitUtils.waitForInvisibility(developerModalTitle);
+		} catch (Exception ignored) {}
 		waitForLoadingToComplete();
+		return toast;
+	}
+
+	@StepName("Update Developer in Edit Modal: {0}, {1}")
+	public ToastResponse updateDeveloper(String updatedFullName, String updatedNotes) {
+		if (updatedFullName != null) {
+			waitUtils.waitForVisibility(modalFullNameInput);
+			modalFullNameInput.clear();
+			modalFullNameInput.sendKeys(updatedFullName);
+		}
+		if (updatedNotes != null) {
+			waitUtils.waitForVisibility(modalNotesTextarea);
+			modalNotesTextarea.clear();
+			modalNotesTextarea.sendKeys(updatedNotes);
+		}
+		waitUtils.waitForClickable(modalSubmitButton);
+		modalSubmitButton.click();
+		ToastResponse toast = toastUtils.captureToast();
+		try {
+			waitUtils.waitForInvisibility(developerModalTitle);
+		} catch (Exception ignored) {}
+		waitForLoadingToComplete();
+		return toast;
 	}
 
 	@StepName("Reset Password in Modal: {0}")
-	public void resetPassword(String newPassword, String confirmPassword) {
+	public ToastResponse resetPassword(String newPassword, String confirmPassword) {
 		waitUtils.waitForVisibility(resetNewPasswordInput);
 		resetNewPasswordInput.clear();
 		resetNewPasswordInput.sendKeys(newPassword);
@@ -484,24 +511,36 @@ public class Developers extends AbstractComponent {
 
 		waitUtils.waitForClickable(resetSubmitButton);
 		resetSubmitButton.click();
-		waitUtils.waitForInvisibility(resetPasswordModalTitle);
+		ToastResponse toast = toastUtils.captureToast();
+		try {
+			waitUtils.waitForInvisibility(resetPasswordModalTitle);
+		} catch (Exception ignored) {}
 		waitForLoadingToComplete();
+		return toast;
 	}
 
 	@StepName("Confirm Deactivate / Reactivate in Modal")
-	public void confirmDeactivate() {
+	public ToastResponse confirmDeactivate() {
 		waitUtils.waitForClickable(confirmDeactivateButton);
 		confirmDeactivateButton.click();
-		waitUtils.waitForInvisibility(deactivateModalTitle);
+		ToastResponse toast = toastUtils.captureToast();
+		try {
+			waitUtils.waitForInvisibility(deactivateModalTitle);
+		} catch (Exception ignored) {}
 		waitForLoadingToComplete();
+		return toast;
 	}
 
 	@StepName("Confirm Delete Developer in Modal")
-	public void confirmDeleteDeveloper() {
+	public ToastResponse confirmDeleteDeveloper() {
 		waitUtils.waitForClickable(confirmDeleteButton);
 		confirmDeleteButton.click();
-		waitUtils.waitForInvisibility(deleteModalTitle);
+		ToastResponse toast = toastUtils.captureToast();
+		try {
+			waitUtils.waitForInvisibility(deleteModalTitle);
+		} catch (Exception ignored) {}
 		waitForLoadingToComplete();
+		return toast;
 	}
 
 	@StepName("Close Submissions Modal")

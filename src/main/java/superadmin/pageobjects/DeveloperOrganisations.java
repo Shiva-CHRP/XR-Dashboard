@@ -263,6 +263,31 @@ public class DeveloperOrganisations extends AbstractComponent {
 		listViewButton.click();
 	}
 
+	@StepName("Toggle View Mode: {0}")
+	public void toggleViewMode(String mode) {
+		if ("list".equalsIgnoreCase(mode)) {
+			clickListView();
+		} else {
+			clickGridView();
+		}
+	}
+
+	@StepName("Clear All Filters")
+	public void clearFilters() {
+		try {
+			if (clearFiltersButton.isDisplayed()) {
+				waitUtils.waitForClickable(clearFiltersButton);
+				clearFiltersButton.click();
+				waitForTableOrCardsToLoad();
+				return;
+			}
+		} catch (Exception ignored) {}
+		try {
+			searchInput.clear();
+			waitForTableOrCardsToLoad();
+		} catch (Exception ignored) {}
+	}
+
 	// =========================================================================
 	// ACTION METHODS: Organisation Selection & Detail Navigation
 	// =========================================================================

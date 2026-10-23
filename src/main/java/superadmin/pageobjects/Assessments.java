@@ -11,6 +11,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import superadmin.abstractcomponent.AbstractComponent;
 import superadmin.annotations.StepName;
+import superadmin.utils.ToastResponse;
 
 /**
  * Enterprise Page Object for the Super Admin Assessments section:
@@ -411,6 +412,18 @@ public class Assessments extends AbstractComponent {
 		waitForLoadingToComplete();
 	}
 
+	@StepName("Confirm Delete Assessment with Toast Verification")
+	public ToastResponse confirmDeleteAssessmentWithToast() {
+		waitUtils.waitForClickable(confirmDeleteButton);
+		confirmDeleteButton.click();
+		ToastResponse toast = toastUtils.captureToast();
+		try {
+			waitUtils.waitForInvisibility(deleteModalTitle);
+		} catch (Exception ignored) {}
+		waitForLoadingToComplete();
+		return toast;
+	}
+
 	@StepName("Cancel Delete Assessment")
 	public void cancelDeleteAssessment() {
 		waitUtils.waitForClickable(cancelDeleteButton);
@@ -550,6 +563,17 @@ public class Assessments extends AbstractComponent {
 		waitUtils.waitForVisibility(pageTitle);
 	}
 
+	@StepName("Submit Assessment Form with Toast Verification")
+	public ToastResponse submitFormWithToast() {
+		waitUtils.waitForClickable(formSubmitButton);
+		formSubmitButton.click();
+		ToastResponse toast = toastUtils.captureToast();
+		try {
+			waitUtils.waitForVisibility(pageTitle);
+		} catch (Exception ignored) {}
+		return toast;
+	}
+
 	@StepName("Cancel Assessment Form")
 	public void cancelForm() {
 		waitUtils.waitForClickable(formCancelButton);
@@ -568,6 +592,19 @@ public class Assessments extends AbstractComponent {
 			}
 		}
 		submitForm();
+	}
+
+	@StepName("Complete Create Assessment Flow with Toast Verification")
+	public ToastResponse createAssessmentWithToast(String name, String desc, boolean active, List<String> questionTexts) {
+		enterName(name);
+		setStatus(active);
+		if (desc != null) enterDescription(desc);
+		if (questionTexts != null) {
+			for (String qText : questionTexts) {
+				selectAvailableQuestion(qText);
+			}
+		}
+		return submitFormWithToast();
 	}
 
 	// =========================================================================

@@ -205,6 +205,11 @@ public class SubmissionTracker extends AbstractComponent {
 		waitForTableToLoad();
 	}
 
+	@StepName("Filter by status: {0}")
+	public void filterByStatus(String status) {
+		filterByStatusDropdown(status);
+	}
+
 	@StepName("Filter by organisation dropdown: {0}")
 	public void filterByOrganisationDropdown(String orgName) {
 		waitUtils.waitForVisibility(organisationSelect);
@@ -221,6 +226,11 @@ public class SubmissionTracker extends AbstractComponent {
 		} catch (Exception e) {
 			searchInput.clear();
 		}
+	}
+
+	@StepName("Clear filters")
+	public void clearFilters() {
+		clearAllFilters();
 	}
 
 	// =========================================================================

@@ -11,6 +11,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import superadmin.abstractcomponent.AbstractComponent;
 import superadmin.annotations.StepName;
+import superadmin.utils.ToastResponse;
 
 /**
  * Enterprise Page Object for the Super Admin Question Bank section:
@@ -317,6 +318,18 @@ public class QuestionBank extends AbstractComponent {
 		waitForLoadingToComplete();
 	}
 
+	@StepName("Confirm Delete Question with Toast Verification")
+	public ToastResponse confirmDeleteQuestionWithToast() {
+		waitUtils.waitForClickable(confirmDeleteButton);
+		confirmDeleteButton.click();
+		ToastResponse toast = toastUtils.captureToast();
+		try {
+			waitUtils.waitForInvisibility(deleteModalTitle);
+		} catch (Exception ignored) {}
+		waitForLoadingToComplete();
+		return toast;
+	}
+
 	@StepName("Cancel Delete Question")
 	public void cancelDeleteQuestion() {
 		waitUtils.waitForClickable(cancelDeleteButton);
@@ -395,6 +408,17 @@ public class QuestionBank extends AbstractComponent {
 		waitUtils.waitForVisibility(pageTitle);
 	}
 
+	@StepName("Submit Question Form with Toast Verification")
+	public ToastResponse submitFormWithToast() {
+		waitUtils.waitForClickable(formSubmitButton);
+		formSubmitButton.click();
+		ToastResponse toast = toastUtils.captureToast();
+		try {
+			waitUtils.waitForVisibility(pageTitle);
+		} catch (Exception ignored) {}
+		return toast;
+	}
+
 	@StepName("Cancel Question Form")
 	public void cancelForm() {
 		waitUtils.waitForClickable(formCancelButton);
@@ -415,5 +439,20 @@ public class QuestionBank extends AbstractComponent {
 			enterExplanation(explanation);
 		}
 		submitForm();
+	}
+
+	@StepName("Complete Create Question Flow with Toast Verification")
+	public ToastResponse createQuestionWithToast(String text, String topic, String optA, String optB, String optC, String optD, String correctLabel, String explanation) {
+		enterQuestionText(text);
+		selectTopic(topic);
+		setOptionText("A", optA);
+		setOptionText("B", optB);
+		setOptionText("C", optC);
+		setOptionText("D", optD);
+		selectCorrectAnswer(correctLabel);
+		if (explanation != null) {
+			enterExplanation(explanation);
+		}
+		return submitFormWithToast();
 	}
 }

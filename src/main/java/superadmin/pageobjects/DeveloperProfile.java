@@ -11,6 +11,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import superadmin.abstractcomponent.AbstractComponent;
 import superadmin.annotations.StepName;
+import superadmin.utils.ToastResponse;
 
 /**
  * DeveloperProfile Page Object
@@ -165,5 +166,11 @@ public class DeveloperProfile extends AbstractComponent {
 
 		waitUtils.waitForClickable(updatePasswordButton);
 		updatePasswordButton.click();
+	}
+
+	@StepName("Update Password and Capture Toast Notification: current={0}")
+	public ToastResponse updatePassword(String currentPassword, String newPassword, String confirmPassword) {
+		changePassword(currentPassword, newPassword, confirmPassword);
+		return toastUtils.captureToast();
 	}
 }

@@ -10,6 +10,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import superadmin.abstractcomponent.AbstractComponent;
 import superadmin.annotations.StepName;
+import superadmin.utils.ToastResponse;
 
 /**
  * Enterprise Page Object for Super Admin Offline Portal Releases:
@@ -221,6 +222,12 @@ public class OfflinePortalRelease extends AbstractComponent {
 		activateBtn.click();
 	}
 
+	@StepName("Activate Release at Row {0} with Toast Verification")
+	public ToastResponse activateReleaseWithToast(int rowIndex) {
+		activateRelease(rowIndex);
+		return toastUtils.captureToast();
+	}
+
 	@StepName("Download Release at Row {0}")
 	public void downloadRelease(int rowIndex) {
 		WebElement row = getRow(rowIndex);
@@ -240,6 +247,12 @@ public class OfflinePortalRelease extends AbstractComponent {
 			driver.switchTo().alert().accept();
 		} catch (Exception ignored) {
 		}
+	}
+
+	@StepName("Delete Release at Row {0} with Toast Verification")
+	public ToastResponse deleteReleaseWithToast(int rowIndex) {
+		deleteRelease(rowIndex);
+		return toastUtils.captureToast();
 	}
 
 	@StepName("Open Full Description for Row {0}")
@@ -314,6 +327,12 @@ public class OfflinePortalRelease extends AbstractComponent {
 		}
 		uploadExeFile(absoluteFilePath);
 		clickModalUpload();
+	}
+
+	@StepName("Upload Offline Portal Release with Toast Verification: Version={0}")
+	public ToastResponse uploadReleaseWithToast(String version, String description, String absoluteFilePath) {
+		uploadRelease(version, description, absoluteFilePath);
+		return toastUtils.captureToast();
 	}
 
 	@StepName("Close Upload Release Modal")
