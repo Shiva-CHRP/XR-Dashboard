@@ -2,6 +2,7 @@ package clientportalmanager.pageobjects;
 
 import java.util.List;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -9,6 +10,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import superadmin.abstractcomponent.AbstractComponent;
 import superadmin.annotations.StepName;
+import superadmin.utils.ToastResponse;
 
 public class ManagerAssignModules extends AbstractComponent {
 
@@ -32,10 +34,13 @@ public class ManagerAssignModules extends AbstractComponent {
 	@FindBy(xpath = "//button[.//div[contains(@class,'rounded-full')]]")
 	private List<WebElement> trainerItems;
 
+	@FindBy(xpath = "//input[@type='checkbox']")
+	private List<WebElement> moduleCheckboxes;
+
 	@StepName("Click Manager Assign Modules")
 	public void clickManagerAssignModules() {
 		try {
-			WebElement btn = driver.findElement(org.openqa.selenium.By.xpath("//aside//button[contains(.,'Assign Modules')]"));
+			WebElement btn = driver.findElement(By.xpath("//aside//button[contains(.,'Assign Modules')]"));
 			waitUtils.scrollIntoView(btn);
 			waitUtils.clickUsingJS(btn);
 		} catch (Exception e) {
@@ -51,7 +56,7 @@ public class ManagerAssignModules extends AbstractComponent {
 	public boolean isManagerAssignModulesPageLoaded() {
 		return waitUtils.waitForUrlContains("assign-modules", 2)
 				|| waitUtils.waitForUrlContains("module-assignment", 2)
-				|| !driver.findElements(org.openqa.selenium.By.xpath("//h1[contains(.,'Assign Modules') or contains(.,'Module Assignment')] | //header//h1")).isEmpty();
+				|| !driver.findElements(By.xpath("//h1[contains(.,'Assign Modules') or contains(.,'Module Assignment')] | //header//h1")).isEmpty();
 	}
 
 	@StepName("Search Trainers")
@@ -66,6 +71,33 @@ public class ManagerAssignModules extends AbstractComponent {
 		return trainerItems.size();
 	}
 
+	@StepName("Select Trainer Item by Index")
+	public void selectTrainer(int index) {
+		if (index >= 0 && index < trainerItems.size()) {
+			WebElement item = trainerItems.get(index);
+			waitUtils.scrollIntoView(item);
+			try {
+				item.click();
+			} catch (Exception e) {
+				clickUsingJS(item);
+			}
+		}
+	}
+
+	@StepName("Toggle Module Checkbox")
+	public void toggleModuleCheckbox(int index) {
+		List<WebElement> boxes = driver.findElements(By.xpath("//input[@type='checkbox']"));
+		if (index >= 0 && index < boxes.size()) {
+			WebElement box = boxes.get(index);
+			waitUtils.scrollIntoView(box);
+			try {
+				box.click();
+			} catch (Exception e) {
+				clickUsingJS(box);
+			}
+		}
+	}
+
 	@StepName("Is Assign Button Enabled")
 	public boolean isAssignButtonEnabled() {
 		try {
@@ -73,5 +105,19 @@ public class ManagerAssignModules extends AbstractComponent {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	@StepName("Click Assign Modules Button and Capture Toast")
+	public ToastResponse clickAssignModulesButton() {
+		waitUtils.waitForVisibility(assignButton);
+		waitUtils.waitForClickable(assignButton);
+		try {
+			assignButton.click();
+		} catch (Exception e) {
+			clickUsingJS(assignButton);
+		}
+		ToastResponse toast = toastUtils.captureToast();
+		toastUtils.waitForToastToDisappear();
+		return toast;
 	}
 }

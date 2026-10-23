@@ -2,6 +2,7 @@ package clientportalmanager.pageobjects;
 
 import java.util.List;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -9,6 +10,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import superadmin.abstractcomponent.AbstractComponent;
 import superadmin.annotations.StepName;
+import superadmin.utils.ToastResponse;
 
 public class ManagerAssignCurriculums extends AbstractComponent {
 
@@ -35,7 +37,7 @@ public class ManagerAssignCurriculums extends AbstractComponent {
 	@StepName("Click Manager Assign Curriculums")
 	public void clickManagerAssignCurriculums() {
 		try {
-			WebElement btn = driver.findElement(org.openqa.selenium.By.xpath("//aside//button[contains(.,'Assign Curricul')]"));
+			WebElement btn = driver.findElement(By.xpath("//aside//button[contains(.,'Assign Curricul')]"));
 			waitUtils.scrollIntoView(btn);
 			waitUtils.clickUsingJS(btn);
 		} catch (Exception e) {
@@ -51,7 +53,7 @@ public class ManagerAssignCurriculums extends AbstractComponent {
 	public boolean isManagerAssignCurriculumsPageLoaded() {
 		return waitUtils.waitForUrlContains("assign-curricula", 2)
 				|| waitUtils.waitForUrlContains("curriculum-assignment", 2)
-				|| !driver.findElements(org.openqa.selenium.By.xpath("//h1[contains(.,'Assign Curricul')] | //header//h1")).isEmpty();
+				|| !driver.findElements(By.xpath("//h1[contains(.,'Assign Curricul')] | //header//h1")).isEmpty();
 	}
 
 	@StepName("Search Trainers")
@@ -66,6 +68,19 @@ public class ManagerAssignCurriculums extends AbstractComponent {
 		return trainerItems.size();
 	}
 
+	@StepName("Select Trainer Item by Index")
+	public void selectTrainer(int index) {
+		if (index >= 0 && index < trainerItems.size()) {
+			WebElement item = trainerItems.get(index);
+			waitUtils.scrollIntoView(item);
+			try {
+				item.click();
+			} catch (Exception e) {
+				clickUsingJS(item);
+			}
+		}
+	}
+
 	@StepName("Is Assign Button Enabled")
 	public boolean isAssignButtonEnabled() {
 		try {
@@ -73,5 +88,19 @@ public class ManagerAssignCurriculums extends AbstractComponent {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	@StepName("Click Assign Curriculums Button and Capture Toast")
+	public ToastResponse clickAssignCurriculumsButton() {
+		waitUtils.waitForVisibility(assignButton);
+		waitUtils.waitForClickable(assignButton);
+		try {
+			assignButton.click();
+		} catch (Exception e) {
+			clickUsingJS(assignButton);
+		}
+		ToastResponse toast = toastUtils.captureToast();
+		toastUtils.waitForToastToDisappear();
+		return toast;
 	}
 }

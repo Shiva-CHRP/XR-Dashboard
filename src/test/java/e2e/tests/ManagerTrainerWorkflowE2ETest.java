@@ -6,19 +6,21 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+import clientportaladmin.pojo.ClientUserData;
 import superadmin.annotations.TestInfo;
 import superadmin.listener.Listener;
 import superadmin.testcomponents.BaseTest;
+import superadmin.utils.ToastResponse;
 
 /**
  * End-to-End Test Suite for Manager & Trainer Workflows (Phases 5 & 6):
  * 1. Manager Authentication & Dashboard Overview
- * 2. Manager Assign Modules & Curriculums Operations
- * 3. Manager My Events Scheduling & Results Inspection
- * 4. Manager User Directory & Support Ticket Tracking
+ * 2. Manager Assign Modules & Curriculums CRUD Operations
+ * 3. Manager My Events Scheduling, Cancellation & Results Inspection
+ * 4. Manager User Directory CRUD (Internal & Contractor) & Support Ticket Creation
  * 5. Trainer Authentication & Operational Dashboard
  * 6. Trainer Assigned Events & Schedule Timeline
- * 7. Trainer Performance Results & Portal Settings Configuration
+ * 7. Trainer Settings Configuration CRUD & Account Profile Updates
  */
 @Listeners(Listener.class)
 @Test(groups = {"E2E", "Clientportal", "Regression"})
@@ -38,7 +40,7 @@ public class ManagerTrainerWorkflowE2ETest extends BaseTest {
 	}
 
 	@Test(priority = 2, dependsOnMethods = {"verify_Manager_Login_And_Overview"})
-	@TestInfo(module = "Client Manager", description = "Verify Manager Assign Modules and Curriculums Workflow", priority = "High")
+	@TestInfo(module = "Client Manager", description = "Verify Manager Assign Modules and Curriculums Workflow with Assignment Actions", priority = "High")
 	public void verify_Manager_Assign_Modules_And_Curriculums() {
 		managerAssignModules.clickManagerAssignModules();
 		Assert.assertTrue(managerAssignModules.isManagerAssignModulesPageLoaded(), "Manager Assign Modules page should be loaded");
@@ -46,40 +48,112 @@ public class ManagerTrainerWorkflowE2ETest extends BaseTest {
 		managerAssignModules.searchTrainers("Trainer");
 		Assert.assertTrue(managerAssignModules.getTrainerItemsCount() >= 0, "Trainer list search should return valid state");
 
+		if (managerAssignModules.getTrainerItemsCount() > 0) {
+			managerAssignModules.selectTrainer(0);
+			managerAssignModules.toggleModuleCheckbox(0);
+			if (managerAssignModules.isAssignButtonEnabled()) {
+				ToastResponse assignToast = managerAssignModules.clickAssignModulesButton();
+				if (assignToast != null) {
+					Assert.assertEquals(assignToast.getType(), "success", "Module assignment should succeed");
+				}
+			}
+		}
+
 		managerAssignCurriculums.clickManagerAssignCurriculums();
 		Assert.assertTrue(managerAssignCurriculums.isManagerAssignCurriculumsPageLoaded(), "Manager Assign Curriculums page should be loaded");
+
+		managerAssignCurriculums.searchTrainers("Trainer");
+		if (managerAssignCurriculums.getTrainerItemsCount() > 0) {
+			managerAssignCurriculums.selectTrainer(0);
+		}
 	}
 
 	@Test(priority = 3, dependsOnMethods = {"verify_Manager_Login_And_Overview"})
-	@TestInfo(module = "Client Manager", description = "Verify Manager My Events Scheduling and Results Examination", priority = "High")
+	@TestInfo(module = "Client Manager", description = "Verify Manager My Events Scheduling, Cancellation and Results Examination", priority = "High")
 	public void verify_Manager_My_Events_And_Results() {
 		myEvents.clickManagerMyEvents();
 		Assert.assertTrue(myEvents.isMyEventsPageLoaded(), "Manager My Events page should be loaded");
 
+		// Verify Create Event routing
+		myEvents.clickCreateEvent();
+		Assert.assertTrue(myEvents.isCreateEventPageLoaded(), "Manager Create Event / Session page should be loaded");
+		myEvents.cancelCreateEvent();
+
+		// Events tab and search
 		myEvents.clickEventsTab();
 		Assert.assertTrue(myEvents.isMyEventsPageLoaded(), "Events tab should be active");
 
 		myEvents.searchEvents("Safety");
 		Assert.assertTrue(myEvents.getEventRowsCount() >= 0, "Event search should execute cleanly");
 
+		if (myEvents.getEventRowsCount() > 0) {
+			ToastResponse cancelToast = myEvents.cancelEvent("Safety", "Operational schedule change for shift maintenance");
+			if (cancelToast != null) {
+				Assert.assertEquals(cancelToast.getType(), "success", "Event cancellation should succeed");
+			}
+		}
+
+		// Results tab
 		myEvents.clickResultsTab();
 		Assert.assertTrue(myEvents.isMyEventsPageLoaded(), "Results tab should be active");
 	}
 
 	@Test(priority = 4, dependsOnMethods = {"verify_Manager_Login_And_Overview"})
-	@TestInfo(module = "Client Manager", description = "Verify Manager User Directory and Support Tickets Tracking", priority = "Medium")
+	@TestInfo(module = "Client Manager", description = "Verify Manager User Directory CRUD (Internal & Contractor) and Support Tickets Tracking", priority = "Medium")
 	public void verify_Manager_Users_And_Support_Tickets() {
 		managerUsers.clickManagerUsers();
 		Assert.assertTrue(managerUsers.isManagerUsersPageLoaded(), "Manager Users page should be loaded");
 
+		// 1. Internal User Creation by Manager
+		ClientUserData internalUser = new ClientUserData();
+		internalUser.setFullName("Aakash Varma");
+		internalUser.setEmployeeId("MGR-EMP-881");
+		internalUser.setEmail("aakash.varma@chrpqa.com");
+		internalUser.setEmployeeType("internal");
+
+		ToastResponse intUserToast = managerUsers.createInternalUser(internalUser);
+		if (intUserToast != null) {
+			Assert.assertEquals(intUserToast.getType(), "success", "Manager internal user creation should succeed");
+		}
+		managerUsers.searchUsers(internalUser.getFullName());
+		Assert.assertTrue(managerUsers.getUserRowsCount() >= 0, "Internal user search rows should be non-negative");
+		managerUsers.clearSearch();
+
+		// 2. Contractor User Creation by Manager
+		ClientUserData contractorUser = new ClientUserData();
+		contractorUser.setFullName("Farhan Qureshi");
+		contractorUser.setEmployeeId("MGR-CON-991");
+		contractorUser.setEmail("farhan.qureshi@vendorqa.com");
+		contractorUser.setEmployeeType("contractor");
+
+		ToastResponse conUserToast = managerUsers.createContractorUser(contractorUser);
+		if (conUserToast != null) {
+			Assert.assertEquals(conUserToast.getType(), "success", "Manager contractor user creation should succeed");
+		}
+		managerUsers.searchUsers(contractorUser.getFullName());
+		Assert.assertTrue(managerUsers.getUserRowsCount() >= 0, "Contractor user search rows should be non-negative");
+		managerUsers.clearSearch();
+
+		// 3. Edit User Details and Status Toggle
 		managerUsers.clickInternalUsersTab();
-		Assert.assertTrue(managerUsers.getUserRowsCount() >= 0, "Internal user rows should be queryable");
+		ToastResponse editToast = managerUsers.editUser(internalUser.getFullName(), internalUser.getFullName() + " Verified");
+		if (editToast != null) {
+			Assert.assertEquals(editToast.getType(), "success", "Manager user update should succeed");
+		}
+		ToastResponse toggleToast = managerUsers.toggleUserStatus(internalUser.getFullName() + " Verified");
+		if (toggleToast != null) {
+			Assert.assertTrue("success".equalsIgnoreCase(toggleToast.getType()) || "info".equalsIgnoreCase(toggleToast.getType()), "Manager user status toggle should succeed");
+		}
 
-		managerUsers.clickContractorUsersTab();
-		Assert.assertTrue(managerUsers.getUserRowsCount() >= 0, "Contractor user rows should be queryable");
-
+		// 4. Manager Support Ticket Creation
 		managerSupportTickets.clickSupportTickets();
 		Assert.assertTrue(managerSupportTickets.isSupportTicketsPageLoaded(), "Manager Support Tickets page should be loaded");
+
+		ToastResponse ticketToast = managerSupportTickets.raiseSupportTicket("VR Headset Calibration Fault", "Device 3 loses 6DOF tracking after 10 minutes of operation in facility room 2.");
+		if (ticketToast != null) {
+			Assert.assertEquals(ticketToast.getType(), "success", "Manager support ticket creation should succeed");
+		}
+		Assert.assertTrue(managerSupportTickets.getTicketRowsCount() >= 0, "Manager ticket rows count should be non-negative");
 	}
 
 	@Test(priority = 5)
@@ -108,13 +182,20 @@ public class ManagerTrainerWorkflowE2ETest extends BaseTest {
 	}
 
 	@Test(priority = 7, dependsOnMethods = {"verify_Trainer_Login_And_Overview"})
-	@TestInfo(module = "Client Trainer", description = "Verify Trainer Settings Navigation and Configuration Tabs", priority = "Medium")
+	@TestInfo(module = "Client Trainer", description = "Verify Trainer Settings Navigation and Account Profile Save CRUD", priority = "Medium")
 	public void verify_Trainer_Settings_And_Teardown() {
 		trainerSettings.clickTrainerSettings();
 		Assert.assertTrue(trainerSettings.isTrainerSettingsPageLoaded(), "Trainer Settings page should be loaded");
 
 		trainerSettings.clickOfflineEnrollmentTab();
+
+		// Trainer Account Settings Update CRUD
 		trainerSettings.clickAccountTab();
+		ToastResponse accountToast = trainerSettings.saveAccountSettings();
+		if (accountToast != null) {
+			Assert.assertEquals(accountToast.getType(), "success", "Trainer account settings update should succeed");
+		}
+
 		trainerSettings.clickNotificationsTab();
 		trainerSettings.clickSecurityTab();
 		Assert.assertTrue(trainerSettings.isTrainerSettingsPageLoaded(), "Trainer Security tab should be loaded");

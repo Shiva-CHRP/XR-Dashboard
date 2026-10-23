@@ -1,5 +1,6 @@
 package clientportaltrainer.pageobjects;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -7,6 +8,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import superadmin.abstractcomponent.AbstractComponent;
 import superadmin.annotations.StepName;
+import superadmin.utils.ToastResponse;
 
 public class TrainerSettings extends AbstractComponent {
 
@@ -41,7 +43,7 @@ public class TrainerSettings extends AbstractComponent {
 	@StepName("Verify Trainer Settings Page is Loaded")
 	public boolean isTrainerSettingsPageLoaded() {
 		return waitUtils.waitForUrlContains("settings", 2)
-				|| !driver.findElements(org.openqa.selenium.By.xpath("//h1[contains(.,'Settings')] | //header//h1")).isEmpty();
+				|| !driver.findElements(By.xpath("//h1[contains(.,'Settings')] | //header//h1")).isEmpty();
 	}
 
 	@StepName("Switch to Offline Enrollment Tab")
@@ -66,5 +68,21 @@ public class TrainerSettings extends AbstractComponent {
 	public void clickSecurityTab() {
 		waitUtils.waitForClickable(securityTab);
 		securityTab.click();
+	}
+
+	@StepName("Save Account Settings with Toast Verification")
+	public ToastResponse saveAccountSettings() {
+		clickAccountTab();
+		By saveBtnBy = By.xpath("//button[contains(normalize-space(),'Save Changes') or contains(normalize-space(),'Save')]");
+		WebElement saveBtn = waitUtils.waitForVisibility(saveBtnBy);
+		waitUtils.waitForClickable(saveBtn);
+		try {
+			saveBtn.click();
+		} catch (Exception e) {
+			clickUsingJS(saveBtn);
+		}
+		ToastResponse toast = toastUtils.captureToast();
+		toastUtils.waitForToastToDisappear();
+		return toast;
 	}
 }
