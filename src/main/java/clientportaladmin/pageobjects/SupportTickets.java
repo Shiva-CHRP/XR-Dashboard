@@ -2,6 +2,7 @@ package clientportaladmin.pageobjects;
 
 import java.util.List;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -9,6 +10,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import superadmin.abstractcomponent.AbstractComponent;
 import superadmin.annotations.StepName;
+import superadmin.utils.ToastResponse;
 
 public class SupportTickets extends AbstractComponent {
 
@@ -62,7 +64,7 @@ public class SupportTickets extends AbstractComponent {
 
 	@StepName("Click Raise Ticket")
 	public void clickRaiseTicket() {
-		org.openqa.selenium.By raiseBtnBy = org.openqa.selenium.By.xpath("//button[contains(normalize-space(),'Raise Ticket')]");
+		By raiseBtnBy = By.xpath("//button[contains(normalize-space(),'Raise Ticket')]");
 		waitUtils.waitForClickable(raiseBtnBy);
 		List<WebElement> btns = driver.findElements(raiseBtnBy);
 		if (!btns.isEmpty()) {
@@ -72,7 +74,7 @@ public class SupportTickets extends AbstractComponent {
 		// Ensure modal dialog appears
 		waitUtils.waitUntil(d -> {
 			try {
-				List<WebElement> dialogs = d.findElements(org.openqa.selenium.By.xpath("//div[contains(@class,'modal-content')] | //*[@role='dialog']"));
+				List<WebElement> dialogs = d.findElements(By.xpath("//div[contains(@class,'modal-content')] | //*[@role='dialog']"));
 				return !dialogs.isEmpty() && dialogs.stream().anyMatch(WebElement::isDisplayed);
 			} catch (org.openqa.selenium.StaleElementReferenceException e) {
 				return false;
@@ -98,14 +100,14 @@ public class SupportTickets extends AbstractComponent {
 
 	@StepName("Close Raise Ticket Modal")
 	public void closeRaiseTicketModal() {
-		org.openqa.selenium.By closeBtnBy = org.openqa.selenium.By.xpath("//div[contains(@class,'modal-content')]//button[@aria-label='Close' or normalize-space()='Cancel'] | //*[@role='dialog']//button[@aria-label='Close' or normalize-space()='Cancel'] | //button[@aria-label='Close']");
+		By closeBtnBy = By.xpath("//div[contains(@class,'modal-content')]//button[@aria-label='Close' or normalize-space()='Cancel'] | //*[@role='dialog']//button[@aria-label='Close' or normalize-space()='Cancel'] | //button[@aria-label='Close']");
 		List<WebElement> closeBtns = driver.findElements(closeBtnBy);
 		if (!closeBtns.isEmpty()) {
 			waitUtils.clickUsingJS(closeBtns.get(0));
 		}
 		waitUtils.waitUntil(d -> {
 			try {
-				List<WebElement> dialogs = d.findElements(org.openqa.selenium.By.xpath("//div[contains(@class,'modal-content')] | //*[@role='dialog']"));
+				List<WebElement> dialogs = d.findElements(By.xpath("//div[contains(@class,'modal-content')] | //*[@role='dialog']"));
 				return dialogs.isEmpty() || dialogs.stream().noneMatch(WebElement::isDisplayed);
 			} catch (org.openqa.selenium.StaleElementReferenceException e) {
 				return true;
@@ -121,7 +123,7 @@ public class SupportTickets extends AbstractComponent {
 
 	@StepName("Switch to In Progress Tab")
 	public void switchToInProgressTab() {
-		java.util.List<WebElement> inProg = driver.findElements(org.openqa.selenium.By.xpath("//button[contains(.,'In Progress')]"));
+		List<WebElement> inProg = driver.findElements(By.xpath("//button[contains(.,'In Progress')]"));
 		if (!inProg.isEmpty()) {
 			inProg.get(0).click();
 		}
@@ -155,7 +157,7 @@ public class SupportTickets extends AbstractComponent {
 
 	@StepName("Check if Reopen Ticket Button is Present")
 	public boolean isReopenButtonPresent() {
-		return !driver.findElements(org.openqa.selenium.By.xpath("//button[contains(normalize-space(),'Reopen ticket')]")).isEmpty();
+		return !driver.findElements(By.xpath("//button[contains(normalize-space(),'Reopen ticket')]")).isEmpty();
 	}
 
 	@StepName("Click Reopen Ticket")
@@ -170,7 +172,17 @@ public class SupportTickets extends AbstractComponent {
 
 	@StepName("Verify Ticket Reopened Toast")
 	public boolean verifyTicketReopenedToast() {
-		superadmin.utils.ToastResponse toast = toastUtils.captureToast();
+		ToastResponse toast = toastUtils.captureToast();
 		return toast != null && "success".equalsIgnoreCase(toast.getType()) && toast.getMessage().contains("Ticket reopened");
+	}
+
+	@StepName("Raise Support Ticket with Toast Verification")
+	public ToastResponse raiseSupportTicket(String subject, String description) {
+		clickRaiseTicket();
+		fillRaiseTicketForm(subject, description);
+		submitRaiseTicket();
+		ToastResponse toast = toastUtils.captureToast();
+		toastUtils.waitForToastToDisappear();
+		return toast;
 	}
 }

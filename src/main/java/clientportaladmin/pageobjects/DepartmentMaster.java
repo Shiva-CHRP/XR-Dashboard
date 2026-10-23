@@ -7,6 +7,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import superadmin.abstractcomponent.AbstractComponent;
 import superadmin.annotations.StepName;
+import superadmin.utils.ToastResponse;
 
 public class DepartmentMaster extends AbstractComponent {
 
@@ -66,5 +67,35 @@ public class DepartmentMaster extends AbstractComponent {
 	public boolean isEmptyTableStateDisplayed() {
 		return !driver.findElements(org.openqa.selenium.By.xpath("//td[contains(.,'No') or contains(.,'found') or @colSpan] | //div[contains(.,'No') and contains(.,'found')]")).isEmpty()
 				|| getDepartmentRowsCount() == 0;
+	}
+
+	@StepName("Create Department Master Record")
+	public ToastResponse createDepartment(String name, String description) {
+		return performCreateMaster(name, description);
+	}
+
+	@StepName("Create Master Record (Generic)")
+	public ToastResponse createMaster(String name, String description) {
+		return createDepartment(name, description);
+	}
+
+	@StepName("Edit Department Master Record")
+	public ToastResponse editDepartment(String currentName, String newName, String newDescription) {
+		return performEditMaster(currentName, newName, newDescription);
+	}
+
+	@StepName("Edit Master Record (Generic)")
+	public ToastResponse editMaster(String currentName, String newName, String newDescription) {
+		return editDepartment(currentName, newName, newDescription);
+	}
+
+	@StepName("Toggle Department Status (Deactivate/Reactivate)")
+	public ToastResponse toggleStatus(String name) {
+		return performToggleMasterStatus(name);
+	}
+
+	@StepName("Delete Department Master Record")
+	public ToastResponse deleteDepartment(String name) {
+		return performDeleteMaster(name);
 	}
 }

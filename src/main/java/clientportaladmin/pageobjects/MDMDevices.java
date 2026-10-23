@@ -2,6 +2,7 @@ package clientportaladmin.pageobjects;
 
 import java.util.List;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -9,6 +10,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import superadmin.abstractcomponent.AbstractComponent;
 import superadmin.annotations.StepName;
+import superadmin.utils.ToastResponse;
 
 public class MDMDevices extends AbstractComponent {
 
@@ -90,7 +92,7 @@ public class MDMDevices extends AbstractComponent {
 
 	@StepName("Switch to Compliant Tab (Fallback to Devices Tab)")
 	public void switchToCompliantTab() {
-		List<WebElement> comp = driver.findElements(org.openqa.selenium.By.xpath("//button[contains(.,'Compliant')]"));
+		List<WebElement> comp = driver.findElements(By.xpath("//button[contains(.,'Compliant')]"));
 		if (!comp.isEmpty()) {
 			comp.get(0).click();
 		} else {
@@ -100,7 +102,7 @@ public class MDMDevices extends AbstractComponent {
 
 	@StepName("Switch to Non-Compliant Tab (Fallback to Pending Tab)")
 	public void switchToNonCompliantTab() {
-		List<WebElement> nonComp = driver.findElements(org.openqa.selenium.By.xpath("//button[contains(.,'Non-Compliant')]"));
+		List<WebElement> nonComp = driver.findElements(By.xpath("//button[contains(.,'Non-Compliant')]"));
 		if (!nonComp.isEmpty()) {
 			nonComp.get(0).click();
 		} else {
@@ -123,5 +125,28 @@ public class MDMDevices extends AbstractComponent {
 	@StepName("Get Device Rows Count")
 	public int getDeviceRowsCount() {
 		return deviceRows.size();
+	}
+
+	@StepName("Register MDM Device")
+	public ToastResponse registerDevice(String deviceName, String hardwareId) {
+		clickRegisterDevice();
+		waitUtils.waitForVisibility(deviceNameInput);
+		deviceNameInput.clear();
+		deviceNameInput.sendKeys(deviceName);
+
+		waitUtils.waitForVisibility(hardwareIdInput);
+		hardwareIdInput.clear();
+		hardwareIdInput.sendKeys(hardwareId);
+
+		waitUtils.waitForClickable(submitRegisterButton);
+		try {
+			submitRegisterButton.click();
+		} catch (Exception e) {
+			clickUsingJS(submitRegisterButton);
+		}
+
+		ToastResponse toast = toastUtils.captureToast();
+		toastUtils.waitForToastToDisappear();
+		return toast;
 	}
 }

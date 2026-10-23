@@ -9,6 +9,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import superadmin.abstractcomponent.AbstractComponent;
 import superadmin.annotations.StepName;
+import superadmin.utils.ToastResponse;
 
 public class CategoryMaster extends AbstractComponent {
 
@@ -54,8 +55,43 @@ public class CategoryMaster extends AbstractComponent {
 		searchInput.sendKeys(query);
 	}
 
+	@StepName("Search Master Records")
+	public void searchMaster(String query) {
+		searchCategory(query);
+	}
+
 	@StepName("Get Category Rows Count")
 	public int getCategoryRowsCount() {
 		return categoryRows.size();
+	}
+
+	@StepName("Create Category Master Record")
+	public ToastResponse createCategory(String name, String description) {
+		return performCreateMaster(name, description);
+	}
+
+	@StepName("Create Master Record (Generic)")
+	public ToastResponse createMaster(String name, String description) {
+		return createCategory(name, description);
+	}
+
+	@StepName("Edit Category Master Record")
+	public ToastResponse editCategory(String currentName, String newName, String newDescription) {
+		return performEditMaster(currentName, newName, newDescription);
+	}
+
+	@StepName("Edit Master Record (Generic)")
+	public ToastResponse editMaster(String currentName, String newName, String newDescription) {
+		return editCategory(currentName, newName, newDescription);
+	}
+
+	@StepName("Toggle Category Status (Deactivate/Reactivate)")
+	public ToastResponse toggleStatus(String name) {
+		return performToggleMasterStatus(name);
+	}
+
+	@StepName("Delete Category Master Record")
+	public ToastResponse deleteCategory(String name) {
+		return performDeleteMaster(name);
 	}
 }

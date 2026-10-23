@@ -1,6 +1,7 @@
 package superadmin.abstractcomponent;
 
 import java.time.Duration;
+import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -239,5 +240,155 @@ public class AbstractComponent {
 			}
 		}
 		waitUtils.waitForUrlContains(cleanRoute, 5);
+	}
+
+	// ================= MASTER ENTITY CRUD HELPERS =================
+	public ToastResponse performCreateMaster(String name, String description) {
+		By createBtnBy = By.xpath("//button[contains(normalize-space(),'Create') or contains(normalize-space(),'Add Master') or (contains(normalize-space(),'Add') and not(contains(.,'User')))]");
+		WebElement btn = waitUtils.waitForVisibility(createBtnBy);
+		waitUtils.waitForClickable(btn);
+		try {
+			btn.click();
+		} catch (Exception e) {
+			clickUsingJS(btn);
+		}
+		waitUtils.waitUntil(d -> !d.findElements(By.xpath("//div[@role='dialog']")).isEmpty(), 5);
+
+		By nameInputBy = By.xpath("//div[@role='dialog']//label[contains(.,'Name')]/..//input | //div[@role='dialog']//input[1]");
+		WebElement nameInput = waitUtils.waitForVisibility(nameInputBy);
+		nameInput.clear();
+		nameInput.sendKeys(name);
+
+		if (description != null && !description.isEmpty()) {
+			By descInputBy = By.xpath("//div[@role='dialog']//label[contains(.,'Description')]/..//input | //div[@role='dialog']//input[2]");
+			List<WebElement> descInputs = driver.findElements(descInputBy);
+			if (!descInputs.isEmpty()) {
+				descInputs.get(0).clear();
+				descInputs.get(0).sendKeys(description);
+			}
+		}
+
+		By saveBtnBy = By.xpath("//div[@role='dialog']//button[contains(normalize-space(),'Save') or normalize-space()='Save']");
+		WebElement saveBtn = waitUtils.waitForVisibility(saveBtnBy);
+		waitUtils.waitForClickable(saveBtn);
+		try {
+			saveBtn.click();
+		} catch (Exception e) {
+			clickUsingJS(saveBtn);
+		}
+
+		ToastResponse toast = toastUtils.captureToast();
+		toastUtils.waitForToastToDisappear();
+		return toast;
+	}
+
+	public ToastResponse performEditMaster(String currentName, String newName, String newDescription) {
+		search(currentName);
+		By actionMenuBy = By.xpath("//table//tbody//tr[1]//button[.//svg or @aria-haspopup='menu']");
+		WebElement actionMenu = waitUtils.waitForVisibility(actionMenuBy);
+		waitUtils.waitForClickable(actionMenu);
+		try {
+			actionMenu.click();
+		} catch (Exception e) {
+			clickUsingJS(actionMenu);
+		}
+
+		By editItemBy = By.xpath("//div[@role='menuitem' and contains(.,'Edit')]");
+		WebElement editItem = waitUtils.waitForVisibility(editItemBy);
+		waitUtils.waitForClickable(editItem);
+		try {
+			editItem.click();
+		} catch (Exception e) {
+			clickUsingJS(editItem);
+		}
+		waitUtils.waitUntil(d -> !d.findElements(By.xpath("//div[@role='dialog']")).isEmpty(), 5);
+
+		By nameInputBy = By.xpath("//div[@role='dialog']//label[contains(.,'Name')]/..//input | //div[@role='dialog']//input[1]");
+		WebElement nameInput = waitUtils.waitForVisibility(nameInputBy);
+		nameInput.clear();
+		nameInput.sendKeys(newName);
+
+		if (newDescription != null && !newDescription.isEmpty()) {
+			By descInputBy = By.xpath("//div[@role='dialog']//label[contains(.,'Description')]/..//input | //div[@role='dialog']//input[2]");
+			List<WebElement> descInputs = driver.findElements(descInputBy);
+			if (!descInputs.isEmpty()) {
+				descInputs.get(0).clear();
+				descInputs.get(0).sendKeys(newDescription);
+			}
+		}
+
+		By saveBtnBy = By.xpath("//div[@role='dialog']//button[contains(normalize-space(),'Save Changes') or contains(.,'Save')]");
+		WebElement saveBtn = waitUtils.waitForVisibility(saveBtnBy);
+		waitUtils.waitForClickable(saveBtn);
+		try {
+			saveBtn.click();
+		} catch (Exception e) {
+			clickUsingJS(saveBtn);
+		}
+
+		ToastResponse toast = toastUtils.captureToast();
+		toastUtils.waitForToastToDisappear();
+		return toast;
+	}
+
+	public ToastResponse performToggleMasterStatus(String name) {
+		search(name);
+		By actionMenuBy = By.xpath("//table//tbody//tr[1]//button[.//svg or @aria-haspopup='menu']");
+		WebElement actionMenu = waitUtils.waitForVisibility(actionMenuBy);
+		waitUtils.waitForClickable(actionMenu);
+		try {
+			actionMenu.click();
+		} catch (Exception e) {
+			clickUsingJS(actionMenu);
+		}
+
+		By toggleItemBy = By.xpath("//div[@role='menuitem' and (contains(.,'Deactivate') or contains(.,'Reactivate'))]");
+		WebElement toggleItem = waitUtils.waitForVisibility(toggleItemBy);
+		waitUtils.waitForClickable(toggleItem);
+		try {
+			toggleItem.click();
+		} catch (Exception e) {
+			clickUsingJS(toggleItem);
+		}
+
+		By confirmBtnBy = By.xpath("//div[@role='dialog']//button[contains(.,'Deactivate') or contains(.,'Confirm') or contains(.,'Yes')]");
+		List<WebElement> confirmBtns = driver.findElements(confirmBtnBy);
+		if (!confirmBtns.isEmpty()) {
+			confirmBtns.get(0).click();
+		}
+
+		ToastResponse toast = toastUtils.captureToast();
+		toastUtils.waitForToastToDisappear();
+		return toast;
+	}
+
+	public ToastResponse performDeleteMaster(String name) {
+		search(name);
+		By actionMenuBy = By.xpath("//table//tbody//tr[1]//button[.//svg or @aria-haspopup='menu']");
+		WebElement actionMenu = waitUtils.waitForVisibility(actionMenuBy);
+		waitUtils.waitForClickable(actionMenu);
+		try {
+			actionMenu.click();
+		} catch (Exception e) {
+			clickUsingJS(actionMenu);
+		}
+
+		By deleteItemBy = By.xpath("//div[@role='menuitem' and contains(.,'Delete')]");
+		WebElement deleteItem = waitUtils.waitForVisibility(deleteItemBy);
+		waitUtils.waitForClickable(deleteItem);
+		try {
+			deleteItem.click();
+		} catch (Exception e) {
+			clickUsingJS(deleteItem);
+		}
+
+		By confirmDeleteBtnBy = By.xpath("//div[@role='dialog']//button[contains(.,'Delete') or contains(.,'Confirm')]");
+		WebElement confirmBtn = waitUtils.waitForVisibility(confirmDeleteBtnBy);
+		waitUtils.waitForClickable(confirmBtn);
+		confirmBtn.click();
+
+		ToastResponse toast = toastUtils.captureToast();
+		toastUtils.waitForToastToDisappear();
+		return toast;
 	}
 }

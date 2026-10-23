@@ -9,6 +9,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import superadmin.abstractcomponent.AbstractComponent;
 import superadmin.annotations.StepName;
+import superadmin.utils.ToastResponse;
 
 public class DivisionMaster extends AbstractComponent {
 
@@ -54,8 +55,43 @@ public class DivisionMaster extends AbstractComponent {
 		searchInput.sendKeys(query);
 	}
 
+	@StepName("Search Master Records")
+	public void searchMaster(String query) {
+		searchDivision(query);
+	}
+
 	@StepName("Get Division Rows Count")
 	public int getDivisionRowsCount() {
 		return divisionRows.size();
+	}
+
+	@StepName("Create Division Master Record")
+	public ToastResponse createDivision(String name, String description) {
+		return performCreateMaster(name, description);
+	}
+
+	@StepName("Create Master Record (Generic)")
+	public ToastResponse createMaster(String name, String description) {
+		return createDivision(name, description);
+	}
+
+	@StepName("Edit Division Master Record")
+	public ToastResponse editDivision(String currentName, String newName, String newDescription) {
+		return performEditMaster(currentName, newName, newDescription);
+	}
+
+	@StepName("Edit Master Record (Generic)")
+	public ToastResponse editMaster(String currentName, String newName, String newDescription) {
+		return editDivision(currentName, newName, newDescription);
+	}
+
+	@StepName("Toggle Division Status (Deactivate/Reactivate)")
+	public ToastResponse toggleStatus(String name) {
+		return performToggleMasterStatus(name);
+	}
+
+	@StepName("Delete Division Master Record")
+	public ToastResponse deleteDivision(String name) {
+		return performDeleteMaster(name);
 	}
 }

@@ -8,8 +8,10 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
+import clientportaladmin.pojo.ClientUserData;
 import superadmin.abstractcomponent.AbstractComponent;
 import superadmin.annotations.StepName;
+import superadmin.utils.ToastResponse;
 
 public class Users extends AbstractComponent {
 
@@ -276,5 +278,120 @@ public class Users extends AbstractComponent {
 
 	public void selectContractorChip() {
 		selectModalContractorEmployee();
+	}
+
+	@StepName("Create Internal User")
+	public ToastResponse createInternalUser(ClientUserData user) {
+		switchToInternalUsersTab();
+		clickAddUser();
+		selectModalInternalEmployee();
+
+		enterFullName(user.getFullName());
+
+		if (user.getEmployeeId() != null && !user.getEmployeeId().isEmpty()) {
+			waitUtils.waitForVisibility(employeeIdInput);
+			employeeIdInput.clear();
+			employeeIdInput.sendKeys(user.getEmployeeId());
+		}
+
+		if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+			enterEmail(user.getEmail());
+		}
+
+		clickSaveUser();
+		ToastResponse toast = toastUtils.captureToast();
+		toastUtils.waitForToastToDisappear();
+		return toast;
+	}
+
+	@StepName("Create Contractor User")
+	public ToastResponse createContractorUser(ClientUserData user) {
+		switchToContractorUsersTab();
+		clickAddUser();
+		selectModalContractorEmployee();
+
+		enterFullName(user.getFullName());
+
+		if (user.getEmployeeId() != null && !user.getEmployeeId().isEmpty()) {
+			waitUtils.waitForVisibility(employeeIdInput);
+			employeeIdInput.clear();
+			employeeIdInput.sendKeys(user.getEmployeeId());
+		}
+
+		if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+			enterEmail(user.getEmail());
+		}
+
+		clickSaveUser();
+		ToastResponse toast = toastUtils.captureToast();
+		toastUtils.waitForToastToDisappear();
+		return toast;
+	}
+
+	@StepName("Edit User Details")
+	public ToastResponse editUser(String currentName, String updatedName) {
+		searchUsers(currentName);
+		waitUtils.waitForClickable(firstRowActionMenu);
+		try {
+			firstRowActionMenu.click();
+		} catch (Exception e) {
+			clickUsingJS(firstRowActionMenu);
+		}
+
+		waitUtils.waitForClickable(editActionMenuItem);
+		try {
+			editActionMenuItem.click();
+		} catch (Exception e) {
+			clickUsingJS(editActionMenuItem);
+		}
+
+		waitUtils.waitUntil(d -> !d.findElements(By.xpath("//div[@role='dialog']")).isEmpty(), 5);
+		By nameInputBy = By.xpath("//div[@role='dialog']//label[contains(.,'Full Name')]/..//input | //div[@role='dialog']//input[1]");
+		WebElement nameInput = waitUtils.waitForVisibility(nameInputBy);
+		nameInput.clear();
+		nameInput.sendKeys(updatedName);
+
+		By saveBtnBy = By.xpath("//div[@role='dialog']//button[contains(normalize-space(),'Save Changes') or contains(.,'Update') or contains(.,'Save')]");
+		WebElement saveBtn = waitUtils.waitForVisibility(saveBtnBy);
+		waitUtils.waitForClickable(saveBtn);
+		try {
+			saveBtn.click();
+		} catch (Exception e) {
+			clickUsingJS(saveBtn);
+		}
+
+		ToastResponse toast = toastUtils.captureToast();
+		toastUtils.waitForToastToDisappear();
+		return toast;
+	}
+
+	@StepName("Toggle User Status (Deactivate / Reactivate)")
+	public ToastResponse toggleUserStatus(String searchName) {
+		searchUsers(searchName);
+		waitUtils.waitForClickable(firstRowActionMenu);
+		try {
+			firstRowActionMenu.click();
+		} catch (Exception e) {
+			clickUsingJS(firstRowActionMenu);
+		}
+
+		By toggleItemBy = By.xpath("//div[@role='menuitem' and (contains(.,'Deactivate') or contains(.,'Reactivate'))]");
+		WebElement toggleItem = waitUtils.waitForVisibility(toggleItemBy);
+		waitUtils.waitForClickable(toggleItem);
+		try {
+			toggleItem.click();
+		} catch (Exception e) {
+			clickUsingJS(toggleItem);
+		}
+
+		By confirmBtnBy = By.xpath("//div[@role='dialog']//button[contains(.,'Deactivate') or contains(.,'Confirm') or contains(.,'Yes')]");
+		List<WebElement> confirmBtns = driver.findElements(confirmBtnBy);
+		if (!confirmBtns.isEmpty()) {
+			confirmBtns.get(0).click();
+		}
+
+		ToastResponse toast = toastUtils.captureToast();
+		toastUtils.waitForToastToDisappear();
+		return toast;
 	}
 }

@@ -1,5 +1,8 @@
 package clientportaladmin.pageobjects;
 
+import java.util.List;
+
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -37,12 +40,12 @@ public class Events extends AbstractComponent {
 	private WebElement exportButton;
 
 	@FindBy(xpath = "//table//tbody//tr")
-	private java.util.List<WebElement> eventRows;
+	private List<WebElement> eventRows;
 
 	@StepName("Click Events from Sidebar")
 	public void clickEvents() {
 		try {
-			org.openqa.selenium.WebElement btn = driver.findElement(org.openqa.selenium.By.xpath("//aside//button[contains(.,'Events')]"));
+			WebElement btn = driver.findElement(By.xpath("//aside//button[contains(.,'Events')]"));
 			waitUtils.scrollIntoView(btn);
 			waitUtils.clickUsingJS(btn);
 		} catch (Exception e) {
@@ -60,7 +63,7 @@ public class Events extends AbstractComponent {
 	public boolean isEventsPageLoaded() {
 		try {
 			return waitUtils.waitForUrlContains("sessions", 5) 
-					|| !driver.findElements(org.openqa.selenium.By.xpath("//h1[contains(.,'Event') or contains(.,'Session')]")).isEmpty();
+					|| !driver.findElements(By.xpath("//h1[contains(.,'Event') or contains(.,'Session')]")).isEmpty();
 		} catch (Exception e) {
 			return false;
 		}
@@ -82,6 +85,23 @@ public class Events extends AbstractComponent {
 	public void clickCreateEvent() {
 		waitUtils.waitForClickable(createEventButton);
 		createEventButton.click();
+	}
+
+	@StepName("Verify Create Event Page is Loaded")
+	public boolean isCreateEventPageLoaded() {
+		return waitUtils.waitForUrlContains("sessions/create", 5)
+				|| !driver.findElements(By.xpath("//h1[contains(.,'Create Event') or contains(.,'Create Session')]")).isEmpty();
+	}
+
+	@StepName("Cancel Create Event and Return")
+	public void cancelCreateEvent() {
+		By backBtnBy = By.xpath("//button[@aria-label='Back' or contains(normalize-space(),'Cancel')]");
+		List<WebElement> backBtns = driver.findElements(backBtnBy);
+		if (!backBtns.isEmpty()) {
+			backBtns.get(0).click();
+		} else {
+			clickEvents();
+		}
 	}
 
 	@StepName("Search Events")

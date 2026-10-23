@@ -9,6 +9,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import superadmin.abstractcomponent.AbstractComponent;
 import superadmin.annotations.StepName;
+import superadmin.utils.ToastResponse;
 
 public class AreaMaster extends AbstractComponent {
 
@@ -54,8 +55,43 @@ public class AreaMaster extends AbstractComponent {
 		searchInput.sendKeys(query);
 	}
 
+	@StepName("Search Master Records")
+	public void searchMaster(String query) {
+		searchArea(query);
+	}
+
 	@StepName("Get Area Rows Count")
 	public int getAreaRowsCount() {
 		return areaRows.size();
+	}
+
+	@StepName("Create Area Master Record")
+	public ToastResponse createArea(String name, String description) {
+		return performCreateMaster(name, description);
+	}
+
+	@StepName("Create Master Record (Generic)")
+	public ToastResponse createMaster(String name, String description) {
+		return createArea(name, description);
+	}
+
+	@StepName("Edit Area Master Record")
+	public ToastResponse editArea(String currentName, String newName, String newDescription) {
+		return performEditMaster(currentName, newName, newDescription);
+	}
+
+	@StepName("Edit Master Record (Generic)")
+	public ToastResponse editMaster(String currentName, String newName, String newDescription) {
+		return editArea(currentName, newName, newDescription);
+	}
+
+	@StepName("Toggle Area Status (Deactivate/Reactivate)")
+	public ToastResponse toggleStatus(String name) {
+		return performToggleMasterStatus(name);
+	}
+
+	@StepName("Delete Area Master Record")
+	public ToastResponse deleteArea(String name) {
+		return performDeleteMaster(name);
 	}
 }

@@ -9,6 +9,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import superadmin.abstractcomponent.AbstractComponent;
 import superadmin.annotations.StepName;
+import superadmin.utils.ToastResponse;
 
 public class PlantMaster extends AbstractComponent {
 
@@ -57,5 +58,35 @@ public class PlantMaster extends AbstractComponent {
 	@StepName("Get Master Rows Count")
 	public int getMasterRowsCount() {
 		return masterRows.size();
+	}
+
+	@StepName("Create Plant Master Record")
+	public ToastResponse createPlant(String name, String description) {
+		return performCreateMaster(name, description);
+	}
+
+	@StepName("Create Master Record (Generic)")
+	public ToastResponse createMaster(String name, String description) {
+		return createPlant(name, description);
+	}
+
+	@StepName("Edit Plant Master Record")
+	public ToastResponse editPlant(String currentName, String newName, String newDescription) {
+		return performEditMaster(currentName, newName, newDescription);
+	}
+
+	@StepName("Edit Master Record (Generic)")
+	public ToastResponse editMaster(String currentName, String newName, String newDescription) {
+		return editPlant(currentName, newName, newDescription);
+	}
+
+	@StepName("Toggle Plant Status (Deactivate/Reactivate)")
+	public ToastResponse toggleStatus(String name) {
+		return performToggleMasterStatus(name);
+	}
+
+	@StepName("Delete Plant Master Record")
+	public ToastResponse deletePlant(String name) {
+		return performDeleteMaster(name);
 	}
 }

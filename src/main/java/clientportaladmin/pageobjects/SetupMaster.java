@@ -9,6 +9,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import superadmin.abstractcomponent.AbstractComponent;
 import superadmin.annotations.StepName;
+import superadmin.utils.ToastResponse;
 
 public class SetupMaster extends AbstractComponent {
 
@@ -54,8 +55,43 @@ public class SetupMaster extends AbstractComponent {
 		searchInput.sendKeys(query);
 	}
 
+	@StepName("Search Master Records")
+	public void searchMaster(String query) {
+		searchSetup(query);
+	}
+
 	@StepName("Get Setup Rows Count")
 	public int getSetupRowsCount() {
 		return setupRows.size();
+	}
+
+	@StepName("Create Setup Master Record")
+	public ToastResponse createSetup(String name, String description) {
+		return performCreateMaster(name, description);
+	}
+
+	@StepName("Create Master Record (Generic)")
+	public ToastResponse createMaster(String name, String description) {
+		return createSetup(name, description);
+	}
+
+	@StepName("Edit Setup Master Record")
+	public ToastResponse editSetup(String currentName, String newName, String newDescription) {
+		return performEditMaster(currentName, newName, newDescription);
+	}
+
+	@StepName("Edit Master Record (Generic)")
+	public ToastResponse editMaster(String currentName, String newName, String newDescription) {
+		return editSetup(currentName, newName, newDescription);
+	}
+
+	@StepName("Toggle Setup Status (Deactivate/Reactivate)")
+	public ToastResponse toggleStatus(String name) {
+		return performToggleMasterStatus(name);
+	}
+
+	@StepName("Delete Setup Master Record")
+	public ToastResponse deleteSetup(String name) {
+		return performDeleteMaster(name);
 	}
 }
