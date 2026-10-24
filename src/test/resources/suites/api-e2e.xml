@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="VEMS Super Admin - API Cross-Service E2E Suite" verbose="1">
+
+    <listeners>
+        <listener class-name="superadmin.listener.Listener"/>
+    </listeners>
+
+    <test name="API End-to-End Service Dependency Tests" preserve-order="true">
+        <classes>
+            <class name="api.e2e.BackendUserLicenseE2ETest"/>
+            <class name="api.e2e.GatewayMaintenanceE2ETest"/>
+        </classes>
+    </test>
+
+</suite>

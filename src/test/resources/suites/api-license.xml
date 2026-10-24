@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="VEMS Super Admin - License Service API Suite" verbose="1">
+    <listeners>
+        <listener class-name="superadmin.listener.Listener"/>
+    </listeners>
+    <test name="License Service API" preserve-order="true">
+        <classes>
+            <class name="api.license.LicenseServiceApiTest"/>
+        </classes>
+    </test>
+</suite>
