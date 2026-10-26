@@ -34,6 +34,7 @@ public class Listener implements ITestListener, IAnnotationTransformer {
 	public void transform(ITestAnnotation annotation, Class testClass, Constructor testConstructor, Method testMethod) {
 		annotation.setRetryAnalyzer(RetryAnalyzer.class);
 	}
+
 	@Override
 	public void onTestStart(ITestResult result) {
 		WebDriver driver = WebDriverFactory.getDriver();
@@ -43,7 +44,8 @@ public class Listener implements ITestListener, IAnnotationTransformer {
 		String testName;
 		if (info != null && !info.description().isEmpty()) {
 			testName = info.description();
-
+		} else if (result.getMethod().getDescription() != null && !result.getMethod().getDescription().trim().isEmpty()) {
+			testName = result.getMethod().getDescription().trim();
 		} else {
 			testName = result.getMethod().getMethodName();
 		}
@@ -55,7 +57,6 @@ public class Listener implements ITestListener, IAnnotationTransformer {
 	        ExtentTestManager.getTest().assignCategory(group);
 	    }
 	    if (info != null) {
-			
 			ExtentTestManager.getTest().assignAuthor(info.author());
 			ExtentTestManager.getTest().info(info.description());
 			ExtentTestManager.getTest().info("Module : " + info.module());
@@ -100,21 +101,27 @@ public class Listener implements ITestListener, IAnnotationTransformer {
 	public void onTestFailure(ITestResult result) {
 		WebDriver driver = WebDriverFactory.getDriver();
 		ExtentTestManager.getTest().fail(result.getThrowable());
-		if (driver == null) {
-			ExtentTestManager.getTest().warning("Driver is null. Screenshot not captured.");
-			return;
+		if (driver != null) {
+			String testName = result.getMethod().getMethodName();
+			ScreenshotUtils.getScreenshot(driver, testName);
+			String base64 = ScreenshotUtils.getBase64Screenshot(driver);
+			if (base64 != null && !base64.isEmpty()) {
+				ExtentTestManager.getTest().addScreenCaptureFromBase64String(base64, testName);
+			}
+			try {
+				LogEntries logs = driver.manage().logs().get(LogType.BROWSER);
+				if (logs != null) {
+					ExtentTestManager.getTest().info("Current URL : " + driver.getCurrentUrl());
+				}
+				Capabilities cap = DriverUtils.getCapabilities(driver);
+				if (cap != null) {
+					ExtentTestManager.getTest().info("Browser : " + cap.getBrowserName());
+					ExtentTestManager.getTest().info("Version : " + cap.getBrowserVersion());
+				}
+			} catch (Exception ignored) {}
+		} else {
+			ExtentTestManager.getTest().info("<span style='color:#94a3b8; font-style:italic;'>Headless API Test - No browser session active</span>");
 		}
-		String testName = result.getMethod().getMethodName();
-		ScreenshotUtils.getScreenshot(driver, testName);
-		String base64 = ScreenshotUtils.getBase64Screenshot(driver);
-		if (base64 != null && !base64.isEmpty()) {
-			ExtentTestManager.getTest().addScreenCaptureFromBase64String(base64, testName);
-		}
-		LogEntries logs = driver.manage().logs().get(LogType.BROWSER);
-		ExtentTestManager.getTest().info("Current URL : " + driver.getCurrentUrl());
-		Capabilities cap = DriverUtils.getCapabilities(driver);
-		ExtentTestManager.getTest().info("Browser : " + cap.getBrowserName());
-		ExtentTestManager.getTest().info("Version : " + cap.getBrowserVersion());
 		String[] groups = getSuite(result);
 
 		DashboardBuilder.markFailed(groups);
@@ -127,7 +134,6 @@ public class Listener implements ITestListener, IAnnotationTransformer {
 	    if (info != null) {
 	        ModuleDashboard.markFailed(info.module());
 	    }
-
 	}
 
 	@Override
@@ -145,7 +151,6 @@ public class Listener implements ITestListener, IAnnotationTransformer {
 	}
 	
 	public void log(String message) {
-
 		ExtentTest test = ExtentTestManager.getTest();
 
 		if (test != null) {
@@ -156,10 +161,6 @@ public class Listener implements ITestListener, IAnnotationTransformer {
 	}
 	
 	private String[] getSuite(ITestResult result) {
-
-		TestInfo info = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(TestInfo.class);
-
-		//return info != null ? info.category() : "Unknown";
 		return result.getMethod().getGroups();
 	}
 	

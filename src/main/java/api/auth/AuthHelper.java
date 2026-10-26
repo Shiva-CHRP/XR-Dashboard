@@ -4,7 +4,7 @@ import api.config.ApiConfig;
 import api.config.ApiEndpoints;
 import api.pojo.auth.LoginRequest;
 import api.pojo.auth.LoginResponse;
-import io.restassured.http.ContentType;
+import api.spec.RequestSpecFactory;
 
 import static io.restassured.RestAssured.given;
 
@@ -29,9 +29,8 @@ public class AuthHelper {
         LoginRequest loginReq = new LoginRequest(ApiConfig.getAdminEmail(), ApiConfig.getAdminPassword());
 
         try {
-            LoginResponse response = given()
+            LoginResponse response = given(RequestSpecFactory.unauthenticatedSpec())
                     .baseUri(ApiConfig.getIdentityUrl())
-                    .contentType(ContentType.JSON)
                     .body(loginReq)
                 .when()
                     .post(ApiEndpoints.AUTH_LOGIN)
@@ -46,9 +45,8 @@ public class AuthHelper {
         } catch (Exception e) {
             // Fallback attempt via Gateway if direct Identity port is behind gateway
             try {
-                LoginResponse response = given()
+                LoginResponse response = given(RequestSpecFactory.unauthenticatedSpec())
                         .baseUri(ApiConfig.getGatewayUrl())
-                        .contentType(ContentType.JSON)
                         .body(loginReq)
                     .when()
                         .post(ApiEndpoints.AUTH_LOGIN)

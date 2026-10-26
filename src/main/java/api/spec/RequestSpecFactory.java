@@ -2,14 +2,18 @@ package api.spec;
 
 import api.auth.TokenManager;
 import api.config.ApiConfig;
+import api.filter.ExtentRestAssuredFilter;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 
 /**
- * RequestSpecFactory - Factory for pre-configured RestAssured RequestSpecifications.
+ * RequestSpecFactory - Factory for pre-configured RestAssured RequestSpecifications
+ * with centralized ExtentReports HTTP request & response logging.
  */
 public class RequestSpecFactory {
+
+    private static final ExtentRestAssuredFilter EXTENT_FILTER = new ExtentRestAssuredFilter();
 
     private RequestSpecFactory() {}
 
@@ -21,6 +25,7 @@ public class RequestSpecFactory {
                 .setContentType(ContentType.JSON)
                 .addHeader("Authorization", "Bearer " + TokenManager.getToken())
                 .setRelaxedHTTPSValidation()
+                .addFilter(EXTENT_FILTER)
                 .build();
     }
 
@@ -32,6 +37,7 @@ public class RequestSpecFactory {
                 .setContentType(ContentType.JSON)
                 .addHeader("X-Admin-Key", ApiConfig.getAdminKey())
                 .setRelaxedHTTPSValidation()
+                .addFilter(EXTENT_FILTER)
                 .build();
     }
 
@@ -42,6 +48,7 @@ public class RequestSpecFactory {
         return new RequestSpecBuilder()
                 .setContentType(ContentType.JSON)
                 .setRelaxedHTTPSValidation()
+                .addFilter(EXTENT_FILTER)
                 .build();
     }
 
@@ -53,6 +60,7 @@ public class RequestSpecFactory {
                 .setContentType(ContentType.MULTIPART)
                 .addHeader("Authorization", "Bearer " + TokenManager.getToken())
                 .setRelaxedHTTPSValidation()
+                .addFilter(EXTENT_FILTER)
                 .build();
     }
 }
